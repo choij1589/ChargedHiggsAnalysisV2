@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(MeasFakeRate VERSION 1.0.0)
+project(MeasFakeRate VERSION 2.0.0)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 20)

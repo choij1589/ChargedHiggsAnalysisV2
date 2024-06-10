@@ -1,7 +1,8 @@
+#!/home/choij/miniconda3/envs/pyg/bin/python
 import os
 import argparse
 import ROOT
-ROOT.gSystem.Load("lib/libMeasFakeRate.dylib")
+ROOT.gSystem.Load("lib/libMeasFakeRate.so")
 
 parser = argparse.ArgumentParser(description='Perform fit')
 parser.add_argument('--era', type=str, required=True, help='Era')

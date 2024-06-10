@@ -46,7 +46,7 @@ FitMT::FitMT(const TString& era, const TString& hlt, const TString& id, const TS
     MCSamples.insert(MCSamples.end(), QCD_MuEnriched.begin(), QCD_MuEnriched.end());
     MCSamples.insert(MCSamples.end(), QCD_EMEnriched.begin(), QCD_EMEnriched.end());
     MCSamples.insert(MCSamples.end(), QCD_bcToE.begin(), QCD_bcToE.end());
-    histkey = "Inclusive/"+ID+"/"+SYST+"/MTfix";
+    histkey = "QCDEnriched/"+ID+"/"+SYST+"/MT";
 }
 
 void FitMT::loadHistogram(TFile* f, const TString& sample, const TString& prefix, const TString& key) {
@@ -146,6 +146,17 @@ RooFitResult* FitMT::fit(const TString& prefix) {
 
     if (h_data) {
         h_data->SetDirectory(0);
+        // If pt < 25., 0.5 GeV binning, elif pt < 50., 1 GeV binning, else 2 GeV binning
+        if ((prefix.Contains("10to15") || prefix.Contains("15to20") || prefix.Contains("20to25") || prefix.Contains("25to35"))) {
+        } else if (prefix.Contains("35to50")) {
+            h_data->Rebin(2);
+        } else {
+            h_data->Rebin(4);
+        }
+        // Rebin again for HeavyTag
+        if (histkey.Contains("RequireHeavyTag")) {
+            h_data->Rebin(4);
+        }
         data = new RooDataHist("dh_"+DATASTREAM, "", MT, Import(*h_data));
     } else {
         cerr << "ERROR -- FitMT::performFit() -- Cannot find histogram: " << histkey << endl;
