@@ -13,10 +13,11 @@ args = parser.parse_args()
 ## Settings
 WORKDIR = os.environ['WORKDIR']
 xtitle = ""
-if args.histkey == "ZCand/mass":
-    xtitle = "M(Z) [GeV]"
-elif args.histkey == "nZCand/mass":
-    xtitle = "M(nZ) [GeV]"
+if args.histkey == "pair/mass":
+    xtitle = "M(#mu^{+}#mu^{-}) [GeV]"
+    ytitle = "Events / 5 GeV"
+elif args.histkey == "stack/mass":
+    xtitle = "M(#mu^{+}#mu^{-}) [GeV]"
 elif args.histkey == "electrons/1/pt":
     xtitle = "p_{T}(e) [GeV]"
 elif args.histkey == "muons/1/pt":
@@ -39,6 +40,12 @@ elif args.histkey == "nonprompt/eta":
     xtitle = "#eta(l^{fake})"
 else:
     raise KeyError(f"Not registered histkey {args.histkey}")
+
+ytitle = "Events"
+if "[GeV]" in xtitle:
+    ytitle = f"Events / {args.rebin} GeV"
+if "stack" in args.histkey:
+    ytitle = f"pairs / {args.rebin} GeV"
 
 ## helper functions
 def setInfoTo(text: ROOT.TLatex):
@@ -75,7 +82,7 @@ h_exp.Rebin(args.rebin)
 
 ## Set error histogram
 for bin in range(h_exp.GetNbinsX()):
-    h_exp.SetBinError(bin+1, h_exp.GetBinContent(bin+1)*0.25)
+    h_exp.SetBinError(bin+1, h_exp.GetBinContent(bin+1)*0.30)
 h_err = h_exp.Clone("error")
 
 h_obs.SetMarkerStyle(8)
@@ -88,10 +95,7 @@ h_err.SetStats(0)
 h_err.SetFillColorAlpha(12, 0.9)
 h_err.SetFillStyle(3144)
 h_err.GetXaxis().SetTitle(xtitle)
-if "[GeV]" in xtitle:
-    h_err.GetYaxis().SetTitle(f"Events / {args.rebin} GeV")
-else:
-    h_err.GetYaxis().SetTitle("Events")
+h_err.GetYaxis().SetTitle(ytitle)
 
 ## Now draw comparison plots
 canvas = ROOT.TCanvas("c", "", 1600, 1600)
@@ -106,7 +110,7 @@ legend.SetBorderSize(0)
 
 legend.AddEntry(h_obs, "observed", "plf")
 legend.AddEntry(h_exp, "expected", "plf")
-legend.AddEntry(h_err, "error, 25%", "f")
+legend.AddEntry(h_err, "error, 30%", "f")
 
 canvas.cd()
 h_err.Draw("e2&f")

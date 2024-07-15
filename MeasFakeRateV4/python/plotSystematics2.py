@@ -128,9 +128,9 @@ for i in range(1, nBins+1):
 #    totalDown[i-1] = np.sqrt(stat**2 + systDown[i-1]**2)
 
 g = ROOT.TGraphAsymmErrors(nBins, x, y, ex, ex, systDown, systUp)
-h_error = h_Central.Clone("error, 25%")
+h_error = h_Central.Clone("error, 30%")
 for i in range(1, h_error.GetNbinsX()+1):
-    h_error.SetBinError(i, h_Central.GetBinContent(i)*0.25)
+    h_error.SetBinError(i, h_Central.GetBinContent(i)*0.3)
     
 canvas = ROOT.TCanvas("c", "", 1600, 1600)
 canvas.SetLeftMargin(0.1)
@@ -143,7 +143,7 @@ legend.SetFillStyle(0)
 legend.SetBorderSize(0)
 
 h_Central.SetLineWidth(2)
-h_Central.GetXaxis().SetTitle("M(#mu^{+}#mu^{-})")
+h_Central.GetXaxis().SetTitle("M(#mu^{+}#mu^{-}) [GeV]")
 if args.channel == "Skim1E2Mu":
     h_Central.GetYaxis().SetTitle("Events / 5 GeV")
 elif args.channel == "Skim3Mu":
@@ -162,7 +162,7 @@ g.SetMarkerColor(ROOT.kBlack)
 g.SetLineWidth(3)
 g.SetLineColor(ROOT.kBlack)
 
-legend.AddEntry(h_error, "error, 25%", "f")
+legend.AddEntry(h_error, "error, 30%", "f")
 legend.AddEntry(g, "error, syst", "pl")
 
 canvas.cd()

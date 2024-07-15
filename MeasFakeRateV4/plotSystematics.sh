@@ -3,7 +3,7 @@ export PATH="${PWD}/python:${PATH}"
 
 for era in 2016preVFP 2016postVFP 2017 2018; do
     # 1E2Mu
-    plotClosure.py --era ${era} --channel Skim1E2Mu --histkey ZCand/mass
+    plotClosure.py --era ${era} --channel Skim1E2Mu --histkey pair/mass --rebin 5
     plotClosure.py --era ${era} --channel Skim1E2Mu --histkey electrons/1/pt
     plotClosure.py --era ${era} --channel Skim1E2Mu --histkey muons/1/pt
     plotClosure.py --era ${era} --channel Skim1E2Mu --histkey muons/2/pt
@@ -16,8 +16,7 @@ for era in 2016preVFP 2016postVFP 2017 2018; do
     plotSystematics2.py --era ${era} --channel Skim1E2Mu --histkey pair/mass
     
     # 3Mu
-    plotClosure.py --era ${era} --channel Skim3Mu --histkey ZCand/mass
-    plotClosure.py --era ${era} --channel Skim3Mu --histkey nZCand/mass
+    plotClosure.py --era ${era} --channel Skim3Mu --histkey stack/mass --rebin 5
     plotClosure.py --era ${era} --channel Skim3Mu --histkey muons/1/pt
     plotClosure.py --era ${era} --channel Skim3Mu --histkey muons/2/pt
     plotClosure.py --era ${era} --channel Skim3Mu --histkey muons/3/pt
