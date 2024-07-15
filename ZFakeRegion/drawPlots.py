@@ -16,8 +16,15 @@ parser.add_argument("--channel", required=True, type=str, help="channel")
 args = parser.parse_args()
 
 # read config
+config_key = args.key
+if args.key == "nonprompt/pt":
+    if "1E2Mu" in args.channel: config_key = "electrons/1/pt"
+    if "3Mu" in args.channel: config_key = "muons/1/pt"
+if args.key == "nonprompt/eta":
+    if "1E2Mu" in args.channel: config_key = "electrons/1/eta"
+    if "3Mu" in args.channel: config_key = "muons/1/eta"
 with open("histConfigs.json") as f:
-    config = json.load(f)[args.key]
+    config = json.load(f)[config_key]
 config["era"] = args.era
     
 WORKDIR = os.environ["WORKDIR"]
@@ -29,7 +36,7 @@ if "3Mu" in args.channel: DataStream = "DoubleMuon"
 
 
 
-CONV = ["ZGToLLG"]
+CONV = ["DYJets_MG"]
 #VV = ["WZTo3LNu_mllmin4p0_powheg", "ZZTo4L_powheg"]
 VV = ["WZTo3LNu_amcatnlo", "ZZTo4L_powheg"]
 TTX = ["ttWToLNu", "ttZToLLNuNu", "ttHToNonbb"]

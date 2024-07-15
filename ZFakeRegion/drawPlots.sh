@@ -31,6 +31,8 @@ if [ $CHANNEL = "Skim1E2Mu" ]; then
     python drawPlots.py --era $ERA --channel $CHANNEL --key ZCand/eta
     python drawPlots.py --era $ERA --channel $CHANNEL --key ZCand/phi
     python drawPlots.py --era $ERA --channel $CHANNEL --key ZCand/mass
+    python drawPlots.py --era $ERA --channel $CHANNEL --key nonprompt/pt
+    python drawPlots.py --era $ERA --channel $CHANNEL --key nonprompt/eta
 elif [ $CHANNEL = "Skim3Mu" ]; then
     python drawPlots.py --era $ERA --channel $CHANNEL --key muons/1/pt
     python drawPlots.py --era $ERA --channel $CHANNEL --key muons/1/eta
@@ -64,6 +66,8 @@ elif [ $CHANNEL = "Skim3Mu" ]; then
     python drawPlots.py --era $ERA --channel $CHANNEL --key nZCand/eta
     python drawPlots.py --era $ERA --channel $CHANNEL --key nZCand/phi
     python drawPlots.py --era $ERA --channel $CHANNEL --key nZCand/mass
+    python drawPlots.py --era $ERA --channel $CHANNEL --key nonprompt/pt
+    python drawPlots.py --era $ERA --channel $CHANNEL --key nonprompt/eta
 else
     echo "Invalid channel"
 fi
