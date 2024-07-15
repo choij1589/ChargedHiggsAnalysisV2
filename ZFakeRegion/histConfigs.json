@@ -3,21 +3,21 @@
     "xTitle": "p_{T}(#mu1)",
     "yTitle": "Events / 5 GeV",
     "xRange": [0.0, 300.0],
-    "rebin": 5,
+    "rebin": 10,
     "logy": false
   },
   "muons/2/pt": {
     "xTitle": "p_{T}(#mu2)",
     "yTitle": "Events / 5 GeV",
     "xRange": [0.0, 200.0],
-    "rebin": 5,
+    "rebin": 10,
     "logy": false
   },
   "muons/3/pt": {
     "xTitle": "p_{T}(#mu3)",
     "yTitle": "Events / 5 GeV",
     "xRange": [0.0, 200.0],
-    "rebin": 5,
+    "rebin": 10,
     "logy": false
   },
   "muons/1/eta": {
@@ -66,7 +66,7 @@
     "xTitle": "p_{T}(e)",
     "yTitle": "Events / 5 GeV",
     "xRange": [0.0, 300.0],
-    "rebin": 5,
+    "rebin": 10,
     "logy": false
   },
   "electrons/1/eta": {

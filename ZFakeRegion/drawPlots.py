@@ -80,7 +80,6 @@ COLORs = {}
 
 ## data
 fstring = f"{WORKDIR}/SKFlatOutput/PromptEstimator/{args.era}/{args.channel}__/DATA/PromptEstimator_{DataStream}.root"
-print(fstring)
 assert os.path.exists(fstring)
 f = ROOT.TFile.Open(fstring)
 data = f.Get(f"{args.channel.replace('Skim', 'ZFake')}/Central/{args.key}"); data.SetDirectory(0)
