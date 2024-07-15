@@ -1,16 +1,15 @@
 #!/home/choij/miniconda3/envs/pyg/bin/python
-import os, sys
+import os
 import argparse
 import pandas as pd
 import ROOT
 from itertools import product
 from array import array
-from ctypes import c_double
-from math import pow, sqrt
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--era", required=True, type=str, help="era")
 parser.add_argument("--measure", required=True, type=str, help="electron / muon")
+parser.add_argument("--isQCD", default=False, action="store_true", help="isQCD")
 args = parser.parse_args()
 
 #### Settings
@@ -102,7 +101,7 @@ def findbin(ptcorr, abseta):
 
 #### first evaluate central scale for product(hlt, wp, syst)
 def get_prompt_scale(hltpath, wp, syst):
-    file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{hltpath}__RunSystSimple__/DATA/MeasFakeRateV4_{DATASTREAM}.root"
+    file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{hltpath}__RunSyst__/DATA/MeasFakeRateV4_{DATASTREAM}.root"
     histkey = f"ZEnriched/{wp}/{syst}/ZCand/mass"
     if syst in ["PromptNormUp", "PromptNormDown"]:
         histkey = f"ZEnriched/{wp}/Central/ZCand/mass"
@@ -119,7 +118,7 @@ def get_prompt_scale(hltpath, wp, syst):
     
     rate_mc = 0.
     for sample in MCList:
-        file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{hltpath}__RunSystSimple__/MeasFakeRateV4_{sample}.root"
+        file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{hltpath}__RunSyst__/MeasFakeRateV4_{sample}.root"
         try:
             assert os.path.exists(file_path)
         except AssertionError:
@@ -135,8 +134,8 @@ def get_prompt_scale(hltpath, wp, syst):
         
     scale = rate_data / rate_mc
     
-    if syst == "PromptNormUp": scale *= 1.1
-    if syst == "PromptNormDown": scale *= 0.9
+    if syst == "PromptNormUp": scale *= 1.15
+    if syst == "PromptNormDown": scale *= 0.85
     
     return scale
 
@@ -176,10 +175,10 @@ def get_nonprompt_from_data(ptcorr, abseta, wp, syst):
         
     # get prompt scale
     if args.measure == "electron":
-        if ptcorr < 25.: hltpath = "MeasFakeEl12"
+        if ptcorr < 35.: hltpath = "MeasFakeEl12"
         else:            hltpath = "MeasFakeEl23"
     elif args.measure == "muon":
-        if ptcorr < 15.: hltpath = "MeasFakeMu8"
+        if ptcorr < 30.: hltpath = "MeasFakeMu8"
         else:            hltpath = "MeasFakeMu17"
     else:
         raise KeyError(f"Wrong measure {args.measure}")
@@ -188,13 +187,52 @@ def get_nonprompt_from_data(ptcorr, abseta, wp, syst):
     
     return data - prompt*scale
 
-def get_fake_rate(syst="Central"):
+def get_nonprompt_from_qcd(ptcorr, abseta, wp, sample):
+    prefix = findbin(ptcorr, abseta)
+        
+    # get integral from QCD
+    if args.measure == "electron":
+        if ptcorr < 35.: hltpath = "MeasFakeEl12"
+        else:            hltpath = "MeasFakeEl23"
+        file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{hltpath}__RunSyst__/MeasFakeRateV4_{sample}.root"
+        histkey = f"{prefix}/Inclusive/{wp}/Central/MT"
+        
+        f = ROOT.TFile.Open(file_path)
+        h = f.Get(histkey); h.SetDirectory(0)
+        f.Close()
+               
+        return h.Integral()
+    else: # muon
+        if ptcorr < 30.: hltpath = "MeasFakeMu8"
+        else:            hltpath = "MeasFakeMu17"
+        file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{hltpath}__RunSyst__/MeasFakeRateV4_{sample}.root"
+        histkey = f"{prefix}/Inclusive/{wp}/Central/MT"
+
+        f = ROOT.TFile.Open(file_path)
+        h = f.Get(histkey); h.SetDirectory(0)
+        f.Close()
+
+        return h.Integral()
+    
+
+def get_fake_rate(isQCD=False, syst="Central"):
     h_loose = ROOT.TH2D("h_loose", "h_loose", len(abseta_bins)-1, array('d', abseta_bins), len(ptcorr_bins)-1, array('d', ptcorr_bins))
     h_tight = ROOT.TH2D("h_tight", "h_tight", len(abseta_bins)-1, array('d', abseta_bins), len(ptcorr_bins)-1, array('d', ptcorr_bins))
     
+    if args.measure == "electron":
+        sample = "QCD_EMEnriched"
+    elif args.measure == "muon":
+        sample = "QCD_MuEnriched"
+    else:
+        raise KeyError(f"Wrong measure {args.measure}")
+
     for ptcorr, abseta in product(ptcorr_bins[:-1], abseta_bins[:-1]):
-        loose = get_nonprompt_from_data(ptcorr, abseta, "loose", syst)
-        tight = get_nonprompt_from_data(ptcorr, abseta, "tight", syst)
+        if isQCD:
+            loose = get_nonprompt_from_qcd(ptcorr, abseta, "loose", sample)
+            tight = get_nonprompt_from_qcd(ptcorr, abseta, "tight", sample)
+        else:
+            loose = get_nonprompt_from_data(ptcorr, abseta, "loose", syst)
+            tight = get_nonprompt_from_data(ptcorr, abseta, "tight", syst)
         
         h_loose.Fill(abseta, ptcorr, loose)
         h_tight.Fill(abseta, ptcorr, tight)
@@ -207,10 +245,19 @@ def get_fake_rate(syst="Central"):
 
 if __name__ == "__main__":
     output_path = f"{WORKDIR}/MeasFakeRateV4/results/{args.era}/ROOT/{args.measure}/fakerate.root"
+    if args.isQCD:
+        output_path = output_path.replace("fakerate", "fakerate_qcd")
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
     out = ROOT.TFile.Open(output_path, "RECREATE")
-    for syst in SelectionVariations:
-        h = get_fake_rate(syst)
-        out.cd()
-        h.Write()
+    if args.isQCD:
+        for sample in QCD:
+            h = get_fake_rate(args.isQCD, sample)
+            out.cd()
+            h.Write()
+    else:
+        for syst in SelectionVariations:
+            h = get_fake_rate(args.isQCD, syst)
+            out.cd()
+            h.Write()
     out.Close()

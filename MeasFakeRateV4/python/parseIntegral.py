@@ -62,7 +62,7 @@ TT = ["TTLL_powheg", "TTLJ_powheg"]
 VV = ["WW_pythia", "WZ_pythia", "ZZ_pythia"]
 ST = ["SingleTop_sch_Lep", "SingleTop_tch_top_Incl", "SingleTop_tch_antitop_Incl",
       "SingleTop_tW_top_NoFullyHad", "SingleTop_tW_antitop_NoFullyHad"]
-MCList = W + DY + TT + VV + ST + QCD
+MCList = W + DY + TT + VV + ST
 
 def findbin(ptcorr, abseta):
     if ptcorr > 200.:
@@ -97,14 +97,14 @@ def get_hist(sample, ptcorr, abseta, wp, syst="Central"):
         else:            channel = "MeasFakeMu17"
     elif args.measure == "electron":
         #if ptcorr < 15.:   channel = "MeasFakeEl8"
-        if ptcorr < 25.: channel = "MeasFakeEl12"
+        if ptcorr < 35.: channel = "MeasFakeEl12"
         else:              channel = "MeasFakeEl23"
     
     file_path = ""
     if sample == DATASTREAM:
-        file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{channel}__RunSystSimple__/DATA/MeasFakeRateV4_{sample}.root"
+        file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{channel}__RunSyst__/DATA/MeasFakeRateV4_{sample}.root"
     else:
-        file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{channel}__RunSystSimple__/MeasFakeRateV4_{sample}.root"
+        file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{channel}__RunSyst__/MeasFakeRateV4_{sample}.root"
         
     try:
         assert os.path.exists(file_path)

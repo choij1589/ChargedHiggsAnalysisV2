@@ -13,6 +13,13 @@ parser.add_argument("--full", default=False, action="store_true", help="full sys
 args = parser.parse_args()
 
 WORKDIR = os.environ['WORKDIR']
+if "El" in args.hlt:
+    MEASURE = "electron"
+elif "Mu" in args.hlt:
+    MEASURE = "muon"
+else:
+    raise ValueError(f"invalid hlt {args.hlt}")
+
 trigPathDict = {
     "MeasFakeMu8": "HLT_Mu8_TrkIsoVVL_v",
     "MeasFakeMu17": "HLT_Mu17_TrkIsoVVL_v",
@@ -63,20 +70,17 @@ if "Mu" in args.hlt and args.full:
 HISTs = {}
 COLORs = {}
 
-if args.full:
-    file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{args.hlt}__RunSyst__/DATA/MeasFakeRateV4_{DataStream}.root"
-else:
-    file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{args.hlt}__RunSystSimple__/DATA/MeasFakeRateV4_{DataStream}.root"    
-assert os.path.exists(file_path)
+file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{args.hlt}__RunSyst__/DATA/MeasFakeRateV4_{DataStream}.root"
+try:
+    assert os.path.exists(file_path) 
+except:
+    raise FileNotFoundError(f"{file_path} does not exist")
 f = ROOT.TFile.Open(file_path)
 data = f.Get(f"ZEnriched/{args.wp}/Central/ZCand/mass"); data.SetDirectory(0)
 f.Close()
 
 for sample in MCList:
-    if args.full:
-        file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{args.hlt}__RunSyst__/MeasFakeRateV4_{sample}.root"
-    else:
-        file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{args.hlt}__RunSystSimple__/MeasFakeRateV4_{sample}.root"
+    file_path = f"{WORKDIR}/SKFlatOutput/MeasFakeRateV4/{args.era}/{args.hlt}__RunSyst__/MeasFakeRateV4_{sample}.root"
     # get central histogram
     try:
         assert os.path.exists(file_path)
@@ -87,17 +91,17 @@ for sample in MCList:
         for systset in SYSTs:
             if len(systset) == 2:
                 systUp, systDown = systset
-                h_up = f.Get(f"ZEnriched/{args.wp}/{systUp}/pair/mass"); h_up.SetDirectory(0)
-                h_down = f.Get(f"ZEnriched/{args.wp}/{systDown}/pair/mass"); h_down.SetDirectory(0) 
+                h_up = f.Get(f"ZEnriched/{args.wp}/{systUp}/ZCand/mass"); h_up.SetDirectory(0)
+                h_down = f.Get(f"ZEnriched/{args.wp}/{systDown}/ZCand/mass"); h_down.SetDirectory(0) 
                 hSysts.append((h_up, h_down))
             else:
                 # only one systematic source
                 syst = systset
-                h_syst = f.Get(f"ZEnriched/{args.wp}/{syst}/pair/mass"); h_syst.SetDirectory(0)
+                h_syst = f.Get(f"ZEnriched/{args.wp}/{syst}/ZCand/mass"); h_syst.SetDirectory(0)
                 hSysts.append((h_syst))
         f.Close()
-    except:
-        print(sample)
+    except Exception as e:
+        print(e, sample)
         continue
     
     # estimate total unc. bin by bin
@@ -207,7 +211,7 @@ c.drawRatio()
 c.drawLegend()
 c.finalize(textInfo=textInfo)
 
-output_path = f"{WORKDIR}/MeasFakeRateV4/results/{args.era}/plots/electron/Zmass_{args.hlt}_{args.wp}.png"
+output_path = f"{WORKDIR}/MeasFakeRateV4/results/{args.era}/plots/{MEASURE}/Zmass_{args.hlt}_{args.wp}.png"
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
 c.SaveAs(output_path)
 

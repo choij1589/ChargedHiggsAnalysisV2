@@ -15,6 +15,7 @@ LumiInfo = {    # /fb
         "2017": 41.5,
         "2018": 59.8
 }
+
 class KinematicCanvas():
     def __init__(self, config):
         self.config = config

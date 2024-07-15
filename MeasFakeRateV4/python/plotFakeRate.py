@@ -44,13 +44,16 @@ def setSystematics(fakerate: ROOT.TH1D):
 
 ## Get fakerate histogram
 if args.isQCD:
-    raise NotImplementedError("QCD is not implemented yet")
+    file_path = f"{WORKDIR}/MeasFakeRateV4/results/{args.era}/ROOT/{args.measure}/fakerate_qcd.root"
 else:
     file_path = f"{WORKDIR}/MeasFakeRateV4/results/{args.era}/ROOT/{args.measure}/fakerate.root"
 
 assert os.path.exists(file_path), f"File not found: {file_path}"
 f = ROOT.TFile(file_path)
-h = f.Get("fake rate - (Central)")
+if args.isQCD:
+    h = f.Get("fake rate - (QCD_EMEnriched)") if args.measure == "electron" else f.Get("fake rate - (QCD_MuEnriched)")
+else:
+    h = f.Get("fake rate - (Central)")
 h.SetDirectory(0)
 f.Close()
 
@@ -88,7 +91,10 @@ for hist in projections.values():
     hist.SetLineWidth(2)
     #hist.GetXaxis().SetLabelSize(0)
     hist.GetXaxis().SetTitle("p_{T}^{corr}")
-    hist.GetXaxis().SetRangeUser(15., 50.)
+    if args.measure == "muon":
+        hist.GetXaxis().SetRangeUser(10., 50.)
+    if args.measure == "electron":
+        hist.GetXaxis().SetRangeUser(15., 50.)
     #if isQCD:
     #    hist.GetXaxis().SetRangeUser(10., 100.)
     hist.GetYaxis().SetRangeUser(0., 1.) 
@@ -112,5 +118,7 @@ if args.isQCD:
     setExtraInfoTo(text); text.DrawLatexNDC(0.15, 0.83, "measured in QCD MC")
 
 output_path = f"{WORKDIR}/MeasFakeRateV4/results/{args.era}/plots/{args.measure}/fakerate.png"
+if args.isQCD:
+    output_path = output_path.replace("fakerate", "fakerate_qcd")
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
 canvas.SaveAs(output_path)
