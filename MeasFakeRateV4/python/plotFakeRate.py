@@ -40,7 +40,7 @@ def setExtraInfoTo(text: ROOT.TLatex):
     
 def setSystematics(fakerate: ROOT.TH1D):
     for bin in range(0, fakerate.GetNbinsX()+1):
-        fakerate.SetBinError(bin, fakerate.GetBinContent(bin)*0.3)
+        fakerate.SetBinError(bin, fakerate.GetBinContent(bin)*0.25)
 
 ## Get fakerate histogram
 if args.isQCD:
@@ -88,7 +88,7 @@ if args.measure == "electron": title = "fake rate (e)"
 for hist in projections.values():
     hist.SetTitle("")
     hist.SetStats(0)
-    hist.SetLineWidth(2)
+    hist.SetLineWidth(3)
     #hist.GetXaxis().SetLabelSize(0)
     hist.GetXaxis().SetTitle("p_{T}^{corr}")
     if args.measure == "muon":
