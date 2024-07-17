@@ -1,4 +1,4 @@
-#!/home/choij/miniconda3/envs/pyg/bin/python
+#!/usr/bin/env python
 import os, sys; sys.path.append("/home/choij/workspace/ChargedHiggsAnalysisV2/CommonTools/python")
 import argparse
 import ROOT

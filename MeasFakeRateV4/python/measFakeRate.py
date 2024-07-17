@@ -1,4 +1,4 @@
-#!/home/choij/miniconda3/envs/pyg/bin/python
+#!/usr/bin/env python
 import os
 import argparse
 import pandas as pd

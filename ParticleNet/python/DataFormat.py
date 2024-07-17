@@ -69,3 +69,48 @@ class Jet(Particle):
 
     def IsBtagged(self):
         return self.isBtagged
+
+def getMuons(evt):
+    muons = []
+    muons_zip = zip(evt.MuonPtColl,
+                    evt.MuonEtaColl,
+                    evt.MuonPhiColl,
+                    evt.MuonMassColl,
+                    evt.MuonChargeColl)
+    for pt, eta, phi, mass, charge in muons_zip:
+        thisMuon = Muon(pt, eta, phi, mass)
+        thisMuon.SetCharge(charge)
+        muons.append(thisMuon)
+    return muons
+
+def getElectrons(evt):
+    electrons = []
+    electrons_zip = zip(evt.ElectronPtColl,
+                        evt.ElectronEtaColl,
+                        evt.ElectronPhiColl,
+                        evt.ElectronMassColl,
+                        evt.ElectronChargeColl)
+    for pt, eta, phi, mass, charge in electrons_zip:
+        thisElectron = Electron(pt, eta, phi, mass)
+        thisElectron.SetCharge(charge)
+        electrons.append(thisElectron)
+    return electrons
+
+def getJets(evt):
+    jets = []
+    jets_zip = zip(evt.JetPtColl,
+                   evt.JetEtaColl,
+                   evt.JetPhiColl,
+                   evt.JetMassColl,
+                   evt.JetChargeColl,
+                   evt.JetBtagScoreColl,
+                   evt.JetIsBtaggedColl)
+    for pt, eta, phi, mass, charge, btagScore, isBtagged in jets_zip:
+        thisJet = Jet(pt, eta, phi, mass)
+        thisJet.SetCharge(charge)
+        thisJet.SetBtagScore(btagScore)
+        thisJet.SetBtagging(isBtagged)
+        jets.append(thisJet)
+
+    bjets = list(filter(lambda jet: jet.IsBtagged(), jets))
+    return jets, bjets
