@@ -10,11 +10,12 @@ from itertools import product
 import torch
 import torch.nn.functional as F
 from torch_geometric.loader import DataLoader
+#from torchlars import LARS
 
 from Preprocess import GraphDataset
 from Preprocess import rtfileToDataList
-#from Model import ParticleNet
-#from MLTools import EarlyStopper, SummaryWriter
+from Models import ParticleNet
+from MLTools import EarlyStopper, SummaryWriter
 
 #### parse arguments
 parser = argparse.ArgumentParser()
@@ -92,13 +93,104 @@ trainset = GraphDataset(dataList[:int(len(dataList)*0.4)])
 validset = GraphDataset(dataList[int(len(dataList)*0.4):int(len(dataList)*0.5)])
 testset  = GraphDataset(dataList[int(len(dataList)*0.5):])
 
-trainLoader = DataLoader(trainset, batch_size=512, pin_memory=True, shuffle=True)
-validLoader = DataLoader(validset, batch_size=512, pin_memory=True, shuffle=False)
-testLoader = DataLoader(testset, batch_size=512, pin_memory=True, shuffle=False)
+trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True)
+validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
+testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False)
 
 ## setup
 logging.info(f"Using model {args.model}")
 nFeatures = 9
 nGraphFeatures = 4
 nClasses = 2
+model = ParticleNet(nFeatures, nGraphFeatures, nClasses, args.nNodes, args.dropout_p).to(args.device)
 
+logging.info(f"Using optimizer {args.optimizer}")
+if args.optimizer == "RMSprop":
+    optimizer = torch.optim.RMSprop(model.parameters(), lr=args.initLR, momentum=0.9, weight_decay=1e-4)
+elif args.optimizer == "Adam":
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.initLR, weight_decay=1e-4)
+elif args.optimizer == "Adadelta":
+    optimizer = torch.optim.Adadelta(model.parameters(), lr=args.initLR, weight_decay=1e-4)
+else:
+    raise NotImplementedError(f"Unsupporting optimizer {args.optimizer}")
+#optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
+
+logging.info(f"Using scheduler {args.scheduler}")
+if args.scheduler == "StepLR":
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.95)
+elif args.scheduler == "ExponentialLR":
+    scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.98)
+elif args.scheduler == "CyclicLR":
+    cycle_momentum = True if args.optimizer == "RMSprop" else False
+    scheduler = torch.optim.lr_scheduler.CyclicLR(
+            optimizer,
+            base_lr=args.initLR/5., max_lr=args.initLR*2,
+            step_size_up=3, step_size_down=5,
+            cycle_momentum=cycle_momentum)
+else:
+    raise NotImplementedError(f"Unsupporting scheduler {args.scheduler}")
+
+if "cuda" in args.device:
+    logging.info("Using cuda")
+    torch.backends.cudnn.benchmark = True
+    torch.backends.cudnn.enabled = True
+
+#### helper functions
+def train(model, optimizer, scheduler):
+    model.train()
+
+    for data in trainLoader:
+        out = model(data.x.to(args.device), data.edge_index.to(args.device), data.graphInput.to(args.device), data.batch.to(args.device))
+        loss = F.cross_entropy(out, data.y.to(args.device))
+        loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()
+    scheduler.step()
+
+def test(model, loader):
+    model.eval()
+
+    loss = 0.
+    correct = 0.
+    with torch.no_grad():
+        for data in loader:
+            out = model(data.x.to(args.device), data.edge_index.to(args.device), data.graphInput.to(args.device), data.batch.to(args.device))
+            pred = out.argmax(dim=1)
+            answer = data.y.to(args.device)
+            loss += float(F.cross_entropy(out, answer).sum())
+            correct += int((pred == answer).sum())
+    loss /= len(loader.dataset)
+    correct /= len(loader.dataset)
+
+    return (loss, correct)
+
+def main():
+    modelName =  f"{args.model}-nNodes{args.nNodes}_{args.optimizer}_initLR-{str(args.initLR).replace('.','p')}_{args.scheduler}"
+    logging.info("Start training...")
+    checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/models/{modelName}.pt"
+    summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/CSV/{modelName}.csv"
+    earlyStopper = EarlyStopper(patience=15, path=checkptpath)
+    summaryWriter = SummaryWriter(name=modelName)
+
+    for epoch in range(80):
+        train(model, optimizer, scheduler)
+        trainLoss, trainAcc = test(model, trainLoader)
+        validLoss, validAcc = test(model, validLoader)
+        summaryWriter.addScalar("loss/train", trainLoss)
+        summaryWriter.addScalar("loss/valid", validLoss)
+        summaryWriter.addScalar("acc/train", trainAcc)
+        summaryWriter.addScalar("acc/valid", validAcc)
+
+        print(f"[EPOCH {epoch}]\tTrain Acc: {trainAcc*100:.2f}%\tTrain Loss: {trainLoss:.4e}")
+        print(f"[EPOCH {epoch}]\tVlaid Acc: {validAcc*100:.2f}%\tValid Loss: {validLoss:.4e}\n")
+
+        panelty = max(0, validLoss-trainLoss)
+        earlyStopper.update(validLoss, panelty, model)
+        if earlyStopper.earlyStop:
+            print(f"Early stopping in epoch {epoch}"); break
+
+    summaryWriter.to_csv(summarypath)
+
+
+if __name__ == "__main__":
+    main()
