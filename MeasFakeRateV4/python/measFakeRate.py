@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import argparse
+import logging
 import pandas as pd
 import ROOT
 from itertools import product
@@ -10,7 +11,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--era", required=True, type=str, help="era")
 parser.add_argument("--measure", required=True, type=str, help="electron / muon")
 parser.add_argument("--isQCD", default=False, action="store_true", help="isQCD")
+parser.add_argument("--debug", action="store_true", default=False, help="debug")
 args = parser.parse_args()
+
+logging.basicConfig(level=logging.INFO)
+if args.debug:
+    logging.basicConfig(level=logging.DEBUG)
 
 #### Settings
 WORKDIR = os.environ['WORKDIR']
@@ -128,7 +134,7 @@ def get_prompt_scale(hltpath, wp, syst):
             hist = f.Get(histkey); hist.SetDirectory(0)
             rate_mc += hist.Integral(0, hist.GetNbinsX()+1)
         except Exception as e:
-            print(f"WARNING - No events for {sample} in ZEnriched region")
+            logging.debug(f"WARNING - No events for {sample} in ZEnriched region")
             continue
         f.Close()
         
@@ -183,7 +189,7 @@ def get_nonprompt_from_data(ptcorr, abseta, wp, syst):
     else:
         raise KeyError(f"Wrong measure {args.measure}")
     scale = get_prompt_scale(hltpath, wp, syst)
-    #print(prefix, data, prompt, scale, prompt*scale)
+    logging.debug(prefix, data, prompt, scale, prompt*scale)
     
     return data - prompt*scale
 

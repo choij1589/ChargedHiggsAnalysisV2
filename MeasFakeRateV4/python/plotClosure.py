@@ -2,6 +2,8 @@
 import os
 import ROOT
 import argparse
+import tdrstyle; tdrstyle.setTDRStyle(square=True)
+ROOT.gStyle.SetErrorX(0.5)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--era", required=True, type=str, help="era")
@@ -98,7 +100,7 @@ h_err.GetXaxis().SetTitle(xtitle)
 h_err.GetYaxis().SetTitle(ytitle)
 
 ## Now draw comparison plots
-canvas = ROOT.TCanvas("c", "", 1600, 1600)
+canvas = ROOT.TCanvas("c", "", 900, 900)
 canvas.SetLeftMargin(0.1)
 canvas.SetRightMargin(0.08)
 canvas.SetTopMargin(0.1)

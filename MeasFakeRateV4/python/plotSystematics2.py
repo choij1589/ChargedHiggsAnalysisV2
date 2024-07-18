@@ -3,6 +3,8 @@ import os
 import argparse
 import numpy as np
 import ROOT
+import tdrstyle; tdrstyle.setTDRStyle(square=True)
+ROOT.gStyle.SetErrorX(0.5)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--era", required=True, type=str, help="era")
@@ -132,7 +134,7 @@ h_error = h_Central.Clone("error, 30%")
 for i in range(1, h_error.GetNbinsX()+1):
     h_error.SetBinError(i, h_Central.GetBinContent(i)*0.3)
     
-canvas = ROOT.TCanvas("c", "", 1600, 1600)
+canvas = ROOT.TCanvas("c", "", 900, 900)
 canvas.SetLeftMargin(0.1)
 canvas.SetRightMargin(0.08)
 canvas.SetTopMargin(0.1)
@@ -153,7 +155,7 @@ else:
 h_Central.GetYaxis().SetTitleOffset(1.3)
 h_Central.GetYaxis().SetRangeUser(0., h_Central.GetMaximum()*1.5)
 h_error.SetMarkerStyle(20)
-h_error.SetFillColorAlpha(ROOT.kGreen, 0.9)
+h_error.SetFillColorAlpha(ROOT.kBlack, 0.6)
 h_error.SetFillStyle(3144)
 
 

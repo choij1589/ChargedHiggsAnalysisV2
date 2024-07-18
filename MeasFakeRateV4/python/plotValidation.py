@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-import os, sys; sys.path.append("/home/choij/workspace/ChargedHiggsAnalysisV2/CommonTools/python")
+import os
 import argparse
+import logging
 import ROOT
 import pandas as pd
 from math import pow, sqrt
@@ -14,7 +15,9 @@ parser.add_argument("--wp", required=True, type=str, help="wp")
 parser.add_argument("--region", required=True, type=str, help="region")
 parser.add_argument("--syst", default="Central", type=str, help="systematic")
 parser.add_argument("--full", default=False, action="store_true", help="full systematics")
+parser.add_argument("--debug", default=False, action="store_true", help="debug mode")
 args = parser.parse_args()
+logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
 
 WORKDIR = os.environ['WORKDIR']
 if "El" in args.hlt:
@@ -152,7 +155,7 @@ for ptcorr, abseta in product(ptcorr_bins[:-1], abseta_bins[:-1]):
                     hSysts.append((h_syst))
             f.Close()
         except Exception as e:
-            print(e, sample)
+            logging.debug(e, sample)
             continue
     
         # estimate total unc. bin by bin
@@ -250,14 +253,14 @@ for ptcorr, abseta in product(ptcorr_bins[:-1], abseta_bins[:-1]):
               "rebin": 5}
 
     textInfo = {
-        "CMS": [0.04, 61, [0.12, 0.91]],
-        "Work in progress": [0.035, 52, [0.21, 0.91]],
-        "Prescaled (13 TeV)": [0.035, 42, [0.665, 0.91]],
-        trigPathDict[args.hlt]: [0.035, 42, [0.17, 0.83]],
-        f"{args.era} / {args.wp.upper()} ID": [0.035, 42, [0.17, 0.77]]
+        "CMS": [0.04, 61, [0.12, 0.96]],
+        "Work in progress": [0.035, 52, [0.21, 0.96]],
+        "Prescaled (13 TeV)": [0.035, 42, [0.665, 0.96]],
+        trigPathDict[args.hlt]: [0.035, 42, [0.17, 0.9]],
+        f"{args.era} / {args.wp.upper()} ID": [0.035, 42, [0.17, 0.83]]
     }
 
-    c = ComparisonCanvas(config=config)
+    c = ComparisonCanvas(config=config, name=prefix)
     c.drawBackgrounds(BKGs, COLORs)
     c.drawData(data)
     c.drawRatio()
@@ -267,3 +270,5 @@ for ptcorr, abseta in product(ptcorr_bins[:-1], abseta_bins[:-1]):
     output_path = f"{WORKDIR}/MeasFakeRateV4/results/{args.era}/plots/{MEASURE}/{args.region}/{args.syst}/{prefix}_{args.hlt}_{args.wp}_MT.png"
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     c.SaveAs(output_path)
+
+    del c

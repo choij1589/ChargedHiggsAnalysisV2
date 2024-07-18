@@ -1,6 +1,9 @@
 import os
+import ROOT
 from ROOT import TCanvas, TPad, TLegend, TLatex
 from ROOT import THStack
+import tdrstyle; tdrstyle.setTDRStyle(square=False)
+ROOT.gStyle.SetErrorX(0.5)
 
 PeriodInfo = {
         "2016preVFP": ["B_ver2", "C", "D", "E", "F"],
@@ -169,11 +172,11 @@ class KinematicCanvas():
 
 
 class ComparisonCanvas():
-    def __init__(self, config):
+    def __init__(self, config, name="c", title=""):
         self.config = config
         
         # initialize default settings
-        self.cvs = TCanvas("c", "", 720, 900)
+        self.cvs = TCanvas(name, title, 720, 900)
         self.padUp = TPad("up", "", 0, 0.25, 1, 1)
         self.padUp.SetBottomMargin(0.01)
         self.padUp.SetLeftMargin(0.115)
@@ -263,7 +266,7 @@ class ComparisonCanvas():
             else:                        self.systematics.Add(hist)
         self.stack.Draw()
         self.stack.GetHistogram().GetXaxis().SetLabelSize(0)
-        self.systematics.SetFillColorAlpha(12, 0.95)
+        self.systematics.SetFillColorAlpha(ROOT.kBlack, 0.7)
         self.systematics.SetFillStyle(3144)
         self.systematics.GetXaxis().SetLabelSize(0)
         
@@ -300,7 +303,7 @@ class ComparisonCanvas():
         if "yTitle" in self.config.keys(): 
             self.data.GetYaxis().SetTitle(self.config["yTitle"])
         self.data.SetMarkerStyle(8)
-        self.data.SetMarkerSize(0.5)
+        self.data.SetMarkerSize(1)
         self.data.SetMarkerColor(1)
         
         maximum = self.stack.GetHistogram().GetMaximum() 
@@ -337,7 +340,7 @@ class ComparisonCanvas():
         
         # systematics
         self.ratioSyst.SetStats(0)
-        self.ratioSyst.SetFillColorAlpha(12, 0.6)
+        self.ratioSyst.SetFillColorAlpha(ROOT.kBlack, 0.7)
         self.ratioSyst.SetFillStyle(3144)
         
     def drawLegend(self):
@@ -363,16 +366,15 @@ class ComparisonCanvas():
         self.legend.Draw()
         
         if textInfo is None:
-            self.lumi.DrawLatexNDC(0.64, 0.91, self.lumiString)
-            self.cms.DrawLatexNDC(0.12, 0.91, "CMS")
-            self.preliminary.DrawLatexNDC(0.22, 0.91, "Work in progress")
+            self.lumi.DrawLatexNDC(0.64, 0.61, self.lumiString)
+            self.cms.DrawLatexNDC(0.12, 0.96, "CMS")
+            self.preliminary.DrawLatexNDC(0.22, 0.96, "Work in progress")
         else:
             latex = TLatex()
             for text, config in textInfo.items():
                 latex.SetTextSize(config[0])
                 latex.SetTextFont(config[1])
                 latex.DrawLatexNDC(config[2][0], config[2][1], text)
-            
         self.padUp.RedrawAxis()
         
         # pad down

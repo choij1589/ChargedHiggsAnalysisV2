@@ -17,4 +17,7 @@ else
         echo -e "\e[31m@@@@ WARNING: pyg usage deprecated in MacOS\e[0m"
     fi
 fi
+
+export PYTHONPATH=$WORKDIR/CommonTools/python:$PYTHONPATH
+export PYTHONPATH=$WORKDIR/CommonTools/tdr-style:$PYTHONPATH
 echo "@@@@ WORKDIR=$WORKDIR"

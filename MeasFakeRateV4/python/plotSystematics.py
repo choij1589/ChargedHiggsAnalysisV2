@@ -2,6 +2,7 @@
 import os
 import argparse
 import ROOT
+import tdrstyle; tdrstyle.setTDRStyle(square=False)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--era", required=True, type=str, help="era")
@@ -33,29 +34,29 @@ else:
 
 ## Helper functions
 def setInfoTo(text: ROOT.TLatex):
-    text.SetTextSize(0.035)
+    text.SetTextSize(0.04)
     text.SetTextFont(42)
 
 def setLogoTo(text: ROOT.TLatex):
-    text.SetTextSize(0.04)
+    text.SetTextSize(0.05)
     text.SetTextFont(61)
     
 def setWorkInProgressTo(text: ROOT.TLatex):
-    text.SetTextSize(0.035)
+    text.SetTextSize(0.04)
     text.SetTextFont(52)
     
 def setExtraInfoTo(text: ROOT.TLatex):
-    text.SetTextSize(0.05)
+    text.SetTextSize(0.06)
     text.SetTextFont(42)
     
 ## Prepare canvas and legend
-canvas = ROOT.TCanvas("c", "", 1600, 1200)
-canvas.SetLeftMargin(0.1)
-canvas.SetRightMargin(0.08)
-canvas.SetTopMargin(0.1)
+canvas = ROOT.TCanvas("c", "", 1200, 900)
+#canvas.SetLeftMargin(0.1)
+#canvas.SetRightMargin(0.08)
+canvas.SetTopMargin(0.12)
 canvas.SetBottomMargin(0.12)
 
-legend = ROOT.TLegend(0.67, 0.65, 0.9, 0.85)
+legend = ROOT.TLegend(0.62, 0.65, 0.95, 0.84)
 legend.SetFillStyle(0)
 legend.SetBorderSize(0)
 
@@ -165,10 +166,10 @@ canvas.RedrawAxis()
 legend.Draw("same")
 
 text = ROOT.TLatex()
-setInfoTo(text); text.DrawLatexNDC(0.835, 0.91, "(13TeV)")
-setLogoTo(text); text.DrawLatexNDC(0.1, 0.91, "CMS")
-setWorkInProgressTo(text); text.DrawLatexNDC(0.18, 0.91, "Work in progress")
-setExtraInfoTo(text); text.DrawLatexNDC(0.15, 0.80, f"{abseta_bins[eta_idx-1]} < |#eta| < {abseta_bins[eta_idx]}")
+setInfoTo(text); text.DrawLatexNDC(0.85, 0.9, "(13TeV)")
+setLogoTo(text); text.DrawLatexNDC(0.16, 0.9, "CMS")
+setWorkInProgressTo(text); text.DrawLatexNDC(0.25, 0.9, "Work in progress")
+setExtraInfoTo(text); text.DrawLatexNDC(0.25, 0.72, f"{abseta_bins[eta_idx-1]} < |#eta| < {abseta_bins[eta_idx]}")
 
 ## Save the plot
 output_path = f"{WORKDIR}/MeasFakeRateV4/results/{args.era}/plots/{args.measure}/systematics_{args.etabin}.png"

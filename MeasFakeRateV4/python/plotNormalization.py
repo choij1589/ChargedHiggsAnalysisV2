@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os, sys; sys.path.append("/home/choij/workspace/ChargedHiggsAnalysisV2/CommonTools/python")
 import argparse
+import logging
 import ROOT
 from math import pow, sqrt
 from plotter import ComparisonCanvas
@@ -10,7 +11,9 @@ parser.add_argument("--era", required=True, type=str, help="era")
 parser.add_argument("--hlt", required=True, type=str, help="hlt")
 parser.add_argument("--wp", required=True, type=str, help="wp")
 parser.add_argument("--full", default=False, action="store_true", help="full systematics")
+parser.add_argument("--debug", default=False, action="store_true", help="debug mode")
 args = parser.parse_args()
+logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
 
 WORKDIR = os.environ['WORKDIR']
 if "El" in args.hlt:
@@ -101,7 +104,7 @@ for sample in MCList:
                 hSysts.append((h_syst))
         f.Close()
     except Exception as e:
-        print(e, sample)
+        logging.debug(e, sample)
         continue
     
     # estimate total unc. bin by bin
@@ -133,9 +136,9 @@ for sample in MCList:
     try:
         rate_mc += HISTs[sample].Integral()
     except:
-        print(f"no events for {sample}")
+        logging.debug(f"no events for {sample}")
         continue
-#print(f"MC histograms scaled to {rate_data/rate_mc}")
+logging.debug(f"MC histograms scaled to {rate_data/rate_mc}")
 for hist in HISTs.values(): 
     hist.Scale(rate_data/rate_mc)
     
@@ -197,11 +200,11 @@ config = {"era": args.era,
           "xRange": xRange,}
 
 textInfo = {
-    "CMS": [0.04, 61, [0.12, 0.91]],
-    "Work in progress": [0.035, 52, [0.21, 0.91]],
-    "Prescaled (13 TeV)": [0.035, 42, [0.665, 0.91]],
-    trigPathDict[args.hlt]: [0.035, 42, [0.17, 0.83]],
-    f"{args.era} / {args.wp.upper()} ID": [0.035, 42, [0.17, 0.77]]
+    "CMS": [0.04, 61, [0.12, 0.96]],
+    "Work in progress": [0.035, 52, [0.21, 0.96]],
+    "Prescaled (13 TeV)": [0.035, 42, [0.665, 0.96]],
+    trigPathDict[args.hlt]: [0.035, 42, [0.17, 0.9]],
+    f"{args.era} / {args.wp.upper()} ID": [0.035, 42, [0.17, 0.83]]
 }
 
 c = ComparisonCanvas(config=config)

@@ -13,6 +13,9 @@ for era in 2016preVFP 2016postVFP 2017 2018; do
     plotClosure.py --era ${era} --channel Skim1E2Mu --histkey nonprompt/pt --rebin 5
     plotClosure.py --era ${era} --channel Skim1E2Mu --histkey nonprompt/eta --rebin 5
 
+    plotSystematics.py --era ${era} --measure electron --etabin EB1
+    plotSystematics.py --era ${era} --measure electron --etabin EB2
+    plotSystematics.py --era ${era} --measure electron --etabin EE
     plotSystematics2.py --era ${era} --channel Skim1E2Mu --histkey pair/mass
     
     # 3Mu
@@ -25,6 +28,9 @@ for era in 2016preVFP 2016postVFP 2017 2018; do
     plotClosure.py --era ${era} --channel Skim3Mu --histkey muons/3/eta --rebin 4
     plotClosure.py --era ${era} --channel Skim3Mu --histkey nonprompt/pt --rebin 5
     plotClosure.py --era ${era} --channel Skim3Mu --histkey nonprompt/eta --rebin 4
-
+    
+    plotSystematics.py --era ${era} --measure muon --etabin EB1
+    plotSystematics.py --era ${era} --measure muon --etabin EB2
+    plotSystematics.py --era ${era} --measure muon --etabin EE
     plotSystematics2.py --era ${era} --channel Skim3Mu --histkey stack/mass
 done
