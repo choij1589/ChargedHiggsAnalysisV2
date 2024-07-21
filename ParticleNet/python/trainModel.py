@@ -12,6 +12,12 @@ import torch.nn.functional as F
 from torch_geometric.loader import DataLoader
 #from torchlars import LARS
 
+import numpy as np
+import pandas as pd
+import matplotlib as plt
+from array import array
+from sklearn import metrics
+
 from Preprocess import GraphDataset
 from Preprocess import rtfileToDataList
 from Models import ParticleNet
@@ -97,39 +103,6 @@ trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=Tru
 validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
 testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False)
 
-## setup
-logging.info(f"Using model {args.model}")
-nFeatures = 9
-nGraphFeatures = 4
-nClasses = 2
-model = ParticleNet(nFeatures, nGraphFeatures, nClasses, args.nNodes, args.dropout_p).to(args.device)
-
-logging.info(f"Using optimizer {args.optimizer}")
-if args.optimizer == "RMSprop":
-    optimizer = torch.optim.RMSprop(model.parameters(), lr=args.initLR, momentum=0.9, weight_decay=1e-4)
-elif args.optimizer == "Adam":
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.initLR, weight_decay=1e-4)
-elif args.optimizer == "Adadelta":
-    optimizer = torch.optim.Adadelta(model.parameters(), lr=args.initLR, weight_decay=1e-4)
-else:
-    raise NotImplementedError(f"Unsupporting optimizer {args.optimizer}")
-#optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
-
-logging.info(f"Using scheduler {args.scheduler}")
-if args.scheduler == "StepLR":
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.95)
-elif args.scheduler == "ExponentialLR":
-    scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.98)
-elif args.scheduler == "CyclicLR":
-    cycle_momentum = True if args.optimizer == "RMSprop" else False
-    scheduler = torch.optim.lr_scheduler.CyclicLR(
-            optimizer,
-            base_lr=args.initLR/5., max_lr=args.initLR*2,
-            step_size_up=3, step_size_down=5,
-            cycle_momentum=cycle_momentum)
-else:
-    raise NotImplementedError(f"Unsupporting scheduler {args.scheduler}")
-
 if "cuda" in args.device:
     logging.info("Using cuda")
     torch.backends.cudnn.benchmark = True
@@ -165,14 +138,45 @@ def test(model, loader):
     return (loss, correct)
 
 def main():
+    ## setup
+    logging.info(f"Using model {args.model}")
+    nFeatures = 9
+    nGraphFeatures = 4
+    nClasses = 2
+    model = ParticleNet(nFeatures, nGraphFeatures, nClasses, args.nNodes, args.dropout_p).to(args.device)
+
+    logging.info(f"Using optimizer {args.optimizer}")
+    if args.optimizer == "RMSprop":
+        optimizer = torch.optim.RMSprop(model.parameters(), lr=args.initLR, momentum=0.9, weight_decay=1e-4)
+    elif args.optimizer == "Adam":
+        optimizer = torch.optim.Adam(model.parameters(), lr=args.initLR, weight_decay=1e-4)
+    elif args.optimizer == "Adadelta":
+        optimizer = torch.optim.Adadelta(model.parameters(), lr=args.initLR, weight_decay=1e-4)
+    else:
+        raise NotImplementedError(f"Unsupporting optimizer {args.optimizer}")
+    #optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
+
+    logging.info(f"Using scheduler {args.scheduler}")
+    if args.scheduler == "StepLR":
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.95)
+    elif args.scheduler == "ExponentialLR":
+        scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.98)
+    elif args.scheduler == "CyclicLR":
+        cycle_momentum = True if args.optimizer == "RMSprop" else False
+        scheduler = torch.optim.lr_scheduler.CyclicLR(optimizer, base_lr=args.initLR/5., max_lr=args.initLR*2,
+                                                      step_size_up=3, step_size_down=5, cycle_momentum=cycle_momentum)
+    else:
+        raise NotImplementedError(f"Unsupporting scheduler {args.scheduler}")
+
     modelName =  f"{args.model}-nNodes{args.nNodes}_{args.optimizer}_initLR-{str(args.initLR).replace('.','p')}_{args.scheduler}"
     logging.info("Start training...")
     checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/models/{modelName}.pt"
     summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/CSV/{modelName}.csv"
+    outtreepath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/trees/{modelName}.root"
     earlyStopper = EarlyStopper(patience=15, path=checkptpath)
     summaryWriter = SummaryWriter(name=modelName)
 
-    for epoch in range(80):
+    for epoch in range(args.epochs):
         train(model, optimizer, scheduler)
         trainLoss, trainAcc = test(model, trainLoader)
         validLoss, validAcc = test(model, validLoader)
@@ -191,6 +195,49 @@ def main():
 
     summaryWriter.to_csv(summarypath)
 
+    #### save score distributions as trees
+    os.makedirs(os.path.dirname(outtreepath), exist_ok=True)
+    f = ROOT.TFile(outtreepath, "RECREATE")
+    tree = ROOT.TTree("Events", "")
+    
+    # define branches
+    score = array("f", [0.]); tree.Branch("score", score, "score/F")
+    trainMask = array("B", [False]); tree.Branch("trainMask", trainMask, "trainMask/O")
+    validMask = array("B", [False]); tree.Branch("validMask", validMask, "validMask/O")
+    testMask = array("B", [False]); tree.Branch("testMask", testMask, "testMask/O")
+    signalMask = array("B", [False]); tree.Branch("signalMask", signalMask, "signalMask/O")
 
+    logging.info("Start saving score distributions")
+    model.eval()
+    trainMask[0] = True; validMask[0] = False; testMask[0] = False
+    for i, data in enumerate(trainLoader):
+        with torch.no_grad():
+            out = model(data.x.to(args.device), data.edge_index.to(args.device), data.graphInput.to(args.device), data.batch.to(args.device))
+            for isSignal, scoreTensor in zip(data.y, out):
+                signalMask[0] = True if isSignal.numpy() else False
+                score[0] = scoreTensor[1].cpu().numpy()
+                tree.Fill()
+
+    trainMask[0] = False; validMask[0] = True; testMask[0] = False
+    for i, data in enumerate(validLoader):
+        with torch.no_grad():
+            out = model(data.x.to(args.device), data.edge_index.to(args.device), data.graphInput.to(args.device), data.batch.to(args.device))
+            for signalTensor, scoreTensor in zip(data.y, out):
+                signalMask[0] = True if signalTensor.numpy() else False
+                score[0] = scoreTensor[1].cpu().numpy()
+                tree.Fill()
+
+    trainMask[0] = False; validMask[0] = False; testMask[0] = True
+    for i, data in enumerate(testLoader):
+        with torch.no_grad():
+            out = model(data.x.to(args.device), data.edge_index.to(args.device), data.graphInput.to(args.device), data.batch.to(args.device))
+            for signalTensor, scoreTensor in zip(data.y, out):
+                signalMask[0] = True if signalTensor.numpy() else False
+                score[0] = scoreTensor[1].cpu().numpy()
+                tree.Fill()
+    f.cd()
+    tree.Write()
+    f.Close()
+                
 if __name__ == "__main__":
     main()
