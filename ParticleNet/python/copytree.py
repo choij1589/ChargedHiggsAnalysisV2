@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 import os, shutil
+import logging
 import argparse
 from itertools import product, combinations
 from ROOT import TFile
+logging.basicConfig(level=logging.WARNING)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--channel", required=True, type=str, help="channel name")
@@ -42,8 +44,8 @@ for era, signal in product(ERAs, SIGNALs):
     try:
         assert nEvts < tree.GetEntries()
     except:
-        print(f"[Warning] small no. of events for {era}-{signal}: nEvts({nEvts}) < nEntries({tree.GetEntries()})")
-        print(f"[Warning] force nEvts to no. of tree entries")
+        logging.warning(f"Small no. of events for {era}-{signal}: nEvts({nEvts}) < nEntries({tree.GetEntries()})")
+        logging.warning(f"Force nEvts to no. of tree entries")
         nEvts = tree.GetEntries()
     f.Close()
 
@@ -60,8 +62,8 @@ for era, bkg in product(ERAs, BACKGROUNDs):
     try:
         assert nEvts < tree.GetEntries()
     except:
-        print(f"[Warning] small no. of events for {era}-{bkg}: nEvts({nEvts}) < nEntries({tree.GetEntries()})")
-        print(f"[Warning] force nEvts to no. of tree entries")
+        logging.warning(f"Small no. of events for {era}-{bkg}: nEvts({nEvts}) < nEntries({tree.GetEntries()})")
+        logging.warning(f"Force nEvts to no. of tree entries")
         nEvts = tree.GetEntries()
     f.Close()
 

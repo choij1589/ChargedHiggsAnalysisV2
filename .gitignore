@@ -2,3 +2,4 @@ SKFlatOutput/*
 */build/*
 */lib/*
 */__pycache__/*
+*/dataset/*

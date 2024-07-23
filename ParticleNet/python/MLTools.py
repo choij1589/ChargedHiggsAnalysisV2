@@ -1,7 +1,10 @@
 import os
+import logging
 import numpy as np
 import pandas as pd
 import torch
+
+logging.basicConfig(level=logging.INFO)
 
 class EarlyStopper():
     def __init__(self, patience=7, delta=0, path="./checkpoint.pt"):
@@ -22,7 +25,7 @@ class EarlyStopper():
             self.saveCheckpoint(valLoss, model)
         elif score <= self.bestScore + self.delta:
             self.counter += 1
-            print(f"[EarlyStopping counter] {self.counter} out of {self.patience}")
+            logging.info(f"[EarlyStopping counter] {self.counter} out of {self.patience}")
             if self.counter >= self.patience:
                 self.earlyStop = True
         else:

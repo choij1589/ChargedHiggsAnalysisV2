@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.nn import Sequential, Linear, ReLU, Dropout, BatchNorm1d, ELU, LayerNorm
+from torch.nn import Sequential, Linear, ReLU, LeakyReLU, Dropout, BatchNorm1d, ELU, LayerNorm
 from torch_geometric.nn import global_mean_pool, knn_graph
 from torch_geometric.nn import TransformerConv, GATConv
 from torch_geometric.nn import GraphNorm
@@ -113,9 +113,9 @@ class EdgeConv(MessagePassing):
     def __init__(self, in_channels, out_channels, dropout_p):
         super().__init__(aggr="mean")
         self.mlp = Sequential(
-                Linear(2*in_channels, out_channels), ReLU(), BatchNorm1d(out_channels), Dropout(dropout_p),
-                Linear(out_channels, out_channels), ReLU(), BatchNorm1d(out_channels), Dropout(dropout_p),
-                Linear(out_channels, out_channels), ReLU(), BatchNorm1d(out_channels), Dropout(dropout_p)
+                Linear(2*in_channels, out_channels), LeakyReLU(), BatchNorm1d(out_channels), Dropout(dropout_p),
+                Linear(out_channels, out_channels), LeakyReLU(), BatchNorm1d(out_channels), Dropout(dropout_p),
+                Linear(out_channels, out_channels), LeakyReLU(), BatchNorm1d(out_channels), Dropout(dropout_p)
         )
 
     def forward(self, x, edge_index, batch=None):
@@ -204,11 +204,8 @@ class ParticleNet(torch.nn.Module):
         conv1 = self.conv1(x, edge_index, batch=batch)
         conv2 = self.conv2(conv1, batch=batch)
         conv3 = self.conv3(conv2, batch=batch)
-        #x = self.linear(torch.cat([conv1, conv2, conv3], dim=1))
         
         ## Use Attention Mechanism for concatenation
-        #weights = F.softmax(self.attention_weights, dim=0)
-        #x = weights[0]*conv1 + weights[1]*conv2 + weights[2]*conv3
         x = torch.cat([conv1, conv2, conv3], dim=1)
 
         # readout layers

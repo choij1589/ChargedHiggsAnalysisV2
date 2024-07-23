@@ -18,6 +18,9 @@ else
     fi
 fi
 
+export LD_LIBRARY_PATH=$HOME/miniconda3/envs/pyg/lib/python3.11/site-packages/nvidia/cuda_runtime/lib:$LD_LIBRARY_PATH
+export PATH=$HOME/miniconda3/envs/pyg/lib/python3.11/site-packages/nvidia/cuda_runtime/bin:$PATH
+
 export PYTHONPATH=$WORKDIR/CommonTools/python:$PYTHONPATH
 export PYTHONPATH=$WORKDIR/CommonTools/tdr-style:$PYTHONPATH
 echo "@@@@ WORKDIR=$WORKDIR"

@@ -10,7 +10,7 @@ from itertools import product
 import torch
 import torch.nn.functional as F
 from torch_geometric.loader import DataLoader
-#from torchlars import LARS
+from torchlars import LARS
 
 import numpy as np
 import pandas as pd
@@ -109,16 +109,23 @@ if "cuda" in args.device:
     torch.backends.cudnn.enabled = True
 
 #### helper functions
-def train(model, optimizer, scheduler):
+def train(model, optimizer, scheduler, use_plateau_scheduler=False):
     model.train()
 
+    total_loss = 0.
     for data in trainLoader:
+        optimizer.zero_grad()
         out = model(data.x.to(args.device), data.edge_index.to(args.device), data.graphInput.to(args.device), data.batch.to(args.device))
         loss = F.cross_entropy(out, data.y.to(args.device))
         loss.backward()
         optimizer.step()
-        optimizer.zero_grad()
-    scheduler.step()
+        total_loss += loss.item()
+    
+    if use_plateau_scheduler:
+        avg_loss = total_loss / len(trainLoader.dataset)
+        scheduler.step(total_loss)
+    else:
+        scheduler.step()
 
 def test(model, loader):
     model.eval()
@@ -147,14 +154,14 @@ def main():
 
     logging.info(f"Using optimizer {args.optimizer}")
     if args.optimizer == "RMSprop":
-        optimizer = torch.optim.RMSprop(model.parameters(), lr=args.initLR, momentum=0.9, weight_decay=1e-4)
+        optimizer = torch.optim.RMSprop(model.parameters(), lr=args.initLR, momentum=0.9, weight_decay=1e-5)
     elif args.optimizer == "Adam":
-        optimizer = torch.optim.Adam(model.parameters(), lr=args.initLR, weight_decay=1e-4)
+        optimizer = torch.optim.Adam(model.parameters(), lr=args.initLR, weight_decay=1e-5)
     elif args.optimizer == "Adadelta":
-        optimizer = torch.optim.Adadelta(model.parameters(), lr=args.initLR, weight_decay=1e-4)
+        optimizer = torch.optim.Adadelta(model.parameters(), lr=args.initLR, weight_decay=1e-5)
     else:
         raise NotImplementedError(f"Unsupporting optimizer {args.optimizer}")
-    #optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
+    optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
 
     logging.info(f"Using scheduler {args.scheduler}")
     if args.scheduler == "StepLR":
@@ -165,6 +172,8 @@ def main():
         cycle_momentum = True if args.optimizer == "RMSprop" else False
         scheduler = torch.optim.lr_scheduler.CyclicLR(optimizer, base_lr=args.initLR/5., max_lr=args.initLR*2,
                                                       step_size_up=3, step_size_down=5, cycle_momentum=cycle_momentum)
+    elif args.scheduler == "ReduceLROnPlateau":
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=5)
     else:
         raise NotImplementedError(f"Unsupporting scheduler {args.scheduler}")
 
@@ -177,7 +186,7 @@ def main():
     summaryWriter = SummaryWriter(name=modelName)
 
     for epoch in range(args.epochs):
-        train(model, optimizer, scheduler)
+        train(model, optimizer, scheduler, use_plateau_scheduler=(args.scheduler=="ReduceLROnPlateau"))
         trainLoss, trainAcc = test(model, trainLoader)
         validLoss, validAcc = test(model, validLoader)
         summaryWriter.addScalar("loss/train", trainLoss)
@@ -185,13 +194,14 @@ def main():
         summaryWriter.addScalar("acc/train", trainAcc)
         summaryWriter.addScalar("acc/valid", validAcc)
 
-        print(f"[EPOCH {epoch}]\tTrain Acc: {trainAcc*100:.2f}%\tTrain Loss: {trainLoss:.4e}")
-        print(f"[EPOCH {epoch}]\tVlaid Acc: {validAcc*100:.2f}%\tValid Loss: {validLoss:.4e}\n")
+        logging.info(f"[EPOCH {epoch}]\tTrain Acc: {trainAcc*100:.2f}%\tTrain Loss: {trainLoss:.4e}")
+        logging.info(f"[EPOCH {epoch}]\tVlaid Acc: {validAcc*100:.2f}%\tValid Loss: {validLoss:.4e}")
 
         panelty = max(0, validLoss-trainLoss)
         earlyStopper.update(validLoss, panelty, model)
         if earlyStopper.earlyStop:
-            print(f"Early stopping in epoch {epoch}"); break
+            logging.info(f"Early stopping in epoch {epoch}"); break
+        print()
 
     summaryWriter.to_csv(summarypath)
 
