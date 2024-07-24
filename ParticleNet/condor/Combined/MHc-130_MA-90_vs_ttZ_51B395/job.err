@@ -1,0 +1,52 @@
+WARNING: underlay of /etc/cvmfs/CMS_SITECONF/local required more than 50 (143) bind mounts
+ERROR:syne_tune.tuner:Stopped as 1 failures were reached
+ERROR:syne_tune.tuner:showing log of first failure
+ERROR:syne_tune.tuner:sagemaker.config INFO - Not applying SDK defaults from location: /etc/xdg/sagemaker/config.yaml
+sagemaker.config INFO - Not applying SDK defaults from location: /home/choij/.config/sagemaker/config.yaml
+[tune-metric]: {"epoch": 1, "objective": 0.0006303711517226129, "train_loss": 0.0006104240878706886, "train_accuracy": 0.6566428571428572, "valid_loss": 0.0006257679831413996, "valid_accuracy": 0.654452380952381, "st_worker_timestamp": 1721747826.7885919, "st_worker_time": 193.22918620333076, "st_worker_iter": 0}
+
+ERROR:syne_tune.tuner:Traceback (most recent call last):
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/./python/trainModelSimple.py", line 167, in <module>
+    main()
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/./python/trainModelSimple.py", line 154, in main
+    train(model, optimizer, scheduler, use_plateau_scheduler=(args.scheduler=="ReduceLROnPlateau"))
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/./python/trainModelSimple.py", line 86, in train
+    out = model(data.x.to(args.device), data.edge_index.to(args.device), data.graphInput.to(args.device), data.batch.to(args.device))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/pyg/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/pyg/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/python/Models.py", line 206, in forward
+    conv3 = self.conv3(conv2, batch=batch)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/pyg/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/pyg/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/python/Models.py", line 141, in forward
+    out = super().forward(x, edge_index, batch=batch)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/python/Models.py", line 122, in forward
+    return self.propagate(edge_index, x=x, batch=batch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/Models_DynamicEdgeConv_propagate_rtmk5156.py", line 178, in propagate
+    out = self.message(
+          ^^^^^^^^^^^^^
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/python/Models.py", line 125, in message
+    tmp = torch.cat([x_i, x_j - x_i], dim=1)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 24.00 MiB. GPU 
+
+Traceback (most recent call last):
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/python/launchHPO.py", line 51, in <module>
+    tuner.run()
+  File "/root/syne-tune/syne_tune/tuner.py", line 370, in run
+    self._handle_failure(done_trials_statuses=done_trials_statuses)
+  File "/root/syne-tune/syne_tune/tuner.py", line 549, in _handle_failure
+    raise ValueError(f"Trial - {trial_id} failed")
+ValueError: Trial - 11 failed

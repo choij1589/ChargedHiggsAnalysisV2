@@ -41,23 +41,12 @@ scheduler = MOBSTER(
     search_options={"debug_log": True}
 )
 
-#scheduler = ASHA(
-#    config_space=config_space,
-#    metric="mean_loss",
-#    mode="min",
-#    resource_attr="epoch",
-#    max_resource_attr="max_epochs",
-    #grace_period=1,
-#    reduction_factor=3,
-#    search_options={"debug_log": True}
-#)
-
 entry_point = "./python/trainModelSimple.py"
 tuner = Tuner(
     trial_backend=LocalBackend(entry_point=entry_point),
     scheduler=scheduler,
-    stop_criterion=StoppingCriterion(max_wallclock_time=60),
-    n_workers=8
+    stop_criterion=StoppingCriterion(max_wallclock_time=60*60*3),
+    n_workers=12
 )
 tuner.run()
 
