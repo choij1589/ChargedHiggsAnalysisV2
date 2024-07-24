@@ -22,6 +22,7 @@ config_space = {
     "signal": args.signal,
     "background": args.background,
     "channel": args.channel,
+    "model": "ParticleNetV2",
     "optimizer": choice(["Adam", "RMSprop", "Adadelta"]),
     "scheduler": choice(["ExponentialLR", "CyclicLR", "ReduceLROnPlateau"]),
     "initLR": loguniform(1e-4, 1e-2),
@@ -52,7 +53,7 @@ tuner.run()
 
 experiment = load_experiment(tuner.name)
 results = experiment.results
-outpath = f"results/{args.channel}/CSV/hpo_{args.signal}_vs_{args.background}.csv"
+outpath = f"results/{args.channel}/ParticleNetV2/CSV/hpo_{args.signal}_vs_{args.background}.csv"
 os.makedirs(os.path.dirname(outpath), exist_ok=True)
 results.to_csv(outpath, index=False)
 

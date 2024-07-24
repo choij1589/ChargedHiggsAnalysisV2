@@ -23,7 +23,7 @@ from syne_tune import Reporter
 
 from Preprocess import GraphDataset
 from Preprocess import rtfileToDataList
-from Models import ParticleNet
+from Models import ParticleNet, ParticleNetV2
 from MLTools import EarlyStopper, SummaryWriter
 
 #### parse arguments
@@ -118,7 +118,12 @@ def main():
     nFeatures = 9
     nGraphFeatures = 4
     nClasses = 2
-    model = ParticleNet(nFeatures, nGraphFeatures, nClasses, args.nNodes, args.dropout_p).to(args.device)
+    if args.model == "ParticleNet":
+        model = ParticleNet(nFeatures, nGraphFeatures, nClasses, args.nNodes, args.dropout_p).to(args.device)
+    elif args.model == "ParticleNetV2":
+        model = ParticleNetV2(nFeatures, nGraphFeatures, nClasses, args.nNodes, args.dropout_p).to(args.device)
+    else:
+        raise NotImplementedError(f"Unsupporting model {args.model}")
 
     logging.info(f"Using optimizer {args.optimizer}")
     if args.optimizer == "RMSprop":

@@ -35,7 +35,6 @@ def makeRunSh():
     f.write("conda activate pyg\n")
     f.write('export WORKDIR="/data6/Users/choij/ChargedHiggsAnalysisV2"\n')
     f.write('export PATH="${PATH}:${WORKDIR}/ParticleNet/python"\n')
-    #f.write('export PYTHONPATH="${PYTHONPATH}:${WORKDIR}/python"\n')
     f.write("cd $WORKDIR/ParticleNet\n")
     f.write(f"launchHPO.py --signal {args.signal} --background {args.background} --channel {args.channel}\n")
     f.close()
