@@ -159,14 +159,14 @@ def main():
         train(model, optimizer, scheduler, use_plateau_scheduler=(args.scheduler=="ReduceLROnPlateau"))
         trainLoss, trainAcc = test(model, trainLoader)
         validLoss, validAcc = test(model, validLoader)
-        panelty = max(0, validLoss-trainLoss)
+        penalty = max(0, validLoss-trainLoss)
 
         logging.debug(f"[EPOCH {epoch}]\tTrain Acc: {trainAcc*100:.2f}%\tTrain Loss: {trainLoss:.4e}")
         logging.debug(f"[EPOCH {epoch}]\tVlaid Acc: {validAcc*100:.2f}%\tValid Loss: {validLoss:.4e}")
         
         # save model
         torch.save(model.state_dict(), checkptpath)
-        report(epoch=epoch, objective=validLoss+0.3*panelty, train_loss=trainLoss, train_accuracy=trainAcc, valid_loss=validLoss, valid_accuracy=validAcc)
+        report(epoch=epoch, objective=validLoss+0.3*penalty, train_loss=trainLoss, train_accuracy=trainAcc, valid_loss=validLoss, valid_accuracy=validAcc)
 
 if __name__ == "__main__":
     main()

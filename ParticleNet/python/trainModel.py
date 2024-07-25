@@ -195,10 +195,10 @@ def main():
         summaryWriter.addScalar("acc/valid", validAcc)
 
         logging.info(f"[EPOCH {epoch}]\tTrain Acc: {trainAcc*100:.2f}%\tTrain Loss: {trainLoss:.4e}")
-        logging.info(f"[EPOCH {epoch}]\tVlaid Acc: {validAcc*100:.2f}%\tValid Loss: {validLoss:.4e}")
+        logging.info(f"[EPOCH {epoch}]\tValid Acc: {validAcc*100:.2f}%\tValid Loss: {validLoss:.4e}")
 
-        panelty = max(0, validLoss-trainLoss)
-        earlyStopper.update(validLoss, panelty, model)
+        penalty = max(0, validLoss-trainLoss)
+        earlyStopper.update(validLoss, penalty, model)
         if earlyStopper.earlyStop:
             logging.info(f"Early stopping in epoch {epoch}"); break
         print()
