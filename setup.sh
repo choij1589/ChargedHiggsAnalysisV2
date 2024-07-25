@@ -9,9 +9,9 @@ elif [[ $HOSTNAME == *"cms"* ]]; then
     source /opt/conda/bin/activate
     conda activate pyg
 else
-    export WORKDIR="$HOME/workspace/ChargedHiggsAnalysisV2"
-    source ~/.conda-activate
-    conda activate pyg
+    export WORKDIR="$HOME/ChargedHiggsAnalysisV2"
+	source ~/miniconda3/bin/activate
+	conda activate pyg
     ### Warning message with red color
     if [[ `hostname` == *"Mac"* ]]; then
         echo -e "\e[31m@@@@ WARNING: pyg usage deprecated in MacOS\e[0m"
