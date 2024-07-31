@@ -43,6 +43,7 @@ parser.add_argument("--device", default="cuda", type=str, help="cpu or cuda")
 parser.add_argument("--pilot", action="store_true", default=False, help="pilot mode")
 parser.add_argument("--debug", action="store_true", default=False, help="debug mode")
 parser.add_argument("--st_checkpoint_dir", type=str, help="checkpoint directory")
+parser.add_argument("--penalty", type=float, default=0.3, help="lambda multiplied to the penalty")
 args = parser.parse_args()
 report = Reporter()
 
@@ -150,7 +151,7 @@ def main():
         raise NotImplementedError(f"Unsupporting scheduler {args.scheduler}")
     #optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
 
-    modelName =  f"{args.model}-nNodes{args.nNodes}_{args.optimizer}_initLR-{str(args.initLR).replace('.','p')}_{args.scheduler}"
+    modelName =  f"{args.model}-nNodes{args.nNodes}_{args.optimizer}_initLR-{str(args.initLR).replace('.','p')}_{args.scheduler}_penalty-{str(args.penalty).replace('.','p')}"
     logging.info("Start training...")
     checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/models/{modelName}.pt"
     os.makedirs(os.path.dirname(checkptpath), exist_ok=True)
@@ -159,6 +160,7 @@ def main():
         train(model, optimizer, scheduler, use_plateau_scheduler=(args.scheduler=="ReduceLROnPlateau"))
         trainLoss, trainAcc = test(model, trainLoader)
         validLoss, validAcc = test(model, validLoader)
+
         penalty = max(0, validLoss-trainLoss)
 
         logging.debug(f"[EPOCH {epoch}]\tTrain Acc: {trainAcc*100:.2f}%\tTrain Loss: {trainLoss:.4e}")
@@ -166,7 +168,7 @@ def main():
         
         # save model
         torch.save(model.state_dict(), checkptpath)
-        report(epoch=epoch, objective=validLoss+0.3*penalty, train_loss=trainLoss, train_accuracy=trainAcc, valid_loss=validLoss, valid_accuracy=validAcc)
+        report(epoch=epoch, objective=validLoss+args.penalty*penalty, train_loss=trainLoss, train_accuracy=trainAcc, valid_loss=validLoss, valid_accuracy=validAcc)
 
 if __name__ == "__main__":
     main()
