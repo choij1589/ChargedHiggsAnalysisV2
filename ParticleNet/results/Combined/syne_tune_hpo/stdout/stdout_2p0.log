@@ -1,0 +1,105 @@
+ Kolmo Prob  h1 = hSigTrain, sum bin content =80696  effective entries =80696
+ Kolmo Prob  h2 = hSigTest, sum bin content =100455  effective entries =100455
+ Kolmo Prob     = 9.68693e-05, Max Dist = 0.0105362
+ Kolmo Prob     = 0.000000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hBkgTrain, sum bin content =83576  effective entries =83576
+ Kolmo Prob  h2 = hBkgTest, sum bin content =104866  effective entries =104866
+ Kolmo Prob     = 5.80488e-05, Max Dist = 0.0105979
+ Kolmo Prob     = 0.000000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hSigTrain, sum bin content =79849  effective entries =79849
+ Kolmo Prob  h2 = hSigTest, sum bin content =99393  effective entries =99393
+ Kolmo Prob     = 2.22528e-06, Max Dist = 0.012442
+ Kolmo Prob     = 0.000000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hBkgTrain, sum bin content =83538  effective entries =83538
+ Kolmo Prob  h2 = hBkgTest, sum bin content =104812  effective entries =104812
+ Kolmo Prob     = 1.4657e-07, Max Dist = 0.0132931
+ Kolmo Prob     = 0.000000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hSigTrain, sum bin content =71793  effective entries =71793
+ Kolmo Prob  h2 = hSigTest, sum bin content =89274  effective entries =89274
+ Kolmo Prob     = 0.000111139, Max Dist = 0.0110956
+ Kolmo Prob     = 0.000000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hBkgTrain, sum bin content =82571  effective entries =82571
+ Kolmo Prob  h2 = hBkgTest, sum bin content =103557  effective entries =103557
+ Kolmo Prob     = 0.00154581, Max Dist = 0.00883092
+ Kolmo Prob     = 0.002000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hSigTrain, sum bin content =83613  effective entries =83613
+ Kolmo Prob  h2 = hSigTest, sum bin content =104158  effective entries =104158
+ Kolmo Prob     = 4.41646e-07, Max Dist = 0.0128537
+ Kolmo Prob     = 0.000000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hBkgTrain, sum bin content =83803  effective entries =83803
+ Kolmo Prob  h2 = hBkgTest, sum bin content =105118  effective entries =105118
+ Kolmo Prob     = 2.49625e-08, Max Dist = 0.0139695
+ Kolmo Prob     = 0.000000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hSigTrain, sum bin content =81614  effective entries =81614
+ Kolmo Prob  h2 = hSigTest, sum bin content =101528  effective entries =101528
+ Kolmo Prob     = 0.00228565, Max Dist = 0.00865236
+ Kolmo Prob     = 0.006000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hBkgTrain, sum bin content =83640  effective entries =83640
+ Kolmo Prob  h2 = hBkgTest, sum bin content =104897  effective entries =104897
+ Kolmo Prob     = 0.0307411, Max Dist = 0.0066979
+ Kolmo Prob     = 0.025000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hSigTrain, sum bin content =80486  effective entries =80486
+ Kolmo Prob  h2 = hSigTest, sum bin content =100249  effective entries =100249
+ Kolmo Prob     = 2.81103e-05, Max Dist = 0.0111862
+ Kolmo Prob     = 0.000000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hBkgTrain, sum bin content =83531  effective entries =83531
+ Kolmo Prob  h2 = hBkgTest, sum bin content =104788  effective entries =104788
+ Kolmo Prob     = 0.00399564, Max Dist = 0.00817706
+ Kolmo Prob     = 0.002000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hSigTrain, sum bin content =84165  effective entries =84165
+ Kolmo Prob  h2 = hSigTest, sum bin content =104841  effective entries =104841
+ Kolmo Prob     = 0.000484383, Max Dist = 0.00944287
+ Kolmo Prob     = 0.000000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hBkgTrain, sum bin content =83835  effective entries =83835
+ Kolmo Prob  h2 = hBkgTest, sum bin content =105157  effective entries =105157
+ Kolmo Prob     = 0.0028121, Max Dist = 0.00838991
+ Kolmo Prob     = 0.000000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hSigTrain, sum bin content =82327  effective entries =82327
+ Kolmo Prob  h2 = hSigTest, sum bin content =102446  effective entries =102446
+ Kolmo Prob     = 7.76286e-05, Max Dist = 0.0105478
+ Kolmo Prob     = 0.000000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hBkgTrain, sum bin content =83693  effective entries =83693
+ Kolmo Prob  h2 = hBkgTest, sum bin content =104979@@@@ Start loading dataset...
+{'nNodes': 88, 'optimizer': 'Adam', 'initLR': 0.0018821232226711, 'scheduler': 'CyclicLR', 'model': 'ParticleNetV2'}
+{'nNodes': 108, 'optimizer': 'Adam', 'initLR': 0.0012158730819861, 'scheduler': 'CyclicLR', 'model': 'ParticleNetV2'}
+{'nNodes': 52, 'optimizer': 'RMSprop', 'initLR': 0.0001725038259058, 'scheduler': 'ExponentialLR', 'model': 'ParticleNet'}
+{'nNodes': 88, 'optimizer': 'Adam', 'initLR': 0.0005302004740427, 'scheduler': 'ExponentialLR', 'model': 'ParticleNetV2'}
+{'nNodes': 52, 'optimizer': 'RMSprop', 'initLR': 0.0002193687379858, 'scheduler': 'CyclicLR', 'model': 'ParticleNet'}
+{'nNodes': 52, 'optimizer': 'RMSprop', 'initLR': 0.0002338428376461, 'scheduler': 'ReduceLROnPlateau', 'model': 'ParticleNet'}
+{'nNodes': 52, 'optimizer': 'RMSprop', 'initLR': 0.0001596292252075, 'scheduler': 'ExponentialLR', 'model': 'ParticleNet'}
+{'nNodes': 88, 'optimizer': 'Adam', 'initLR': 0.0012022471668877, 'scheduler': 'CyclicLR', 'model': 'ParticleNetV2'}
+{'nNodes': 108, 'optimizer': 'Adam', 'initLR': 0.0005512284876414, 'scheduler': 'ReduceLROnPlateau', 'model': 'ParticleNetV2'}
+{'nNodes': 52, 'optimizer': 'RMSprop', 'initLR': 0.0001300190131641, 'scheduler': 'CyclicLR', 'model': 'ParticleNet'}
+@@@@ Filling trainset...
+@@@@ Filling validset...
+@@@@ Filling testset...
+0 0.0 0.0
+1 0.0 0.0
+2 0.0 0.002
+3 0.0 0.0
+4 0.006 0.025
+5 0.0 0.002
+6 0.0 0.0
+7 0.0 0.004
+8 0.0 0.001
+9 0.056 0.026
+best model: model--1 with test AUC 0.000
+  effective entries =104979
+ Kolmo Prob     = 0.00174271, Max Dist = 0.00869756
+ Kolmo Prob     = 0.004000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hSigTrain, sum bin content =83297  effective entries =83297
+ Kolmo Prob  h2 = hSigTest, sum bin content =103744  effective entries =103744
+ Kolmo Prob     = 2.88843e-05, Max Dist = 0.0109826
+ Kolmo Prob     = 0.000000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hBkgTrain, sum bin content =83778  effective entries =83778
+ Kolmo Prob  h2 = hBkgTest, sum bin content =105077  effective entries =105077
+ Kolmo Prob     = 0.000332412, Max Dist = 0.00966155
+ Kolmo Prob     = 0.001000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hSigTrain, sum bin content =84165  effective entries =84165
+ Kolmo Prob  h2 = hSigTest, sum bin content =104843  effective entries =104843
+ Kolmo Prob     = 0.0660437, Max Dist = 0.00604368
+ Kolmo Prob     = 0.056000 with 1000 pseudo-experiments
+ Kolmo Prob  h1 = hBkgTrain, sum bin content =83835  effective entries =83835
+ Kolmo Prob  h2 = hBkgTest, sum bin content =105157  effective entries =105157
+ Kolmo Prob     = 0.0294191, Max Dist = 0.00672501
+ Kolmo Prob     = 0.026000 with 1000 pseudo-experiments
