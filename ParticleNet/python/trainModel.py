@@ -20,7 +20,7 @@ from sklearn import metrics
 
 from Preprocess import GraphDataset
 from Preprocess import rtfileToDataList
-from Models import ParticleNet
+from Models import ParticleNet, ParticleNetV2
 from MLTools import EarlyStopper, SummaryWriter
 
 #### parse arguments
@@ -53,51 +53,13 @@ if args.background not in ["nonprompt", "diboson", "ttZ"]:
 WORKDIR = os.environ["WORKDIR"]
 
 #### load dataset
-maxSize = 10000 if args.pilot else -1
-maxSizeForEra = {
-    "2016preVFP": int(maxSize / 7),
-    "2016postVFP": int(maxSize / 7),
-    "2017": int(maxSize * (2/7)),
-    "2018": int(maxSize * (3/7))
-}
-
 logging.info("Start loading dataset")
-logging.debug(maxSizeForEra)
-if args.channel == "Combined":
-    ## Load signal data
-    sigDataList = []
-    bkgDataList = []
-    for era, channel in product(["2016preVFP", "2016postVFP", "2017", "2018"], ["Skim1E2Mu", "Skim3Mu"]):
-        rt = ROOT.TFile.Open(f"dataset/{era}/{channel}/DataPreprocess_TTToHcToWAToMuMu_{args.signal}.root")
-        sigDataList += rtfileToDataList(rt, isSignal=True, era=era, maxSize=maxSizeForEra[era])
-        rt.Close()
-        
-        rt = ROOT.TFile.Open(f"dataset/{era}/{channel}/DataPreprocess_{args.background}.root")
-        bkgDataList += rtfileToDataList(rt, isSignal=False, era=era, maxSize=maxSizeForEra[era])
-        rt.Close()
-    sigDataList = shuffle(sigDataList, random_state=42)
-    bkgDataList = shuffle(bkgDataList, random_state=42)
-else:
-    sigDataList = []
-    bkgDataList = []
-    for era in ["2016preVFP", "2016postVFP", "2017", "2018"]:
-        rt = ROOT.TFile.Open(f"dataset/{era}/{args.channel}/DataPreprocess_TTToHcToWAToMuMu_{args.signal}.root")
-        sigDataList += rtfileToDataList(rt, isSignal=True, era=era, maxSize=maxSizeForEra[era])
-        rt.Close()
-
-        rt = ROOT.TFile.Open(f"dataset/{era}/{args.channel}/DataPreprocess_{args.background}.root")
-        bkgDataList += rtfileToDataList(rt, isSignal=False, era=era, maxSize=maxSizeForEra[era])
-        rt.Close()
-    sigDataList = shuffle(sigDataList, random_state=42)
-    bkgDataList = shuffle(bkgDataList, random_state=42)
-logging.info("Finished loading dataset")
-logging.info(f"Signal: {len(sigDataList)} events")
-logging.info(f"Background: {len(bkgDataList)} events")
-dataList = shuffle(sigDataList+bkgDataList, random_state=42)
-
-trainset = GraphDataset(dataList[:int(len(dataList)*0.4)])
-validset = GraphDataset(dataList[int(len(dataList)*0.4):int(len(dataList)*0.5)])
-testset  = GraphDataset(dataList[int(len(dataList)*0.5):])
+baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
+if args.pilot:
+    baseDir += "pilot__"
+trainset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_train.pt")
+validset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_valid.pt")
+testset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_test.pt")
 
 trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True)
 validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
@@ -150,18 +112,23 @@ def main():
     nFeatures = 9
     nGraphFeatures = 4
     nClasses = 2
-    model = ParticleNet(nFeatures, nGraphFeatures, nClasses, args.nNodes, args.dropout_p).to(args.device)
+    if args.model == "ParticleNet":
+        model = ParticleNet(nFeatures, nGraphFeatures, nClasses, args.nNodes, args.dropout_p).to(args.device)
+    elif args.model == "ParticleNetV2":
+        model = ParticleNetV2(nFeatures, nGraphFeatures, nClasses, args.nNodes, args.dropout_p).to(args.device)
+    else:
+        raise NotImplementedError(f"Unsupporting model {args.model}")
 
     logging.info(f"Using optimizer {args.optimizer}")
     if args.optimizer == "RMSprop":
-        optimizer = torch.optim.RMSprop(model.parameters(), lr=args.initLR, momentum=0.9, weight_decay=1e-5)
+        optimizer = torch.optim.RMSprop(model.parameters(), lr=args.initLR, momentum=0.9, weight_decay=3e-5)
     elif args.optimizer == "Adam":
-        optimizer = torch.optim.Adam(model.parameters(), lr=args.initLR, weight_decay=1e-5)
+        optimizer = torch.optim.Adam(model.parameters(), lr=args.initLR, weight_decay=3e-5)
     elif args.optimizer == "Adadelta":
-        optimizer = torch.optim.Adadelta(model.parameters(), lr=args.initLR, weight_decay=1e-5)
+        optimizer = torch.optim.Adadelta(model.parameters(), lr=args.initLR, weight_decay=3e-5)
     else:
         raise NotImplementedError(f"Unsupporting optimizer {args.optimizer}")
-    optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
+    #optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
 
     logging.info(f"Using scheduler {args.scheduler}")
     if args.scheduler == "StepLR":

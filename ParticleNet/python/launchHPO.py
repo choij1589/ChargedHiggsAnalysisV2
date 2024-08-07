@@ -2,6 +2,7 @@
 import os
 import logging
 import argparse
+import pandas as pd
 from syne_tune import Tuner, StoppingCriterion
 from syne_tune.backend import LocalBackend
 from syne_tune.experiments import load_experiment
@@ -53,7 +54,10 @@ tuner.run()
 
 experiment = load_experiment(tuner.name)
 results = experiment.results
+best_config = pd.DataFrame(experiment.best_config(), index=[0])
+
 outpath = f"results/{args.channel}/ParticleNetV2/CSV/hpo_{args.signal}_vs_{args.background}.csv"
+print(f"Best configuration: {best_config}")
 os.makedirs(os.path.dirname(outpath), exist_ok=True)
 results.to_csv(outpath, index=False)
-
+best_config.to_csv(outpath.replace(".csv", "_best_config.csv"), index=False)

@@ -3,4 +3,4 @@ SKFlatOutput/*
 */lib/*
 */__pycache__/*
 */dataset/*
-*/*.pyc
+*.pyc

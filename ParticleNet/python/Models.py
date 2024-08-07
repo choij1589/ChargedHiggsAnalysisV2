@@ -157,7 +157,7 @@ class TransformerEdgeConv(MessagePassing):
             edge_index = knn_graph(x, self.k, batch, loop=False, flow=self.flow)
         edge_index, _ = dropout_edge(edge_index, p=self.dropout_p, training=self.training)
         out = self.conv(x, edge_index)
-        #out += self.skip(x)
+        out += self.skip(x)
         return out
 
 
