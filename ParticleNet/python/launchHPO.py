@@ -2,6 +2,7 @@
 import os
 import logging
 import argparse
+import pandas as pd
 from syne_tune import Tuner, StoppingCriterion
 from syne_tune.backend import LocalBackend
 from syne_tune.experiments import load_experiment
@@ -22,7 +23,7 @@ config_space = {
     "signal": args.signal,
     "background": args.background,
     "channel": args.channel,
-    "model": "ParticleNetV2",
+    "model": "ParticleNet",
     "optimizer": choice(["Adam", "RMSprop", "Adadelta"]),
     "scheduler": choice(["ExponentialLR", "CyclicLR", "ReduceLROnPlateau"]),
     "initLR": loguniform(1e-4, 1e-2),
@@ -46,14 +47,17 @@ entry_point = "./python/trainModelSimple.py"
 tuner = Tuner(
     trial_backend=LocalBackend(entry_point=entry_point),
     scheduler=scheduler,
-    stop_criterion=StoppingCriterion(max_wallclock_time=60*60*3),
-    n_workers=12
+    stop_criterion=StoppingCriterion(max_wallclock_time=60*3),
+    n_workers=5
 )
 tuner.run()
 
 experiment = load_experiment(tuner.name)
 results = experiment.results
+best_config = pd.DataFrame(experiment.best_config(), index=[0])
+
 outpath = f"results/{args.channel}/ParticleNetV2/CSV/hpo_{args.signal}_vs_{args.background}.csv"
+print(f"Best configuration: {best_config}")
 os.makedirs(os.path.dirname(outpath), exist_ok=True)
 results.to_csv(outpath, index=False)
-
+best_config.to_csv(outpath.replace(".csv", "_best_config.csv"), index=False)
