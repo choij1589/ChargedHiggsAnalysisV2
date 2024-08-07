@@ -1,0 +1,21 @@
+WARNING: underlay of /etc/cvmfs/CMS_SITECONF/local required more than 50 (143) bind mounts
+ERROR:syne_tune.tuner:Stopped as 1 failures were reached
+ERROR:syne_tune.tuner:showing log of first failure
+ERROR:syne_tune.tuner:sagemaker.config INFO - Not applying SDK defaults from location: /etc/xdg/sagemaker/config.yaml
+sagemaker.config INFO - Not applying SDK defaults from location: /home/choij/.config/sagemaker/config.yaml
+
+ERROR:syne_tune.tuner:Traceback (most recent call last):
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/./python/trainModelSimple.py", line 172, in <module>
+    main()
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/./python/trainModelSimple.py", line 126, in main
+    raise NotImplementedError(f"Unsupporting model {args.model}")
+NotImplementedError: Unsupporting model ParticeNetV2
+
+Traceback (most recent call last):
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/python/launchHPO.py", line 52, in <module>
+    tuner.run()
+  File "/root/syne-tune/syne_tune/tuner.py", line 370, in run
+    self._handle_failure(done_trials_statuses=done_trials_statuses)
+  File "/root/syne-tune/syne_tune/tuner.py", line 549, in _handle_failure
+    raise ValueError(f"Trial - {trial_id} failed")
+ValueError: Trial - 0 failed

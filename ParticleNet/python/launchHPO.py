@@ -22,7 +22,7 @@ config_space = {
     "signal": args.signal,
     "background": args.background,
     "channel": args.channel,
-    "model": "ParticleNetV2",
+    "model": "ParticleNet",
     "optimizer": choice(["Adam", "RMSprop", "Adadelta"]),
     "scheduler": choice(["ExponentialLR", "CyclicLR", "ReduceLROnPlateau"]),
     "initLR": loguniform(1e-4, 1e-2),
@@ -47,7 +47,7 @@ tuner = Tuner(
     trial_backend=LocalBackend(entry_point=entry_point),
     scheduler=scheduler,
     stop_criterion=StoppingCriterion(max_wallclock_time=60*60*3),
-    n_workers=12
+    n_workers=24
 )
 tuner.run()
 

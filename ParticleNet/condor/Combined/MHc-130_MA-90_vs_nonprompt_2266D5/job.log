@@ -1,0 +1,33 @@
+000 (729922.000.000) 2024-07-24 15:59:17 Job submitted from host: <172.30.1.200:9618?addrs=172.30.1.200-9618&alias=tamsa2.snu.ac.kr&noUDP&sock=schedd_3625_06e6>
+...
+040 (729922.000.000) 2024-07-24 15:59:37 Started transferring input files
+	Transferring to host: <172.30.1.111:9618?addrs=172.30.1.111-9618&alias=n11&noUDP&sock=slot1_1_4249_8e06_5>
+...
+040 (729922.000.000) 2024-07-24 15:59:37 Finished transferring input files
+...
+001 (729922.000.000) 2024-07-24 15:59:38 Job executing on host: <172.30.1.111:9618?addrs=172.30.1.111-9618&alias=n11&noUDP&sock=startd_4213_5896>
+...
+006 (729922.000.000) 2024-07-24 15:59:47 Image size of job updated: 129452
+	127  -  MemoryUsage of job (MB)
+	129452  -  ResidentSetSize of job (KB)
+...
+006 (729922.000.000) 2024-07-24 16:01:03 Image size of job updated: 121082584
+	127  -  MemoryUsage of job (MB)
+	129452  -  ResidentSetSize of job (KB)
+...
+004 (729922.000.000) 2024-07-24 16:01:03 Job was evicted.
+	(0) CPU times
+		Usr 0 00:09:45, Sys 0 00:00:55  -  Run Remote Usage
+		Usr 0 00:00:00, Sys 0 00:00:00  -  Run Local Usage
+	0  -  Run Bytes Sent By Job
+	274  -  Run Bytes Received By Job
+	Partitionable Resources :    Usage   Request Allocated Assigned
+	   Cpus                 :    11.97        20        20 
+	   Disk (KB)            :    18    104857600 105011615 
+	   Gpus (Average)       :     0            1         1 "GPU-ebb73fb1"
+	   GpusMemory (MB)      :   311                        
+	   Memory (MB)          :   127       102400    102400 
+...
+009 (729922.000.000) 2024-07-24 16:01:03 Job was aborted.
+	via condor_rm (by user choij)
+...

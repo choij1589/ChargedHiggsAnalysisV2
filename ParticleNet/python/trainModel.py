@@ -209,7 +209,7 @@ def main():
     os.makedirs(os.path.dirname(outtreepath), exist_ok=True)
     f = ROOT.TFile(outtreepath, "RECREATE")
     tree = ROOT.TTree("Events", "")
-    
+
     # define branches
     score = array("f", [0.]); tree.Branch("score", score, "score/F")
     trainMask = array("B", [False]); tree.Branch("trainMask", trainMask, "trainMask/O")
@@ -248,6 +248,6 @@ def main():
     f.cd()
     tree.Write()
     f.Close()
-                
+
 if __name__ == "__main__":
     main()

@@ -1,0 +1,41 @@
+WARNING: underlay of /etc/cvmfs/CMS_SITECONF/local required more than 50 (143) bind mounts
+ERROR:syne_tune.tuner:Stopped as 1 failures were reached
+ERROR:syne_tune.tuner:showing log of first failure
+ERROR:syne_tune.tuner:sagemaker.config INFO - Not applying SDK defaults from location: /etc/xdg/sagemaker/config.yaml
+sagemaker.config INFO - Not applying SDK defaults from location: /home/choij/.config/sagemaker/config.yaml
+
+ERROR:syne_tune.tuner:Traceback (most recent call last):
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/./python/trainModelSimple.py", line 172, in <module>
+    main()
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/./python/trainModelSimple.py", line 159, in main
+    train(model, optimizer, scheduler, use_plateau_scheduler=(args.scheduler=="ReduceLROnPlateau"))
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/./python/trainModelSimple.py", line 86, in train
+    out = model(data.x.to(args.device), data.edge_index.to(args.device), data.graphInput.to(args.device), data.batch.to(args.device))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/pyg/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/pyg/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/python/Models.py", line 245, in forward
+    conv1 = self.conv1(x, edge_index, batch=batch)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/pyg/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/pyg/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/python/Models.py", line 160, in forward
+    out += self.skip(x)
+RuntimeError: The size of tensor a (76) must match the size of tensor b (77) at non-singleton dimension 1
+
+Traceback (most recent call last):
+  File "/data6/Users/choij/ChargedHiggsAnalysisV2/ParticleNet/python/launchHPO.py", line 52, in <module>
+    tuner.run()
+  File "/root/syne-tune/syne_tune/tuner.py", line 370, in run
+    self._handle_failure(done_trials_statuses=done_trials_statuses)
+  File "/root/syne-tune/syne_tune/tuner.py", line 549, in _handle_failure
+    raise ValueError(f"Trial - {trial_id} failed")
+ValueError: Trial - 2 failed
