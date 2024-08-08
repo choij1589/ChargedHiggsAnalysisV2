@@ -1,25 +1,25 @@
 #!/bin/bash
-echo "@@@@ Working on $HOSTNAME"
-if [[ $HOSTNAME == *"tamsa"* ]]; then
+HOST=`hostname`
+echo "@@@@ Working on $HOST"
+if [[ $HOST == *"tamsa"* ]]; then
     export WORKDIR="/data6/Users/choij/ChargedHiggsAnalysisV2"
     source /opt/conda/bin/activate
     conda activate pyg
-elif [[ $HOSTNAME == *"cms"* ]]; then
+elif [[ $HOST == *"cms"* ]]; then
     export WORKDIR="/data6/Users/choij/ChargedHiggsAnalysisV2"
     source /opt/conda/bin/activate
     conda activate pyg
-elif [[ $HOSTNAME == *"gamsa"* ]]; then
+elif [[ $HOST == *"gamsa"* ]]; then
     export WORKDIR="/data6/Users/choij/ChargedHiggsAnalysisV2"
     source ~/.conda-activate
     conda activate pyg
-else
+elif [[ $HOST == *"Mac"* ]]; then
     export WORKDIR="$HOME/workspace/ChargedHiggsAnalysisV2"
     source ~/.conda-activate
     conda activate pyg
-    ### Warning message with red color
-    if [[ `hostname` == *"Mac"* ]]; then
-        echo -e "\e[31m@@@@ WARNING: pyg usage deprecated in MacOS\e[0m"
-    fi
+else
+    echo "Unknown host"
+    return 1
 fi
 
 export PYTHONPATH=$WORKDIR/CommonTools/python:$PYTHONPATH
