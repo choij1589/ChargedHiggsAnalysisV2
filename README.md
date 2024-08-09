@@ -28,12 +28,12 @@ conda create -n pyg -c conda-forge python=3.11 root=6.30.04 -y
 conda activate pyg
 
 # install torch & torch_geometric
-# used cu121 instead of cu118 to make the version of CUDA and PyTrorch compatible
+# used cu121 instead of cu118 to make the version of CUDA and PyTorch compatible
 #pip install torch --index-url https://download.pytorch.org/whl/cu118
 pip install torch --index-url https://download.pytorch.org/whl/cu121
 pip install torch_geometric
 #pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.3.0+cu118.html
-pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.3.0+cu118.html
+pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.3.0+cu121.html
 
 # install other packages
 pip install cmake
