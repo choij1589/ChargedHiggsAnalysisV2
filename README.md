@@ -11,3 +11,36 @@ In most cases, submodules require SKFlatOutput for data and ROOT for the analysi
 # Initial starting point
 source setup.sh
 ```
+
+## Install some necessary packages
+```bash
+# install pip
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3 get-pip.py
+
+# set conda env
+source /opt/conda/bin/activate 
+# if the directory does not exist, install miniconda following the link below
+# https://docs.anaconda.com/miniconda/#quick-command-line-install
+conda update -n base -c defaults conda
+conda config --set channel_priority strict
+conda create -n pyg -c conda-forge python=3.11 root=6.30.04 -y
+conda activate pyg
+
+# install torch & torch_geometric
+# used cu121 instead of cu118 to make the version of CUDA and PyTorch compatible
+#pip install torch --index-url https://download.pytorch.org/whl/cu118
+pip install torch --index-url https://download.pytorch.org/whl/cu121
+pip install torch_geometric
+#pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.3.0+cu118.html
+pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.3.0+cu121.html
+
+# install other packages
+pip install cmake
+pip install numpy pandas matplotlib scipy scikit-learn seaborn captum networkx
+export PATH=$PATH:/usr/local/cuda/bin #add this command in ~/.bashrc
+pip install torchlars
+git clone https://github.com/awslabs/syne-tune.git
+cd syne-tune
+pip install -e '.[extra]'
+````
