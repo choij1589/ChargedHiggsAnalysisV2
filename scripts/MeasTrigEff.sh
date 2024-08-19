@@ -32,6 +32,7 @@ cd -
 # DblMu DZ
 if [[ $ERA == '2017' ]]; then
     cd ${SKFlatOutputDir}/MeasTrigEff/$ERA/MeasDblMuDZ__/DATA
+    hadd -f MeasTrigEff_DoubleMuon.root MeasTrigEff_DoubleMuon_*.root
     hadd -f MeasTrigEff_DoubleMuon_CDEF.root MeasTrigEff_DoubleMuon_C.root MeasTrigEff_DoubleMuon_D.root MeasTrigEff_DoubleMuon_E.root MeasTrigEff_DoubleMuon_F.root
     cd -
 else

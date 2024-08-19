@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO)
 if args.debug: logging.basicConfig(level=logging.DEBUG)
 
 if args.leg == "muon":
-    DATASTREAM = "SingleElectron" if args.era == "2016" else "EGamma"
+    DATASTREAM = "EGamma" if args.era == "2018" else "SingleElectron"
     FLAG = "MeasMuLegs"
     LEG = "MuLeg"
 elif args.leg == "electron":
@@ -30,11 +30,11 @@ else:
 # helper functions
 def get_histograms(hltpath: ROOT.TString, syst: ROOT.TString, is_data: bool) -> (ROOT.TH2D, ROOT.TH2D):
     if is_data:
-        f = ROOT.TFile.Open(f"{WORKDIR}/SKFlatOutput/MeasTrigEff/{args.era}/{FLAG}__/DATA/MeasTrigEff_{DATASTREAM}.root")
+        f = ROOT.TFile.Open(f"{WORKDIR}/SKFlatOutput/Run2UltraLegacy_v3/MeasTrigEff/{args.era}/{FLAG}__/DATA/MeasTrigEff_{DATASTREAM}.root")
     elif syst == "AltMC":
-        f = ROOT.TFile.Open(f"{WORKDIR}/SKFlatOutput/MeasTrigEff/{args.era}/{FLAG}__/MeasTrigEff_DYJets.root")
+        f = ROOT.TFile.Open(f"{WORKDIR}/SKFlatOutput/Run2UltraLegacy_v3/MeasTrigEff/{args.era}/{FLAG}__/MeasTrigEff_DYJets.root")
     else:
-        f = ROOT.TFile.Open(f"{WORKDIR}/SKFlatOutput/MeasTrigEff/{args.era}/{FLAG}__/MeasTrigEff_TTLL_powheg.root")
+        f = ROOT.TFile.Open(f"{WORKDIR}/SKFlatOutput/Run2UltraLegacy_v3/MeasTrigEff/{args.era}/{FLAG}__/MeasTrigEff_TTLL_powheg.root")
         
     if syst == "AltTag":
         h_denom = f.Get(f"TrigEff_{hltpath}_{LEG}_DENOM/{syst}/fEta_Pt"); h_denom.SetDirectory(0)

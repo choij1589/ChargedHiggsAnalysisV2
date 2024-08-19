@@ -9,7 +9,9 @@ from itertools import product
 
 import torch
 import torch.nn.functional as F
-from torch_geometric.loader import DataLoader
+from torch_geometric.data import Batch
+#from torch_geometric.loader import DataLoader
+from torch.utils.data import DataLoader
 from torchlars import LARS
 
 import numpy as np
@@ -17,6 +19,7 @@ import pandas as pd
 import matplotlib as plt
 from array import array
 from sklearn import metrics
+from concurrent.futures import ThreadPoolExecutor
 
 from Preprocess import GraphDataset
 from Preprocess import rtfileToDataList
@@ -52,6 +55,35 @@ if args.background not in ["nonprompt", "diboson", "ttZ"]:
 
 WORKDIR = os.environ["WORKDIR"]
 
+def transform_data(data):
+    # For each data, rotate along z-axis randomly
+    for i in range(data.x.size(0)):
+        theta = np.random.uniform(0, 2*np.pi)
+        c, s = np.cos(theta), np.sin(theta)
+        R = np.array([[c, -s], [s, c]])
+        data.x[i, 1:3] = torch.tensor(R @ data.x[i, 1:3].numpy())
+    
+    # Randomly apply parity transformation to Px, Py and Pz
+    for i in range(data.x.size(0)):
+        if np.random.uniform() > 0.5:
+            data.x[i, 1] *= -1
+            data.x[i, 2] *= -1
+            data.x[i, 3] *= -1
+    
+    return data
+
+def train_collate_fn(data_list):
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        data_list = list(executor.map(transform_data, data_list))
+    
+    batch = Batch.from_data_list(data_list)
+    return batch
+
+def test_collate_fn(data_list):
+    # No transform
+    batch = Batch.from_data_list(data_list)
+    return batch
+
 #### load dataset
 logging.info("Start loading dataset")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
@@ -61,9 +93,9 @@ trainset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_train.pt")
 validset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_valid.pt")
 testset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_test.pt")
 
-trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True)
-validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
-testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False)
+trainLoader = DataLoader(trainset, batch_size=1024, num_workers=4, shuffle=True, collate_fn=test_collate_fn)
+validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False, collate_fn=test_collate_fn)
+testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False, collate_fn=test_collate_fn)
 
 if "cuda" in args.device:
     logging.info("Using cuda")
@@ -128,7 +160,7 @@ def main():
         optimizer = torch.optim.Adadelta(model.parameters(), lr=args.initLR, weight_decay=3e-5)
     else:
         raise NotImplementedError(f"Unsupporting optimizer {args.optimizer}")
-    #optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
+    optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
 
     logging.info(f"Using scheduler {args.scheduler}")
     if args.scheduler == "StepLR":

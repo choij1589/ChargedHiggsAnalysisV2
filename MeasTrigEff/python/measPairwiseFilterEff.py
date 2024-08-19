@@ -2,6 +2,7 @@
 import os
 import logging
 import argparse
+import numpy as np
 import ROOT
 
 WORKDIR = os.environ['WORKDIR']
@@ -35,7 +36,7 @@ elif args.filter == "DblMuM":
         DATASTREAM = "DoubleMuon_CDEF"
     else:
         DATASTREAM = "DoubleMuon"
-    FLAG = "MeasDblMuM"
+    FLAG = "MeasDblMuDZ"
     DENOM = "TrigEff_IsoDZ"
     NUM = "TrigEff_IsoDZM"
 elif args.filter == "EMuDZ":
@@ -48,7 +49,7 @@ else:
     raise ValueError(f"Invalid filter {args.filter}")
 
 # helper functions
-def get_histograms(filter: ROOT.TString, syst: ROOT.TString, is_data: bool) -> ROOT.TH1D:
+def meas_efficiency(filter: ROOT.TString, syst: ROOT.TString, is_data: bool) -> ROOT.TH1D:
     if is_data:
         f = ROOT.TFile.Open(f"{WORKDIR}/SKFlatOutput/Run2UltraLegacy_v3/MeasTrigEff/{args.era}/{FLAG}__/DATA/MeasTrigEff_{DATASTREAM}.root")
     elif syst == "AltMC":
@@ -59,8 +60,21 @@ def get_histograms(filter: ROOT.TString, syst: ROOT.TString, is_data: bool) -> R
     h_denom = f.Get(DENOM); h_denom.SetDirectory(0)
     h_num = f.Get(NUM); h_num.SetDirectory(0)
     f.Close()
-    
-    return (h_denom, h_num)
 
+    if filter == "EMuDZ":
+        num, err_num = h_num.GetBinContent(2), h_num.GetBinError(2)
+        denom, err_denom = h_denom.GetBinContent(1), h_denom.GetBinError(1)
+    else:
+        err_num = np.array([0.])
+        err_denom = np.array([0.])
+        num = h_num.IntegralAndError(1, h_num.GetNbinsX(), err_num)
+        denom = h_denom.IntegralAndError(1, h_denom.GetNbinsX(), err_denom)
+        err_num, err_denom = err_num[0], err_denom[0]
+    eff = num / denom
+    err = eff*np.sqrt((err_num/num)**2 + (err_denom/denom)**2)
+
+    return (eff, err)
+    
 if __name__ == "__main__":
-    h_denom, h_num = get_histograms(args.filter, "Central", True)
+    print(f"# Pairwise Filter, Data Eff, MC Eff, MC Eff - AltMC")
+    print(args.filter, meas_efficiency(args.filter, "Central", True), meas_efficiency(args.filter, "Central", False), meas_efficiency(args.filter, "AltMC", False), sep=", ")
