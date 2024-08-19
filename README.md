@@ -26,20 +26,23 @@ conda update -n base -c defaults conda
 conda config --set channel_priority strict
 conda create -n pyg -c conda-forge python=3.11 root=6.30.04 -y
 conda activate pyg
+#add below commands in ~/.bashrc
+export PATH=$PATH:/usr/local/cuda/bin
+export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
 
 # install torch & torch_geometric
 # used cu121 instead of cu118 to make the version of CUDA and PyTorch compatible
 #pip install torch --index-url https://download.pytorch.org/whl/cu118
-pip install torch --index-url https://download.pytorch.org/whl/cu121
+pip install torch==2.3.1+cu121 --index-url https://download.pytorch.org/whl/cu121
 pip install torch_geometric
 #pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.3.0+cu118.html
-pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.3.0+cu121.html
+pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.3.1+cu121.html
 
 # install other packages
 pip install cmake
 pip install numpy pandas matplotlib scipy scikit-learn seaborn captum networkx
-export PATH=$PATH:/usr/local/cuda/bin #add this command in ~/.bashrc
-pip install torchlars
+#pip install torchlars
+pip install torchlars --no-cache-dir
 git clone https://github.com/awslabs/syne-tune.git
 cd syne-tune
 pip install -e '.[extra]'
