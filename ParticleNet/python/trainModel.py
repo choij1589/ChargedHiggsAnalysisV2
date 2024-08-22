@@ -28,12 +28,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--signal", required=True, type=str, help="signal")
 parser.add_argument("--background", required=True, type=str, help="background")
 parser.add_argument("--channel", required=True, type=str, help="channel")
-parser.add_argument("--epochs", required=True, type=int, help="max epochs")
+parser.add_argument("--max_epochs", required=True, type=int, help="max epochs")
 parser.add_argument("--model", required=True, type=str, help="model type")
 parser.add_argument("--nNodes", required=True, type=int, help="number of nodes for each layer")
 parser.add_argument("--dropout_p", default=0.25, type=float, help="dropout_p")
 parser.add_argument("--optimizer", required=True, type=str, help="optimizer")
 parser.add_argument("--initLR", required=True, type=float, help="initial learning rate")
+parser.add_argument("--weight_decay", required=True, type=float, help="weight decay")
 parser.add_argument("--scheduler", required=True, type=str, help="lr scheduler")
 parser.add_argument("--device", default="cpu", type=str, help="cpu or cuda")
 parser.add_argument("--pilot", action="store_true", default=False, help="pilot mode")
@@ -121,14 +122,13 @@ def main():
 
     logging.info(f"Using optimizer {args.optimizer}")
     if args.optimizer == "RMSprop":
-        optimizer = torch.optim.RMSprop(model.parameters(), lr=args.initLR, momentum=0.9, weight_decay=3e-5)
+        optimizer = torch.optim.RMSprop(model.parameters(), lr=args.initLR, momentum=0.9, weight_decay=args.weight_decay)
     elif args.optimizer == "Adam":
-        optimizer = torch.optim.Adam(model.parameters(), lr=args.initLR, weight_decay=3e-5)
+        optimizer = torch.optim.Adam(model.parameters(), lr=args.initLR, weight_decay=args.weight_decay)
     elif args.optimizer == "Adadelta":
-        optimizer = torch.optim.Adadelta(model.parameters(), lr=args.initLR, weight_decay=3e-5)
+        optimizer = torch.optim.Adadelta(model.parameters(), lr=args.initLR, weight_decay=args.weight_decay)
     else:
         raise NotImplementedError(f"Unsupporting optimizer {args.optimizer}")
-    #optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
 
     logging.info(f"Using scheduler {args.scheduler}")
     if args.scheduler == "StepLR":
@@ -143,6 +143,7 @@ def main():
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=5)
     else:
         raise NotImplementedError(f"Unsupporting scheduler {args.scheduler}")
+    optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
 
     modelName =  f"{args.model}-nNodes{args.nNodes}_{args.optimizer}_initLR-{str(args.initLR).replace('.','p')}_{args.scheduler}"
     logging.info("Start training...")
@@ -152,7 +153,7 @@ def main():
     earlyStopper = EarlyStopper(patience=15, path=checkptpath)
     summaryWriter = SummaryWriter(name=modelName)
 
-    for epoch in range(args.epochs):
+    for epoch in range(args.max_epochs):
         train(model, optimizer, scheduler, use_plateau_scheduler=(args.scheduler=="ReduceLROnPlateau"))
         trainLoss, trainAcc = test(model, trainLoader)
         validLoss, validAcc = test(model, validLoader)

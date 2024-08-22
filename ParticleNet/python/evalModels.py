@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import os
+import sys
+import logging
 import argparse
 import numpy as np
 import pandas as pd
@@ -30,10 +32,11 @@ CHANNEL = args.channel
 SIG = args.signal
 BKG = args.background
 
-nModels = 10
+nModels = 5
 nFeatures = 9
 nGraphFeatures = 4
 nClasses = 2
+max_epochs = 81
 
 def getChromosomes(SIG, BKG, top=10):
     CSVFILE = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/syne_tune_hpo/CSV/hpo_{SIG}_vs_{BKG}_penalty-{str(args.penalty).replace('.','p')}.csv"
@@ -43,10 +46,10 @@ def getChromosomes(SIG, BKG, top=10):
 
     chromosomes = []
     for elt in lst:
-        chromosome = {'nNodes':elt['config_nNodes'], 'optimizer':elt['config_optimizer'], 'initLR':elt['config_initLR'], 'scheduler':elt['config_scheduler'], 'model':elt['config_model']}
+        chromosome = {'nNodes':elt['config_nNodes'], 'optimizer':elt['config_optimizer'], 'initLR':elt['config_initLR'], 'scheduler':elt['config_scheduler'], 'model':elt['config_model'], 'weight_decay':elt['config_weight_decay'], 'trial_id':elt['trial_id']}
         if chromosome in chromosomes: continue
         chromosomes.append(chromosome)
-        if len(chromosomes)==10: break
+        if len(chromosomes)==top: break
 
     for c in chromosomes:
         print(c)
@@ -68,8 +71,8 @@ def getKSprob(tree, idx):
             if signalMask[0]: hSigTest.Fill(scores[f"model{idx}"][0])
             else:             hBkgTest.Fill(scores[f"model{idx}"][0])
 
-    ksProbSig = hSigTrain.KolmogorovTest(hSigTest, option="DX")
-    ksProbBkg = hBkgTrain.KolmogorovTest(hBkgTest, option="DX")
+    ksProbSig = hSigTrain.KolmogorovTest(hSigTest, option="X")
+    ksProbBkg = hBkgTrain.KolmogorovTest(hBkgTest, option="X")
     del hSigTrain, hBkgTrain, hSigTest, hBkgTest
 
     return ksProbSig, ksProbBkg
@@ -131,20 +134,16 @@ def plotROC(model, trainLoader, validLoader, testLoader, path):
 
 def plotTrainingStage(idx, path):
     chromosome = chromosomes[idx]
-    nNodes, optimizer, initLR, scheduler, model = (
-        chromosome.get('nNodes'),chromosome.get('optimizer'),chromosome.get('initLR'),chromosome.get('scheduler'),chromosome.get('model')
+    nNodes, optimizer, initLR, scheduler, model, weight_decay, trial_id = (
+        chromosome.get('nNodes'),chromosome.get('optimizer'),chromosome.get('initLR'),chromosome.get('scheduler'),chromosome.get('model'),chromosome.get('weight_decay'),chromosome.get('trial_id')
     )
-    csvpath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/syne_tune_hpo/CSV/hpo_{SIG}_vs_{BKG}_penalty-{str(args.penalty).replace('.','p')}.csv"
-    
-    record_raw = pd.read_csv(csvpath)
-    record = record_raw[
-        (record_raw['config_model'] == model) & (record_raw['config_nNodes'] == nNodes) & (record_raw['config_optimizer'] == optimizer) & (record_raw['config_initLR'] == initLR) & (record_raw['config_scheduler'] == scheduler)
-    ]
+    csvpath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/CSV/{model}-nNodes{nNodes}_{optimizer}_initLR-{str(initLR).replace('.','p')}_{scheduler}.csv"
+    record = pd.read_csv(csvpath, index_col=0).transpose()
 
-    trainLoss = record['train_loss']
-    validLoss = record['valid_loss']
-    trainAcc = record['train_accuracy']
-    validAcc = record['valid_accuracy']
+    trainLoss = list(record.loc['loss/train'])
+    validLoss = list(record.loc['loss/valid'])
+    trainAcc  = list(record.loc['acc/train'])
+    validAcc  = list(record.loc['acc/valid'])
 
     plt.figure(figsize=(21, 18))
     plt.subplot(2, 1, 1)
@@ -181,10 +180,10 @@ chromosomes = getChromosomes(SIG, BKG, top=nModels)
 models = {}
 
 for idx, chromosome in enumerate(chromosomes):
-    nNodes, optimizer, initLR, scheduler, model = (
-        chromosome.get('nNodes'),chromosome.get('optimizer'),chromosome.get('initLR'),chromosome.get('scheduler'),chromosome.get('model')
+    nNodes, optimizer, initLR, scheduler, model, weight_decay = (
+        chromosome.get('nNodes'),chromosome.get('optimizer'),chromosome.get('initLR'),chromosome.get('scheduler'),chromosome.get('model'),chromosome.get('weight_decay')
     )
-    filePath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/models/{model}-nNodes{nNodes}_{optimizer}_initLR-{str(initLR).replace('.', 'p')}*_{scheduler}_penalty-{str(args.penalty).replace('.','p')}.pt"
+    filePath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/models/{model}-nNodes{nNodes}_{optimizer}_initLR-{str(initLR).replace('.', 'p')}*_{scheduler}.pt"
     files = glob.glob(filePath)
     for file in files:
         modelPath = file
@@ -193,11 +192,12 @@ for idx, chromosome in enumerate(chromosomes):
     elif model=="ParticleNetV2":
         model = ParticleNetV2(nFeatures, nGraphFeatures, nClasses, nNodes, dropout_p=0.25)
     model.load_state_dict(torch.load(modelPath, map_location=torch.device('cpu')))
+
     models[idx] = model
 
  
 #### prepare directories
-outputPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/result_penalty-{str(args.penalty).replace('.','p')}/temp.png"
+outputPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/result/temp.png"
 if not os.path.exists(os.path.dirname(outputPath)): os.makedirs(os.path.dirname(outputPath))
 
 #### save score distributions
@@ -303,7 +303,7 @@ fitness = 0.
 for idx in range(nModels):
     ksProbSig, ksProbBkg = getKSprob(tree, idx)
     print(idx, ksProbSig, ksProbBkg)
-    if not (ksProbSig > 0.05 and ksProbBkg > 0.05): continue
+    #if not (ksProbSig > 0.05 and ksProbBkg > 0.05): continue
 
     trainAUC = getAUC(tree, idx, "train")
     testAUC = getAUC(tree, idx, "test")
@@ -312,6 +312,9 @@ for idx in range(nModels):
     if fitness < thisFitness:
         bestModelIdx = idx
         fitness = thisFitness
+if bestModelIdx == -1:
+    print("There's NO model with ksProb > 0.05 -> Skip drawing plots")
+    sys.exit()
 print(f"best model: model-{bestModelIdx} with test AUC {fitness:.3f}")
 bestChromosome = chromosomes[bestModelIdx]
 nNodes, optimizer, initLR, scheduler, model = (
