@@ -32,7 +32,7 @@ CHANNEL = args.channel
 SIG = args.signal
 BKG = args.background
 
-nModels = 5
+nModels = 10
 nFeatures = 9
 nGraphFeatures = 4
 nClasses = 2
@@ -191,7 +191,7 @@ for idx, chromosome in enumerate(chromosomes):
         model = ParticleNet(nFeatures, nGraphFeatures, nClasses, nNodes, dropout_p=0.25)
     elif model=="ParticleNetV2":
         model = ParticleNetV2(nFeatures, nGraphFeatures, nClasses, nNodes, dropout_p=0.25)
-    model.load_state_dict(torch.load(modelPath, map_location=torch.device('cpu')))
+    model.load_state_dict(torch.load(modelPath, map_location=torch.device('cuda')))
 
     models[idx] = model
 
