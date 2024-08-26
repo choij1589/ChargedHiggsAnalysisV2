@@ -99,10 +99,7 @@ trainset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_train.pt")
 validset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_valid.pt")
 testset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_test.pt")
 
-#trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True)
-#validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
-#testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False)
-trainLoader = DataLoader(trainset, batch_size=1024, num_workers=4, shuffle=True, collate_fn=train_collate_fn)
+trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True, collate_fn=train_collate_fn)
 validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False, collate_fn=test_collate_fn)
 testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False, collate_fn=test_collate_fn)
 
@@ -123,7 +120,7 @@ def train(model, optimizer, scheduler, use_plateau_scheduler=False):
         loss.backward()
         optimizer.step()
         total_loss += loss.item()
-    
+
     if use_plateau_scheduler:
         avg_loss = total_loss / len(trainLoader.dataset)
         scheduler.step(total_loss)
@@ -199,7 +196,7 @@ def main():
 
         logging.debug(f"[EPOCH {epoch}]\tTrain Acc: {trainAcc*100:.2f}%\tTrain Loss: {trainLoss:.4e}")
         logging.debug(f"[EPOCH {epoch}]\tVlaid Acc: {validAcc*100:.2f}%\tValid Loss: {validLoss:.4e}")
-        
+
         # save model
         torch.save(model.state_dict(), checkptpath)
         report(epoch=epoch, objective=validLoss+args.penalty*penalty, train_loss=trainLoss, train_accuracy=trainAcc, valid_loss=validLoss, valid_accuracy=validAcc)
