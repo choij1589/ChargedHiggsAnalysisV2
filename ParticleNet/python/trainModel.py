@@ -92,7 +92,7 @@ trainset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_train.pt")
 validset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_valid.pt")
 testset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_test.pt")
 
-trainLoader = DataLoader(trainset, batch_size=1024, num_workers=4, shuffle=True, collate_fn=test_collate_fn)
+trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True, collate_fn=train_collate_fn)
 validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False, collate_fn=test_collate_fn)
 testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False, collate_fn=test_collate_fn)
 
@@ -181,7 +181,7 @@ def main():
     checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/models/{modelName}.pt"
     summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/CSV/{modelName}.csv"
     outtreepath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/trees/{modelName}.root"
-    earlyStopper = EarlyStopper(patience=15, path=checkptpath)
+    earlyStopper = EarlyStopper(patience=3, path=checkptpath)
     summaryWriter = SummaryWriter(name=modelName)
 
     for epoch in range(args.max_epochs):
@@ -196,8 +196,8 @@ def main():
         logging.info(f"[EPOCH {epoch}]\tTrain Acc: {trainAcc*100:.2f}%\tTrain Loss: {trainLoss:.4e}")
         logging.info(f"[EPOCH {epoch}]\tValid Acc: {validAcc*100:.2f}%\tValid Loss: {validLoss:.4e}")
 
-        penalty = max(0, validLoss-trainLoss)
-        earlyStopper.update(validLoss, penalty, model)
+        #penalty = max(0, validLoss-trainLoss)
+        earlyStopper.update(validLoss, model)
         if earlyStopper.earlyStop:
             logging.info(f"Early stopping in epoch {epoch}"); break
         print()
