@@ -7,21 +7,23 @@ import torch
 logging.basicConfig(level=logging.INFO)
 
 class EarlyStopper():
-    def __init__(self, patience=7, delta=0, path="./checkpoint.pt"):
+    def __init__(self, patience=7, improvement=0.005, path="./checkpoint.pt"):
         self.patience = patience
+        self.improvement = improvement
         self.counter = 0
         self.bestScore = None
         self.earlyStop = False
         self.valLossMin = np.Inf
-        self.delta = delta
+        self.delta = 0.
         self.path = path
         if not os.path.exists(os.path.dirname(path)):
             os.makedirs(os.path.dirname(path))
 
-    def update(self, valLoss, panelty,  model):
-        score = -(valLoss+panelty)
+    def update(self, valLoss, model):
+        score = -valLoss
         if self.bestScore is None:
             self.bestScore = score
+            self.delta = self.bestScore * self.improvement
             self.saveCheckpoint(valLoss, model)
         elif score <= self.bestScore + self.delta:
             self.counter += 1
@@ -30,6 +32,7 @@ class EarlyStopper():
                 self.earlyStop = True
         else:
             self.bestScore = score
+            self.delta = self.bestScore*self.improvement
             self.saveCheckpoint(valLoss, model)
             self.counter = 0
 

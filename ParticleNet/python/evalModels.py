@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import os
 import sys
 import logging
@@ -55,7 +54,7 @@ def getChromosomes(SIG, BKG, top=10):
         print(c)
 
     return chromosomes
-    
+
 def getKSprob(tree, idx):
     hSigTrain = TH1D("hSigTrain", "", 1000, 0., 1.)
     hBkgTrain = TH1D("hBkgTrain", "", 1000, 0., 1.)
@@ -64,10 +63,10 @@ def getKSprob(tree, idx):
 
     for i in range(tree.GetEntries()):
         tree.GetEntry(i)
-        if trainMask[0]: 
+        if trainMask[0]:
             if signalMask[0]: hSigTrain.Fill(scores[f"model{idx}"][0])
             else:             hBkgTrain.Fill(scores[f"model{idx}"][0])
-        if testMask[0]:  
+        if testMask[0]:
             if signalMask[0]: hSigTest.Fill(scores[f"model{idx}"][0])
             else:             hBkgTest.Fill(scores[f"model{idx}"][0])
 
@@ -113,13 +112,13 @@ def prepareROC(model, loader):
     answers = np.array(answers)
     fpr, tpr, _ = metrics.roc_curve(answers, predictions, pos_label=1)
     auc = metrics.auc(fpr, tpr)
-    
+
     return (fpr, tpr, auc)
 
 def plotROC(model, trainLoader, validLoader, testLoader, path):
     plt.figure(figsize=(12, 12))
-    plt.title(f"ROC curve")    
-    
+    plt.title(f"ROC curve")
+
     fpr, tpr, auc = prepareROC(model, trainLoader)
     plt.plot(tpr, 1.-fpr, 'b--', label=f"train ROC ({auc:.3f})")
     fpr, tpr, auc = prepareROC(model, validLoader)
@@ -163,7 +162,7 @@ def plotTrainingStage(idx, path):
     plt.grid(True)
     plt.savefig(path)
     plt.close()
-    
+
 #### load datasets
 print("@@@@ Start loading dataset...")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
@@ -195,7 +194,7 @@ for idx, chromosome in enumerate(chromosomes):
 
     models[idx] = model
 
- 
+
 #### prepare directories
 outputPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/result/temp.png"
 if not os.path.exists(os.path.dirname(outputPath)): os.makedirs(os.path.dirname(outputPath))
@@ -222,7 +221,7 @@ for data in trainLoader:
     scoreBatch = {}
     for idx in models.keys():
         scoreBatch[idx] = []
-    
+
     # fill scores 
     with torch.no_grad():
         for idx, model in models.items():
@@ -230,7 +229,7 @@ for data in trainLoader:
             scores = model(data.x, data.edge_index, data.graphInput, data.batch)
             for score in scores: 
                 scoreBatch[idx].append(score[1].numpy())
-    
+
     # fill events
     for i in range(len(scoreBatch[0])):
         for idx in models.keys():
@@ -244,37 +243,37 @@ for data in validLoader:
     scoreBatch = {}
     for idx in models.keys():
         scoreBatch[idx] = []
-    
+
     # fill scores 
     with torch.no_grad():
         for idx, model in models.items():
             model.eval()
             scores = model(data.x, data.edge_index, data.graphInput, data.batch)
-            for score in scores: 
+            for score in scores:
                 scoreBatch[idx].append(score[1].numpy())
-    
+
     # fill events
     for i in range(len(scoreBatch[0])):
         for idx in models.keys():
             scoreBranch[f"score_model{idx}"][0] = scoreBatch[idx][i]
         signalMask[0] = True if data.y[i] == 1 else False
         tree.Fill()
-        
+
 print("@@@@ Filling testset...")
 trainMask[0] = False; validMask[0] = False; testMask[0] = True
 for data in testLoader:
     scoreBatch = {}
     for idx in models.keys():
         scoreBatch[idx] = []
-    
+
     # fill scores 
     with torch.no_grad():
         for idx, model in models.items():
             model.eval()
             scores = model(data.x, data.edge_index, data.graphInput, data.batch)
-            for score in scores: 
+            for score in scores:
                 scoreBatch[idx].append(score[1].numpy())
-    
+
     # fill events
     for i in range(len(scoreBatch[0])):
         for idx in models.keys():
@@ -334,6 +333,6 @@ with open(f"/{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/summary.txt"
 
 #### make plots
 print("@@@@ Visualizing...")
-for idx, model in models.items():    
+for idx, model in models.items():
     plotROC(model, trainLoader, validLoader, testLoader, f"{os.path.dirname(outputPath)}/ROC-model{idx}.png") 
     plotTrainingStage(idx, f"{os.path.dirname(outputPath)}/training-model{idx}.png") 

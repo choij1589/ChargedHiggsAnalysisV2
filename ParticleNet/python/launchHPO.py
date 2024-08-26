@@ -49,8 +49,7 @@ entry_point = "./python/trainModelSimple.py"
 tuner = Tuner(
     trial_backend=LocalBackend(entry_point=entry_point),
     scheduler=scheduler,
-    #stop_criterion=StoppingCriterion(max_wallclock_time=60*60*3),
-    stop_criterion=StoppingCriterion(max_wallclock_time=60*60*5),
+    stop_criterion=StoppingCriterion(max_wallclock_time=60*60*3),
     n_workers=12
 )
 tuner.run()
