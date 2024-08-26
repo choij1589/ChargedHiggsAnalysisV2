@@ -9,7 +9,6 @@ from itertools import product
 
 import torch
 import torch.nn.functional as F
-#from torch_geometric.loader import DataLoader
 from torch_geometric.data import Batch
 from torch.utils.data import DataLoader
 from torchlars import LARS
@@ -70,7 +69,6 @@ def transform_data(data):
             data.x[i, 1] *= -1
             data.x[i, 2] *= -1
             data.x[i, 3] *= -1
-
     return data
 
 def train_collate_fn(data_list):
@@ -94,10 +92,7 @@ trainset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_train.pt")
 validset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_valid.pt")
 testset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_test.pt")
 
-#trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True)
-#validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
-#testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False)
-trainLoader = DataLoader(trainset, batch_size=1024, num_workers=4, shuffle=True, collate_fn=train_collate_fn)
+trainLoader = DataLoader(trainset, batch_size=1024, num_workers=4, shuffle=True, collate_fn=test_collate_fn)
 validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False, collate_fn=test_collate_fn)
 testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False, collate_fn=test_collate_fn)
 
@@ -164,6 +159,7 @@ def main():
         optimizer = torch.optim.Adadelta(model.parameters(), lr=args.initLR, weight_decay=args.weight_decay)
     else:
         raise NotImplementedError(f"Unsupporting optimizer {args.optimizer}")
+    optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
 
     logging.info(f"Using scheduler {args.scheduler}")
     if args.scheduler == "StepLR":
@@ -212,7 +208,7 @@ def main():
     os.makedirs(os.path.dirname(outtreepath), exist_ok=True)
     f = ROOT.TFile(outtreepath, "RECREATE")
     tree = ROOT.TTree("Events", "")
-    
+
     # define branches
     score = array("f", [0.]); tree.Branch("score", score, "score/F")
     trainMask = array("B", [False]); tree.Branch("trainMask", trainMask, "trainMask/O")
@@ -251,6 +247,6 @@ def main():
     f.cd()
     tree.Write()
     f.Close()
-                
+
 if __name__ == "__main__":
     main()

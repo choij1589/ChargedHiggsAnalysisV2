@@ -1,6 +1,10 @@
 SKFlatOutput/*
-*/build/*
-*/lib/*
-*/__pycache__/*
+BackUps/*
+**/build/*
+**/lib/*
+**/__pycache__/*
+.DS_Store
+**/.DS_Store
 */dataset/*
-*/*.pyc
+*.pyc
+**/*.pyc
