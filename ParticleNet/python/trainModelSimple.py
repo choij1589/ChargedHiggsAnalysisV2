@@ -10,14 +10,16 @@ from itertools import product
 
 import torch
 import torch.nn.functional as F
-from torch_geometric.loader import DataLoader
-#from torchlars import LARS
+from torch_geometric.data import Batch
+from torch.utils.data import DataLoader
+from torchlars import LARS
 
 import numpy as np
 import pandas as pd
 import matplotlib as plt
 from array import array
 from sklearn import metrics
+from concurrent.futures import ThreadPoolExecutor
 
 from syne_tune import Reporter
 
@@ -43,6 +45,7 @@ parser.add_argument("--device", default="cuda", type=str, help="cpu or cuda")
 parser.add_argument("--pilot", action="store_true", default=True, help="pilot mode")
 parser.add_argument("--debug", action="store_true", default=False, help="debug mode")
 parser.add_argument("--st_checkpoint_dir", type=str, help="checkpoint directory")
+parser.add_argument("--penalty", type=float, default=0.3, help="lambda multiplied to the penalty")
 args = parser.parse_args()
 report = Reporter()
 
@@ -58,6 +61,35 @@ if args.background not in ["nonprompt", "diboson", "ttZ"]:
 
 WORKDIR = os.environ["WORKDIR"]
 
+def transform_data(data):
+    # For each data, rotate along z-axis randomly
+    for i in range(data.x.size(0)):
+        theta = np.random.uniform(0, 2*np.pi)
+        c, s = np.cos(theta), np.sin(theta)
+        R = np.array([[c, -s], [s, c]])
+        data.x[i, 1:3] = torch.tensor(R @ data.x[i, 1:3].numpy())
+
+    # Randomly apply parity transformation to Px, Py and Pz
+    for i in range(data.x.size(0)):
+        if np.random.uniform() > 0.5:
+            data.x[i, 1] *= -1
+            data.x[i, 2] *= -1
+            data.x[i, 3] *= -1
+
+    return data
+
+def train_collate_fn(data_list):
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        data_list = list(executor.map(transform_data, data_list))
+
+    batch = Batch.from_data_list(data_list)
+    return batch
+
+def test_collate_fn(data_list):
+    # No transform
+    batch = Batch.from_data_list(data_list)
+    return batch
+
 #### load dataset
 logging.info("Start loading dataset")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
@@ -67,9 +99,12 @@ trainset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_train.pt")
 validset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_valid.pt")
 testset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_test.pt")
 
-trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True)
-validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
-testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False)
+#trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True)
+#validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
+#testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False)
+trainLoader = DataLoader(trainset, batch_size=1024, num_workers=4, shuffle=True, collate_fn=train_collate_fn)
+validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False, collate_fn=test_collate_fn)
+testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False, collate_fn=test_collate_fn)
 
 if "cuda" in args.device:
     logging.info("Using cuda")
@@ -148,7 +183,7 @@ def main():
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=5)
     else:
         raise NotImplementedError(f"Unsupporting scheduler {args.scheduler}")
-    #optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
+    optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
 
     modelName =  f"{args.model}-nNodes{args.nNodes}_{args.optimizer}_initLR-{str(args.initLR).replace('.','p')}_{args.scheduler}"
     logging.info("Start training...")
@@ -159,14 +194,15 @@ def main():
         train(model, optimizer, scheduler, use_plateau_scheduler=(args.scheduler=="ReduceLROnPlateau"))
         trainLoss, trainAcc = test(model, trainLoader)
         validLoss, validAcc = test(model, validLoader)
-        panelty = max(0, validLoss-trainLoss)
+
+        penalty = max(0, validLoss-trainLoss)
 
         logging.debug(f"[EPOCH {epoch}]\tTrain Acc: {trainAcc*100:.2f}%\tTrain Loss: {trainLoss:.4e}")
         logging.debug(f"[EPOCH {epoch}]\tVlaid Acc: {validAcc*100:.2f}%\tValid Loss: {validLoss:.4e}")
         
         # save model
         torch.save(model.state_dict(), checkptpath)
-        report(epoch=epoch, objective=validLoss+0.3*panelty, train_loss=trainLoss, train_accuracy=trainAcc, valid_loss=validLoss, valid_accuracy=validAcc)
+        report(epoch=epoch, objective=validLoss+args.penalty*penalty, train_loss=trainLoss, train_accuracy=trainAcc, valid_loss=validLoss, valid_accuracy=validAcc)
 
 if __name__ == "__main__":
     main()
