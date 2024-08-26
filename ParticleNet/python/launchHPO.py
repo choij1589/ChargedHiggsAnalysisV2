@@ -15,6 +15,7 @@ parser.add_argument("--signal", required=True, type=str, help="Signal mass point
 parser.add_argument("--background", required=True, type=str, help="Background process")
 parser.add_argument("--channel", required=True, type=str, help="Channel")
 parser.add_argument("--debug", action="store_true", default=False, help="Enable debug mode")
+parser.add_argument("--penalty", default=0.3, help="lambda multiplied to the penalty")
 args = parser.parse_args()
 logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
 
@@ -23,13 +24,14 @@ config_space = {
     "signal": args.signal,
     "background": args.background,
     "channel": args.channel,
-    "model": "ParticleNet",
+    "model": choice(["ParticleNetV2", "ParticleNet"]),
     "optimizer": choice(["Adam", "RMSprop", "Adadelta"]),
     "scheduler": choice(["ExponentialLR", "CyclicLR", "ReduceLROnPlateau"]),
     "initLR": loguniform(1e-4, 1e-2),
-    "nNodes": lograndint(32, 128),
+    "nNodes" : choice(list(range(32, 129, 4))),
     "weight_decay": loguniform(1e-5, 1e-2),
     "max_epochs": 81,
+    "penalty": args.penalty,
 }
 
 scheduler = MOBSTER(
@@ -47,7 +49,8 @@ entry_point = "./python/trainModelSimple.py"
 tuner = Tuner(
     trial_backend=LocalBackend(entry_point=entry_point),
     scheduler=scheduler,
-    stop_criterion=StoppingCriterion(max_wallclock_time=60*60*3),
+    #stop_criterion=StoppingCriterion(max_wallclock_time=60*60*3),
+    stop_criterion=StoppingCriterion(max_wallclock_time=60*60*5),
     n_workers=12
 )
 tuner.run()
@@ -55,9 +58,7 @@ tuner.run()
 experiment = load_experiment(tuner.name)
 results = experiment.results
 best_config = pd.DataFrame(experiment.best_config(), index=[0])
-
-outpath = f"results/{args.channel}/ParticleNetV2/CSV/hpo_{args.signal}_vs_{args.background}.csv"
-print(f"Best configuration: {best_config}")
+outpath = f"results/{args.channel}/syne_tune_hpo/CSV/hpo_{args.signal}_vs_{args.background}_penalty-{str(args.penalty).replace('.','p')}.csv"
 os.makedirs(os.path.dirname(outpath), exist_ok=True)
 results.to_csv(outpath, index=False)
 best_config.to_csv(outpath.replace(".csv", "_best_config.csv"), index=False)
