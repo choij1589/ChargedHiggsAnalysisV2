@@ -1,0 +1,2 @@
+epoch,objective,train_loss,train_accuracy,valid_loss,valid_accuracy,trial_id,config_signal,config_background,config_channel,config_model,config_optimizer,config_scheduler,config_initLR,config_nNodes,config_weight_decay,config_max_epochs,config_penalty
+44,0.0005444057414929,0.0005348777501356,0.7558571428571429,0.0005422069742566,0.7555238095238095,1,MHc-130_MA-90,ttZ,Skim1E2Mu,ParticleNet,Adam,ExponentialLR,0.0019453953702247,100,0.0003842466815493,81,0.3

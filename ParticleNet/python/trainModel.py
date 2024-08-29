@@ -159,7 +159,6 @@ def main():
         optimizer = torch.optim.Adadelta(model.parameters(), lr=args.initLR, weight_decay=args.weight_decay)
     else:
         raise NotImplementedError(f"Unsupporting optimizer {args.optimizer}")
-    optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
 
     logging.info(f"Using scheduler {args.scheduler}")
     if args.scheduler == "StepLR":
