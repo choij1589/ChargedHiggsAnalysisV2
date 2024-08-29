@@ -16,6 +16,7 @@ from sklearn import metrics
 from torch_geometric.loader import DataLoader
 from ROOT import TFile, TTree, TH1D, TCanvas
 from Models import ParticleNet, ParticleNetV2
+from concurrent.futures import ThreadPoolExecutor
 
 from pprint import pprint
 
@@ -163,6 +164,25 @@ def plotTrainingStage(idx, path):
     plt.savefig(path)
     plt.close()
 
+def run_trainModel(args):
+    command = [
+        "python", "python/trainModel.py",
+        "--signal", SIG,
+        "--background", BKG,
+        "--channel", CHANNEL,
+        "--max_epochs", str(max_epochs),
+        "--model", args["model"],
+        "--nNodes", str(args["nNodes"]),
+        "--dropout_p", str(0.25),
+        "--optimizer", args["optimizer"],
+        "--initLR", str(args["initLR"]),
+        "--weight_decay", str(args["weight_decay"]),
+        "--scheduler", args["scheduler"],
+        "--device", "cuda"
+    ]
+    print("Running: ",command)
+    subprocess.run(command)
+
 #### load datasets
 print("@@@@ Start loading dataset...")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
@@ -174,10 +194,20 @@ trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=Tru
 validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
 testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False)
 
-#### load models
+#### train models with early stop
 chromosomes = getChromosomes(SIG, BKG, top=nModels)
-models = {}
 
+with ThreadPoolExecutor(max_workers=max(10,len(chromosomes))) as executor:
+    futures = [
+        executor.submit(run_trainModel,args=chromosome)
+        for chromosome in chromosomes
+    ]
+
+    for future in futures:
+        future.result()
+
+#### load models
+models = {}
 for idx, chromosome in enumerate(chromosomes):
     nNodes, optimizer, initLR, scheduler, model, weight_decay = (
         chromosome.get('nNodes'),chromosome.get('optimizer'),chromosome.get('initLR'),chromosome.get('scheduler'),chromosome.get('model'),chromosome.get('weight_decay')
