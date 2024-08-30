@@ -9,8 +9,7 @@ from itertools import product
 
 import torch
 import torch.nn.functional as F
-from torch_geometric.data import Batch
-from torch.utils.data import DataLoader
+from torch_geometric.loader import DataLoader
 from torchlars import LARS
 
 import numpy as np
@@ -18,7 +17,6 @@ import pandas as pd
 import matplotlib as plt
 from array import array
 from sklearn import metrics
-from concurrent.futures import ThreadPoolExecutor
 
 from Preprocess import GraphDataset
 from Preprocess import rtfileToDataList
@@ -56,32 +54,17 @@ if args.background not in ["nonprompt", "diboson", "ttZ"]:
 WORKDIR = os.environ["WORKDIR"]
 
 def transform_data(data):
-    # For each data, rotate along z-axis randomly
-    for i in range(data.x.size(0)):
-        theta = np.random.uniform(0, 2*np.pi)
-        c, s = np.cos(theta), np.sin(theta)
-        R = np.array([[c, -s], [s, c]])
-        data.x[i, 1:3] = torch.tensor(R @ data.x[i, 1:3].numpy())
+    theta = torch.rand(data.x.size(0), device=args.device) * 2 * np.pi
+    c, s = torch.cos(theta), torch.sin(theta)
+    R = torch.stack([c, -s, s, c], dim=1).view(-1, 2, 2)
 
-    # Randomly apply parity transformation to Px, Py and Pz
-    for i in range(data.x.size(0)):
-        if np.random.uniform() > 0.5:
-            data.x[i, 1] *= -1
-            data.x[i, 2] *= -1
-            data.x[i, 3] *= -1
+    data.x[:, 1:3] = torch.bmm(R, data.x[:, 1:3].unsqueeze(-1)).squeeze(-1)
+
+    parity_mask = torch.rand(data.x.size(0), device=args.device) > 0.5
+    data.x[parity_mask, 1:4] *= -1
+    
     return data
 
-def train_collate_fn(data_list):
-    with ThreadPoolExecutor(max_workers=4) as executor:
-        data_list = list(executor.map(transform_data, data_list))
-
-    batch = Batch.from_data_list(data_list)
-    return batch
-
-def test_collate_fn(data_list):
-    # No transform
-    batch = Batch.from_data_list(data_list)
-    return batch
 
 #### load dataset
 logging.info("Start loading dataset")
@@ -92,9 +75,9 @@ trainset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_train.pt")
 validset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_valid.pt")
 testset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_test.pt")
 
-trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True, collate_fn=train_collate_fn)
-validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False, collate_fn=test_collate_fn)
-testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False, collate_fn=test_collate_fn)
+trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True)
+validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
+testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False)
 
 if "cuda" in args.device:
     logging.info("Using cuda")
@@ -107,9 +90,12 @@ def train(model, optimizer, scheduler, use_plateau_scheduler=False):
 
     total_loss = 0.
     for data in trainLoader:
+        # Rotate all points along the z-axis randomly
+        data.to(args.device)
+        transform_data(data)
+        out = model(data.x, data.edge_index, data.graphInput, data.batch)
         optimizer.zero_grad()
-        out = model(data.x.to(args.device), data.edge_index.to(args.device), data.graphInput.to(args.device), data.batch.to(args.device))
-        loss = F.cross_entropy(out, data.y.to(args.device))
+        loss = F.cross_entropy(out, data.y)
         loss.backward()
         optimizer.step()
         total_loss += loss.item()
