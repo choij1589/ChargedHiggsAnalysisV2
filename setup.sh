@@ -5,6 +5,9 @@ if [[ $HOST == *"ai-tamsa"* ]]; then
     export WORKDIR="/data6/Users/choij/ChargedHiggsAnalysisV2"
     source ~/.conda-activate
     conda activate pyg
+elif [[ $HOST == *"lxplus"* ]]; then
+	export WORKDIR="/eos/user/c/choij/ChargedHiggsAnalysisV2"
+	source /cvmfs/sft.cern.ch/lcg/views/LCG_106_cuda/x86_64-el9-gcc11-opt/setup.sh
 elif [[ $HOST == *"tamsa"* ]]; then
     export WORKDIR="/data6/Users/choij/ChargedHiggsAnalysisV2"
     source /opt/conda/bin/activate
