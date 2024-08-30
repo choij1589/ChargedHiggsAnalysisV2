@@ -12,7 +12,7 @@ import torch
 import torch.nn.functional as F
 from torch_geometric.data import Batch
 from torch.utils.data import DataLoader
-from torchlars import LARS
+#from torchlars import LARS
 
 import numpy as np
 import pandas as pd
@@ -42,10 +42,9 @@ parser.add_argument("--initLR", required=True, type=float, help="initial learnin
 parser.add_argument("--weight_decay", required=True, type=float, help="weight decay")
 parser.add_argument("--scheduler", required=True, type=str, help="lr scheduler")
 parser.add_argument("--device", default="cuda", type=str, help="cpu or cuda")
-parser.add_argument("--pilot", action="store_true", default=True, help="pilot mode")
+parser.add_argument("--pilot", action="store_true", default=False, help="pilot mode")
 parser.add_argument("--debug", action="store_true", default=False, help="debug mode")
 parser.add_argument("--st_checkpoint_dir", type=str, help="checkpoint directory")
-parser.add_argument("--penalty", type=float, default=0.3, help="lambda multiplied to the penalty")
 args = parser.parse_args()
 report = Reporter()
 
@@ -180,7 +179,7 @@ def main():
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=5)
     else:
         raise NotImplementedError(f"Unsupporting scheduler {args.scheduler}")
-    optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
+    #optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
 
     modelName =  f"{args.model}-nNodes{args.nNodes}_{args.optimizer}_initLR-{str(args.initLR).replace('.','p')}_{args.scheduler}"
     logging.info("Start training...")
@@ -192,14 +191,13 @@ def main():
         trainLoss, trainAcc = test(model, trainLoader)
         validLoss, validAcc = test(model, validLoader)
 
-        penalty = max(0, validLoss-trainLoss)
 
         logging.debug(f"[EPOCH {epoch}]\tTrain Acc: {trainAcc*100:.2f}%\tTrain Loss: {trainLoss:.4e}")
         logging.debug(f"[EPOCH {epoch}]\tVlaid Acc: {validAcc*100:.2f}%\tValid Loss: {validLoss:.4e}")
 
         # save model
         torch.save(model.state_dict(), checkptpath)
-        report(epoch=epoch, objective=validLoss+args.penalty*penalty, train_loss=trainLoss, train_accuracy=trainAcc, valid_loss=validLoss, valid_accuracy=validAcc)
+        report(epoch=epoch, objective=validLoss, train_loss=trainLoss, train_accuracy=trainAcc, valid_loss=validLoss, valid_accuracy=validAcc)
 
 if __name__ == "__main__":
     main()
