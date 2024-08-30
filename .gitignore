@@ -8,3 +8,4 @@ BackUps/*
 */dataset/*
 *.pyc
 **/*.pyc
+**/*.tar.gz
