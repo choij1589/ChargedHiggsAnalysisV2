@@ -10,7 +10,6 @@ from itertools import product
 import torch
 import torch.nn.functional as F
 from torch_geometric.loader import DataLoader
-from torchlars import LARS
 
 import numpy as np
 import pandas as pd
@@ -65,7 +64,6 @@ def transform_data(data):
     
     return data
 
-
 #### load dataset
 logging.info("Start loading dataset")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
@@ -90,9 +88,7 @@ def train(model, optimizer, scheduler, use_plateau_scheduler=False):
 
     total_loss = 0.
     for data in trainLoader:
-        # Rotate all points along the z-axis randomly
-        data.to(args.device)
-        transform_data(data)
+        transform_data(data.to(args.device))
         out = model(data.x, data.edge_index, data.graphInput, data.batch)
         optimizer.zero_grad()
         loss = F.cross_entropy(out, data.y)
@@ -145,6 +141,7 @@ def main():
         optimizer = torch.optim.Adadelta(model.parameters(), lr=args.initLR, weight_decay=args.weight_decay)
     else:
         raise NotImplementedError(f"Unsupporting optimizer {args.optimizer}")
+    #optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
 
     logging.info(f"Using scheduler {args.scheduler}")
     if args.scheduler == "StepLR":
@@ -159,7 +156,6 @@ def main():
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=5)
     else:
         raise NotImplementedError(f"Unsupporting scheduler {args.scheduler}")
-    optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
 
     modelName =  f"{args.model}-nNodes{args.nNodes}_{args.optimizer}_initLR-{str(args.initLR).replace('.','p')}_{args.scheduler}"
     logging.info("Start training...")
