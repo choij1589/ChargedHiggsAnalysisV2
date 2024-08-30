@@ -174,7 +174,6 @@ def main():
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=5)
     else:
         raise NotImplementedError(f"Unsupporting scheduler {args.scheduler}")
-    #optimizer = LARS(optimizer=optimizer, eps=1e-8, trust_coef=0.001)
 
     modelName =  f"{args.model}-nNodes{args.nNodes}_{args.optimizer}_initLR-{str(args.initLR).replace('.','p')}_{args.scheduler}"
     logging.info("Start training...")
