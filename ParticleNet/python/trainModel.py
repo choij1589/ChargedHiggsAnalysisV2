@@ -162,7 +162,7 @@ def main():
     checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/models/{modelName}.pt"
     summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/CSV/{modelName}.csv"
     outtreepath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/trees/{modelName}.root"
-    earlyStopper = EarlyStopper(patience=3, path=checkptpath)
+    earlyStopper = EarlyStopper(patience=7, path=checkptpath)
     summaryWriter = SummaryWriter(name=modelName)
 
     for epoch in range(args.max_epochs):
