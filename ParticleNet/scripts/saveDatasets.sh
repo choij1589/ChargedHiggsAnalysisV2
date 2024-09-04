@@ -6,6 +6,7 @@ backgrounds=("nonprompt" "diboson" "ttZ")
 
 for signal in "${signals[@]}"; do
     for background in "${backgrounds[@]}"; do
-        saveDataset.py --signal "$signal" --background "$background" --channel Combined
+        saveDataset.py --signal "$signal" --background "$background" --channel Skim1E2Mu --pilot &
+        saveDataset.py --signal "$signal" --background "$background" --channel Skim3Mu --pilot &
     done
 done
