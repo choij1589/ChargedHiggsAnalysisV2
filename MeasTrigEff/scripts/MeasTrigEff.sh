@@ -3,9 +3,10 @@ ERA=$1
 
 export PATH="$WORKDIR/MeasTrigEff/python":$PATH
 measEMuLegEff.py --era $ERA --hltpath Mu8El23 --leg muon
-measEMuLegEff.py --era $ERA --hltpath Mu8El23 --leg electron
-measEMuLegEff.py --era $ERA --hltpath Mu23El12 --leg muon
-measEMuLegEff.py --era $ERA --hltpath Mu23El12 --leg electron
+#measEMuLegEff.py --era $ERA --hltpath Mu8El23 --leg electron
+#measEMuLegEff.py --era $ERA --hltpath Mu23El12 --leg muon
+#measEMuLegEff.py --era $ERA --hltpath Mu23El12 --leg electron
+exit 0
 
 if [[ $ERA == "2016postVFP" ]]; then
     measPairwiseFilterEff.py --era $ERA --filter EMuDZ >> results/$ERA/PairwiseFilterEff_EMuDZ.csv

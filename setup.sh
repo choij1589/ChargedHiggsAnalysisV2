@@ -16,6 +16,10 @@ elif [[ $HOST == *"cms"* ]]; then
     export WORKDIR="/data6/Users/choij/ChargedHiggsAnalysisV2"
     source /opt/conda/bin/activate
     conda activate pyg
+elif [[ $HOST == *"private"* ]]; then
+    export WORKDIR="$HOME/workspace/ChargedHiggsAnalysisV2"
+    source ~/.conda-activate
+    conda activate pyg
 elif [[ $HOST == *"Mac"* ]]; then
     export WORKDIR="$HOME/workspace/ChargedHiggsAnalysisV2"
     source ~/.conda-activate
