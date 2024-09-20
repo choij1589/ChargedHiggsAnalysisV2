@@ -28,6 +28,7 @@ if [[ $CHANNEL == "ZFake1E2Mu" ]]; then
         "ZCand/pt" "ZCand/eta" "ZCand/phi" "ZCand/mass"
         "nonprompt/pt" "nonprompt/eta"
     )
+    plot.py --era $ERA --channel $CHANNEL --histkey "muons/1/pt"
     export -f draw_plot
     parallel draw_plot ::: ${histkeys[@]}
 elif [[ $CHANNEL == "ZFake3Mu" ]]; then
@@ -45,6 +46,7 @@ elif [[ $CHANNEL == "ZFake3Mu" ]]; then
         "nZCand/pt" "nZCand/eta" "nZCand/phi" "nZCand/mass"
         "nonprompt/pt" "nonprompt/eta"
     )
+    plot.py --era $ERA --channel $CHANNEL --histkey "muons/1/pt"
     export -f draw_plot
     parallel draw_plot ::: ${histkeys[@]}
 elif [[ $CHANNEL == "ZGamma1E2Mu" ]]; then
@@ -62,6 +64,7 @@ elif [[ $CHANNEL == "ZGamma1E2Mu" ]]; then
         "ZCand/pt" "ZCand/eta" "ZCand/phi" "ZCand/mass"
         "convLep/pt" "convLep/eta" "convLep/phi"
     )
+    plot.py --era $ERA --channel $CHANNEL --histkey "muons/1/pt"
     export -f draw_plot
     parallel draw_plot ::: ${histkeys[@]}
 elif [[ $CHANNEL == "ZGamma3Mu" ]]; then
@@ -79,6 +82,7 @@ elif [[ $CHANNEL == "ZGamma3Mu" ]]; then
         "ZCand/pt" "ZCand/eta" "ZCand/phi" "ZCand/mass"
         "convLep/pt" "convLep/eta" "convLep/phi"
     )
+    plot.py --era $ERA --channel $CHANNEL --histkey "muons/1/pt"
     export -f draw_plot
     parallel draw_plot ::: ${histkeys[@]}
 elif [[ $CHANNEL == "SR1E2Mu" ]]; then
@@ -100,6 +104,7 @@ elif [[ $CHANNEL == "SR1E2Mu" ]]; then
         "MHc-130_MA-90/score_nonprompt" "MHc-130_MA-90/score_diboson" "MHc-130_MA-90/score_ttZ"
         "MHc-160_MA-85/score_nonprompt" "MHc-160_MA-85/score_diboson" "MHc-160_MA-85/score_ttZ"
     )
+    plot.py --era $ERA --channel $CHANNEL --histkey "muons/1/pt" --blind
     export -f draw_plot_blind
     parallel draw_plot_blind ::: ${histkeys[@]}
 elif [[ $CHANNEL == "SR3Mu" ]]; then
@@ -121,6 +126,7 @@ elif [[ $CHANNEL == "SR3Mu" ]]; then
         "MHc-130_MA-90/score_nonprompt" "MHc-130_MA-90/score_diboson" "MHc-130_MA-90/score_ttZ"
         "MHc-160_MA-85/score_nonprompt" "MHc-160_MA-85/score_diboson" "MHc-160_MA-85/score_ttZ"
     )
+    plot.py --era $ERA --channel $CHANNEL --histkey "muons/1/pt" --blind
     export -f draw_plot_blind
     parallel draw_plot_blind ::: ${histkeys[@]}
 else

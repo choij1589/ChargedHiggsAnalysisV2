@@ -1,5 +1,7 @@
 SKFlatOutput
 SKFlatOutput/*
+SignalRegionStudy/CMSSW_*/*
+CommonTools/CMSSW_*
 BackUps/*
 **/build/*
 **/lib/*
