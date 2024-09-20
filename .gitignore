@@ -7,6 +7,7 @@ BackUps/*
 **/lib/*
 **/__pycache__/*
 .DS_Store
+**/*.root
 **/.DS_Store
 */dataset/*
 *.pyc
