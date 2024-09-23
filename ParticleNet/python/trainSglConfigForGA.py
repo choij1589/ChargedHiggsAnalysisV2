@@ -27,6 +27,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--signal", required=True, type=str, help="signal")
 parser.add_argument("--background", required=True, type=str, help="background")
 parser.add_argument("--channel", required=True, type=str, help="channel")
+parser.add_argument("--iter", required=True, type=int, help="GA iteration number")
+parser.add_argument("--idx", required=True, type=int, help="GA index number")
 parser.add_argument("--max_epochs", default=81, type=int, help="max epochs")
 parser.add_argument("--model", default="ParticleNet", type=str, help="model type")
 parser.add_argument("--nNodes", required=True, type=int, help="number of nodes for each layer")
@@ -157,11 +159,12 @@ def main():
     else:
         raise NotImplementedError(f"Unsupporting scheduler {args.scheduler}")
 
-    modelName =  f"{args.model}-nNodes{args.nNodes}-{args.optimizer}-initLR{str(format(args.initLR, '.4f')).replace('.','p')}-decay{str(format(args.weight_decay, '.5f')).replace('.', 'p')}-{args.scheduler}"
+    modelName = f"{args.model}-model{args.idx}"
+    #modelName =  f"{args.model}-nNodes{args.nNodes}-{args.optimizer}-initLR{str(format(args.initLR, '.4f')).replace('.','p')}-decay{str(format(args.weight_decay, '.5f')).replace('.', 'p')}-{args.scheduler}"
     logging.info("Start training...")
-    checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/models/{modelName}.pt"
-    summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/CSV/{modelName}.csv"
-    outtreepath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/trees/{modelName}.root"
+    checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/GA-iter{args.iter}/models/{modelName}.pt"
+    summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/GA-iter{args.iter}/CSV/{modelName}.csv"
+    outtreepath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/GA-iter{args.iter}/trees/{modelName}.root"
     earlyStopper = EarlyStopper(patience=7, path=checkptpath)
     summaryWriter = SummaryWriter(name=modelName)
 
