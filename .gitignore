@@ -1,13 +1,13 @@
 SKFlatOutput
 SKFlatOutput/*
 SignalRegionStudy/CMSSW_*/*
+SignalRegionStudy/samples/*
 CommonTools/CMSSW_*/*
 BackUps/*
 **/build/*
 **/lib/*
 **/__pycache__/*
 .DS_Store
-**/*.root
 **/.DS_Store
 */dataset/*
 *.pyc
