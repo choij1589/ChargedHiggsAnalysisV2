@@ -4,6 +4,7 @@ from ROOT import TCanvas, TPad, TLegend, TLatex
 from ROOT import THStack
 import tdrstyle; tdrstyle.setTDRStyle(square=False)
 ROOT.gStyle.SetErrorX(0.5)
+ROOT.gStyle.SetAxisMaxDigits(3)
 
 PeriodInfo = {
         "2016preVFP": ["B_ver2", "C", "D", "E", "F"],
@@ -178,6 +179,7 @@ class ComparisonCanvas():
         # initialize default settings
         self.cvs = TCanvas(name, title, 720, 900)
         self.padUp = TPad("up", "", 0, 0.25, 1, 1)
+        self.padUp.SetTopMargin(0.05)
         self.padUp.SetBottomMargin(0.01)
         self.padUp.SetLeftMargin(0.115)
         self.padUp.SetRightMargin(0.08)
@@ -218,7 +220,7 @@ class ComparisonCanvas():
             if "lumiInfo" in config.keys():
                 self.lumiString = config["lumiInfo"]
             else:
-                self.lumiString = "L_{int} = "+f"{LumiInfo[era]}"+" fb^{-1} (13TeV)"
+                self.lumiString = "L^{int} = "+f"{LumiInfo[era]}"+" fb^{-1} (13TeV)"
     
     def drawSignals(self, hists, colors):
         self.signals = hists
@@ -366,9 +368,13 @@ class ComparisonCanvas():
         self.legend.Draw()
         
         if textInfo is None:
-            self.lumi.DrawLatexNDC(0.64, 0.61, self.lumiString)
-            self.cms.DrawLatexNDC(0.12, 0.96, "CMS")
-            self.preliminary.DrawLatexNDC(0.22, 0.96, "Work in progress")
+            self.lumi.DrawLatexNDC(0.63, 0.955, self.lumiString)
+            if self.data.GetMaximum() > 10000:
+                self.cms.DrawLatexNDC(0.18, 0.955, "CMS")
+                self.preliminary.DrawLatexNDC(0.265, 0.955, "Preliminary")
+            else:
+                self.cms.DrawLatexNDC(0.115, 0.955, "CMS")
+                self.preliminary.DrawLatexNDC(0.2, 0.955, "Preliminary")
         else:
             latex = TLatex()
             for text, config in textInfo.items():

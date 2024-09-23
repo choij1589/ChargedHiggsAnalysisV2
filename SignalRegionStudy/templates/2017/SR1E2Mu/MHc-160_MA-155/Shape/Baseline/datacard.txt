@@ -1,0 +1,30 @@
+# signal xsec scaled to be 5 fb
+imax			1 number of bins
+jmax			5 number of bins
+kmax			* number of nuisance parameters
+--------------------------------------------------
+shapes	*	*	shapes_input.root	$PROCESS	$PROCESS_$SYSTEMATIC
+shapes	signal	*	shapes_input.root	MHc-160_MA-155	MHc-160_MA-155_$SYSTEMATIC
+--------------------------------------------------
+bin			signal_region
+observation		13.7838
+--------------------------------------------------
+bin			signal_region	signal_region	signal_region	signal_region	signal_region	signal_region	
+process			signal		nonprompt	conversion	diboson		ttX		others		
+process			0		1		2		3		4		5		
+rate			-1		-1		-1		-1		-1		-1		
+--------------------------------------------------
+signal_region	autoMCStats	10
+lumi_13TeV	lnN	1.025		-		-		1.025		1.025		1.025		
+L1Prefire	lnN	1.006		-		-		1.006		1.008		1.013		
+PileupReweight	lnN	1.002		-		-		1.020		1.012		1.051		
+ElectronIDSF	lnN	1.014		-		-		1.024		1.016		1.016		
+MuonIDSF	lnN	1.006		-		-		1.005		1.005		1.006		
+TriggerSF	lnN	1.038		-		-		1.027		1.039		1.038		
+ElectronRes	shape	1		-		-		1		1		1		
+ElectronEn	shape	1		-		-		1		1		1		
+JetRes		shape	1		-		-		1		1		1		
+JetEn		shape	1		-		-		1		1		1		
+MuonEn		shape	1		-		-		1		1		1		
+Nonprompt	lnN	-		1.300		-		-		-		-		
+Conversion	lnN	-		-		1.200		-		-		-		

@@ -1,3 +1,6 @@
 [submodule "CommonTools/tdr-style"]
 	path = CommonTools/tdr-style
 	url = git@github.com:choij1589/tdr-style.git
+[submodule "CommonTools/HiggsAnalysis/CombinedLimit"]
+	path = CommonTools/HiggsAnalysis/CombinedLimit
+	url = https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git

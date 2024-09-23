@@ -1,0 +1,736 @@
+{
+  "muons/1/pt": {
+    "xTitle": "p_{T}(#mu1)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "muons/2/pt": {
+    "xTitle": "p_{T}(#mu2)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 200.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "muons/3/pt": {
+    "xTitle": "p_{T}(#mu3)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 200.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "muons/1/eta": {
+    "xTitle": "#eta(#mu1)",
+    "yTitle": "Events",
+    "xRange": [-2.4, 2.4],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "muons/2/eta": {
+    "xTitle": "#eta(#mu2)",
+    "yTitle": "Events",
+    "xRange": [-2.4, 2.4],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "muons/3/eta": {
+    "xTitle": "#eta(#mu3)",
+    "yTitle": "Events",
+    "xRange": [-2.4, 2.4],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "muons/1/phi": {
+    "xTitle": "#phi(#mu1)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin" : 4,
+    "logy": false
+  },
+  "muons/2/phi": {
+    "xTitle": "#phi(#mu2)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "muons/3/phi": {
+    "xTitle": "#phi(#mu3)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "electrons/1/pt": {
+    "xTitle": "p_{T}(e)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "electrons/1/eta": {
+    "xTitle": "#eta(e)",
+    "yTitle": "Events",
+    "xRange": [-2.5, 2.5],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "electrons/1/phi": {
+    "xTitle": "#phi(e)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "nonprompt/pt": {
+    "xTitle": "p_{T}(l^{fake})",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "nonprompt/eta": {
+    "xTitle": "#eta(l^{fake})",
+    "yTitle": "Events",
+    "xRange": [-2.5, 2.5],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "convLep/pt": {
+    "xTitle": "p_{T}(l^{conv})",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "convLep/eta": {
+    "xTitle": "#eta(l^{conv})",
+    "yTitle": "Events",
+    "xRange": [-2.5, 2.5],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "convLep/phi": {
+    "xTitle": "#phi(l^{conv})",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "jets/1/pt": {
+    "xTitle": "p_{T}(j1)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "jets/2/pt": {
+    "xTitle": "p_{T}(j2)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "jets/3/pt": {
+    "xTitle": "p_{T}(j3)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 200.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "jets/4/pt": {
+    "xTitle": "p_{T}(j4)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 200.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "jets/5/pt": {
+    "xTitle": "p_{T}(j5)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "jets/1/eta": {
+    "xTitle": "#eta(j1)",
+    "yTitle": "Events",
+    "xRange": [-2.4, 2.4],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "jets/2/eta": {
+    "xTitle": "#eta(j2)",
+    "yTitle": "Events",
+    "xRange": [-2.4, 2.4],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "jets/3/eta": {
+    "xTitle": "#eta(j3)",
+    "yTitle": "Events",
+    "xRange": [-2.4, 2.4],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "jets/4/eta": {
+    "xTitle": "#eta(j4)",
+    "yTitle": "Events",
+    "xRange": [-2.4, 2.4],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "jets/5/eta": {
+    "xTitle": "#eta(j5)",
+    "yTitle": "Events",
+    "xRange": [-2.4, 2.4],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "jets/1/phi": {
+    "xTitle": "#phi(j1)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "jets/2/phi": {
+    "xTitle": "#phi(j2)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "jets/3/phi": {
+    "xTitle": "#phi(j3)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "jets/4/phi": {
+    "xTitle": "#phi(j4)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "jets/5/phi": {
+    "xTitle": "#phi(j5)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "jets/1/mass": {
+    "xTitle": "M(j1)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "jets/2/mass": {
+    "xTitle": "M(j2)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "jets/3/mass": {
+    "xTitle": "M(j3)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "jets/4/mass": {
+    "xTitle": "M(j4)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "jets/5/mass": {
+    "xTitle": "M(j5)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "jets/1/charge": {
+    "xTitle": "charge(j1)",
+    "yTitle": "Events",
+    "xRange": [-1.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "jets/2/charge": {
+    "xTitle": "charge(j2)",
+    "yTitle": "Events",
+    "xRange": [-1.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "jets/3/charge": {
+    "xTitle": "charge(j3)",
+    "yTitle": "Events",
+    "xRange": [-1.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "jets/4/charge": {
+    "xTitle": "charge(j4)",
+    "yTitle": "Events",
+    "xRange": [-1.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "jets/5/charge": {
+    "xTitle": "charge(j5)",
+    "yTitle": "Events",
+    "xRange": [-1.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "jets/1/btagScore": {
+    "xTitle": "btagScore(j1)",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "jets/2/btagScore": {
+    "xTitle": "btagScore(j2)",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "jets/3/btagScore": {
+    "xTitle": "btagScore(j3)",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "jets/4/btagScore": {
+    "xTitle": "btagScore(j4)",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "jets/5/btagScore": {
+    "xTitle": "btagScore(j5)",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "jets/size": {
+    "xTitle": "N_{j}",
+    "yTitle": "Events",
+    "xRange": [0, 10],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "bjets/1/pt": {
+    "xTitle": "p_{T}(b1)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "bjets/2/pt": {
+    "xTitle": "p_{T}(b2)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 200.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "bjets/3/pt": {
+    "xTitle": "p_{T}(b3)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 200.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "bjets/1/eta": {
+    "xTitle": "#eta(b1)",
+    "yTitle": "Events",
+    "xRange": [-2.4, 2.4],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "bjets/2/eta": {
+    "xTitle": "#eta(b2)",
+    "yTitle": "Events",
+    "xRange": [-2.4, 2.4],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "bjets/3/eta": {
+    "xTitle": "#eta(b3)",
+    "yTitle": "Events",
+    "xRange": [-2.4, 2.4],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "bjets/1/phi": {
+    "xTitle": "#phi(b1)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "bjets/2/phi": {
+    "xTitle": "#phi(b2)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "bjets/3/phi": {
+    "xTitle": "#phi(b3)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "bjets/1/mass": {
+    "xTitle": "M(b1)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "bjets/2/mass": {
+    "xTitle": "M(b2)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "bjets/3/mass": {
+    "xTitle": "M(b3)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "bjets/1/charge": {
+    "xTitle": "charge(b1)",
+    "yTitle": "Events",
+    "xRange": [-1.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "bjets/2/charge": {
+    "xTitle": "charge(b2)",
+    "yTitle": "Events",
+    "xRange": [-1.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "bjets/3/charge": {
+    "xTitle": "charge(b3)",
+    "yTitle": "Events",
+    "xRange": [-1.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "bjets/size": {
+    "xTitle": "N_{b}",
+    "yTitle": "Events",
+    "xRange": [0, 10],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "bjets/1/btagScore": {
+    "xTitle": "btagScore(b1)",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "bjets/2/btagScore": {
+    "xTitle": "btagScore(b2)",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "bjets/3/btagScore": {
+    "xTitle": "btagScore(b3)",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "METv/pt": {
+    "xTitle": "E_{T}^{miss}",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "METv/phi": {
+    "xTitle": "#phi(#vec{p_{T}}^{miss}})",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "pair/pt": {
+    "xTitle": "p_{T}(#mu^{+}#mu^{-})",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "pair/eta": {
+    "xTitle": "#eta(#mu^{+}#mu^{-})",
+    "yTitle": "Events",
+    "xRange": [-5.0, 5.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "pair/phi": {
+    "xTitle": "#phi(#mu^{+}#mu^{-})",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "pair/mass": {
+    "xTitle": "M(#mu^{+}#mu^{-})",
+    "yTitle": "Events / 5 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "stack/pt": {
+    "xTitle": "p_{T}(stack)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "stack/eta": {
+    "xTitle": "#eta(stack)",
+    "yTitle": "Events",
+    "xRange": [-5.0, 5.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "stack/phi": {
+    "xTitle": "#phi(stack)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "stack/mass": {
+    "xTitle": "M(stack)",
+    "yTitle": "Events / 5 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "ZCand/mass": {
+    "xTitle": "M(Z)",
+    "yTitle": "Events / GeV",
+    "xRange": [75, 105],
+    "yRange": [0.0, 2.0],
+    "logy": false
+  },
+  "ZCand/pt": {
+    "xTitle": "p_{T}(Z)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "ZCand/eta": {
+    "xTitle": "#eta(Z)",
+    "yTitle": "Events",
+    "xRange": [-5.0, 5.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "ZCand/phi": {
+    "xTitle": "#phi(Z)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "nZCand/mass": {
+    "xTitle": "M(nZ)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0, 300],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "nZCand/pt": {
+    "xTitle": "p_{T}(nZ)",
+    "yTitle": "Events / 10 GeV",
+    "xRange": [0.0, 300.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 10,
+    "logy": false
+  },
+  "nZCand/eta": {
+    "xTitle": "#eta(nZ)",
+    "yTitle": "Events",
+    "xRange": [-5.0, 5.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "nZCand/phi": {
+    "xTitle": "#phi(nZ)",
+    "yTitle": "Events",
+    "xRange": [-3.2, 3.2],
+    "yRange": [0.0, 2.0],
+    "rebin": 4,
+    "logy": false
+  },
+  "MHc-100_MA-95/score_nonprompt": {
+    "xTitle": "(100, 95) vs. fake",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "MHc-100_MA-95/score_diboson": {
+    "xTitle": "(100, 95) vs. VV",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "MHc-100_MA-95/score_ttZ": {
+    "xTitle": "(100, 95) vs. tt+Z",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "MHc-130_MA-90/score_nonprompt": {
+    "xTitle": "(130, 90) vs. fake",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "MHc-130_MA-90/score_diboson": {
+    "xTitle": "(130, 90) vs. VV",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "MHc-130_MA-90/score_ttZ": {
+    "xTitle": "(130, 90) vs. tt+Z",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "MHc-160_MA-85/score_nonprompt": {
+    "xTitle": "(160, 85) vs. fake",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "MHc-160_MA-85/score_diboson": {
+    "xTitle": "(160, 85) vs. VV",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  },
+  "MHc-160_MA-85/score_ttZ": {
+    "xTitle": "(160, 85) vs. tt+Z",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0],
+    "rebin": 5,
+    "logy": false
+  }
+}
+
