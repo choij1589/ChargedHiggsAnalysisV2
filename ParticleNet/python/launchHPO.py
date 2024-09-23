@@ -48,7 +48,7 @@ tuner = Tuner(
     trial_backend=LocalBackend(entry_point=entry_point),
     scheduler=scheduler,
     stop_criterion=StoppingCriterion(max_wallclock_time=60*60*6),
-    n_workers=48
+    n_workers=16
 )
 tuner.run()
 

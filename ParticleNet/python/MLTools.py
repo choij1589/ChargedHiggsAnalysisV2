@@ -16,8 +16,7 @@ class EarlyStopper():
         self.valLossMin = np.Inf
         self.delta = 0.
         self.path = path
-        if not os.path.exists(os.path.dirname(path)):
-            os.makedirs(os.path.dirname(path))
+        os.makedirs(os.path.dirname(path), exist_ok=True)
 
     def update(self, valLoss, model):
         score = -valLoss
