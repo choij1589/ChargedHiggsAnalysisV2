@@ -67,8 +67,6 @@ def transform_data(data):
     parity_mask = torch.rand(data.x.size(0), device=args.device) > 0.5
     data.x[parity_mask, 1:4] *= -1
 
-    return data
-
 #### load dataset
 logging.info("Start loading dataset")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
@@ -93,7 +91,7 @@ def train(model, optimizer, scheduler, use_plateau_scheduler=False):
 
     total_loss = 0.
     for data in trainLoader:
-        data = transform_data(data.to(args.device))
+        transform_data(data.to(args.device))
         out = model(data.x, data.edge_index, data.graphInput, data.batch)
         optimizer.zero_grad()
         loss = F.cross_entropy(out, data.y.to(args.device))
