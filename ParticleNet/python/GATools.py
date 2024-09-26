@@ -50,6 +50,7 @@ class GeneticModule:
 
     def rankSelection(self):
         """Selects two unique parents for crossover using rank-based roulette wheel selection. This method involves ranking individuals by fitness and then randomly selecting them with probabilities proportional to their ranks."""
+        # Check if reverse should apply
         sorted_pop = sorted(self.population, key=lambda x: x['fitness'], reverse=True)
         return random.sample(sorted_pop, 2)
 
