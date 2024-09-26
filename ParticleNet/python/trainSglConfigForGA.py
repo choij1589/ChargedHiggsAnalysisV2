@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+
+"""
+Search for the best hyperparameters for the training with a configuration given by GA
+Use 0, 2, 4 folds for training, 1, 3 folds for validation
+"""
+
 import os
 import argparse
 import logging
@@ -38,7 +44,7 @@ parser.add_argument("--initLR", required=True, type=float, help="initial learnin
 parser.add_argument("--weight_decay", required=True, type=float, help="weight decay")
 parser.add_argument("--scheduler", required=True, type=str, help="lr scheduler")
 parser.add_argument("--device", default="cuda", type=str, help="cpu or cuda")
-parser.add_argument("--fold", required=True, type=int, help="fold number for the training, 0...nFolds-1")
+#parser.add_argument("--fold", required=True, type=int, help="fold number for the training, 0...nFolds-1")
 parser.add_argument("--pilot", action="store_true", default=False, help="pilot mode")
 parser.add_argument("--debug", action="store_true", default=False, help="debug mode")
 args = parser.parse_args()
@@ -71,17 +77,15 @@ baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
 if args.pilot:
     baseDir += "pilot__"
 
-nFolds = 5
-dataFoldList = [[] for _ in range(nFolds)]
-for i in range(nFolds):
-    dataFoldList[i] = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_fold-{i}.pt")
-trainset = dataFoldList[args.fold]
-validset = dataFoldList[(args.fold+1)%nFolds]
-testset = torch.utils.data.ConcatDataset([dataFoldList[(args.fold+2)%nFolds],dataFoldList[(args.fold+3)%nFolds],dataFoldList[(args.fold+4)%nFolds]])
+nFold = 5
+dataFoldList = [[] for _ in range(nFold)]
+for i in range(nFold):
+    dataFoldList[i] = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_fold-{i}.pt", weights_only=False)
+trainset = torch.utils.data.ConcatDataset([dataFoldList[0], dataFoldList[2], dataFoldList[4]])
+validset = torch.utils.data.ConcatDataset([dataFoldList[1], dataFoldList[3]])
 
 trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True)
 validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
-testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False)
 
 if "cuda" in args.device:
     logging.info("Using cuda")
@@ -168,7 +172,7 @@ def main():
     logging.info("Start training...")
     checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/GA-iter{args.iter}/models/{modelName}.pt"
     summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/GA-iter{args.iter}/CSV/{modelName}.csv"
-    outtreepath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/GA-iter{args.iter}/trees/{modelName}.root"
+    #outtreepath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/GA-iter{args.iter}/trees/{modelName}.root"
     earlyStopper = EarlyStopper(patience=7, path=checkptpath)
     summaryWriter = SummaryWriter(name=modelName)
 
@@ -192,6 +196,7 @@ def main():
 
     summaryWriter.to_csv(summarypath)
 
+    """
     #### save score distributions as trees
     os.makedirs(os.path.dirname(outtreepath), exist_ok=True)
     f = ROOT.TFile(outtreepath, "RECREATE")
@@ -235,6 +240,7 @@ def main():
     f.cd()
     tree.Write()
     f.Close()
+    """
 
 if __name__ == "__main__":
     main()

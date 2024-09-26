@@ -32,6 +32,7 @@ WORKDIR = os.environ["WORKDIR"]
 
 #### load dataset
 maxSize = 10000 if args.pilot else -1
+nFolds = 5
 maxSizeForEra = {
     "2016preVFP": int(maxSize / 7),
     "2016postVFP": int(maxSize / 7),
@@ -40,9 +41,9 @@ maxSizeForEra = {
 }
 logging.debug(maxSizeForEra)
 
-nFolds = 5
 sigDataList = [[] for _ in range(nFolds)]
 bkgDataList = [[] for _ in range(nFolds)]
+# Temorarily use all samples before splitting into folds and save
 if args.channel == "Combined":
     for era, channel in product(["2016preVFP", "2016postVFP", "2017", "2018"], ["Skim1E2Mu", "Skim3Mu"]):
         rt = ROOT.TFile.Open(f"dataset/{era}/{channel}/DataPreprocess_TTToHcToWAToMuMu_{args.signal}.root")
@@ -71,12 +72,15 @@ else:
             bkgDataList[i] += bkgDataTmp[i]
 
 dataList = [[] for _ in range(nFolds)]
+# Find the minmum size dataList, seperate signal and background, for all folds
+maxSizeForFold = min([len(sigDataList[i]) for i in range(nFolds)] + [len(bkgDataList[i]) for i in range(nFolds)])
 for i in range(nFolds):
-    sigDataList[i] = shuffle(sigDataList[i], random_state=42)
-    bkgDataList[i] = shuffle(bkgDataList[i], random_state=42)
+    logging.info(f"Signal: {len(sigDataList[i])} events before shuffle in fold {i}")
+    logging.info(f"Background: {len(bkgDataList[i])} events before shuffle in fold {i}")
+    logging.info(f"Saving {maxSizeForFold*2} events for fold {i}")
+    sigDataList[i] = shuffle(sigDataList[i], random_state=42)[:maxSizeForFold]
+    bkgDataList[i] = shuffle(bkgDataList[i], random_state=42)[:maxSizeForFold]
     dataList[i] = shuffle(sigDataList[i]+bkgDataList[i], random_state=42)
-    logging.info(f"Signal: {len(sigDataList[i])} events in fold {i}")
-    logging.info(f"Background: {len(bkgDataList[i])} events in fold {i}")
 logging.info("Finished loading dataset")
 
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
