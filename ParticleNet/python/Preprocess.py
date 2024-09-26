@@ -2,7 +2,7 @@ import logging
 import numpy as np
 import torch
 from torch_geometric.data import Data, InMemoryDataset
-from ROOT import TLorentzVector
+from ROOT import TLorentzVector, TRandom3
 from DataFormat import getMuons, getElectrons, getJets, Particle
 
 def getEdgeIndices(nodeList, k=4):
@@ -33,13 +33,15 @@ def evtToGraph(nodeList, y, k=4):
                 edge_attribute=edgeAttribute)
     return data
 
-def rtfileToDataList(rtfile, isSignal, era, maxSize=-1):
-    dataList = []
+def rtfileToDataList(rtfile, isSignal, era, maxSize=-1, nFolds=5):
+    dataList = [[] for _ in range(nFolds)]
     for evt in rtfile.Events:
         muons = getMuons(evt)
         electrons = getElectrons(evt)
         jets, bjets = getJets(evt)
         METv = Particle(evt.METvPt, 0., evt.METvPhi, 0.)
+        METvPt = evt.METvPt
+        nJets = evt.nJets
 
         # convert event to a graph
         nodeList = []
@@ -64,10 +66,20 @@ def rtfileToDataList(rtfile, isSignal, era, maxSize=-1):
         else:
             raise ValueError(f"Invalid era: {era}")
         data.graphInput = eraIdx
-        dataList.append(data)
-        if len(dataList) == maxSize: break
 
-    logging.debug(f"no. of dataList ends with {len(dataList)}")
+        ## Get a random number and save folds
+        randGen = TRandom3()
+        seed = int(METvPt)+1 # add one to avoid an automatically computed seed
+        randGen.SetSeed(seed)
+        fold = -999
+        for _ in range(nJets):
+            fold = randGen.Integer(nFolds)
+        dataList[fold].append(data)
+        if max(len(data) for data in dataList) == maxSize: break
+
+    for i, data in enumerate(dataList):
+        logging.debug(f"no. of dataList ends with {len(data)} for fold {i}")
+    logging.debug("=========================================")
 
     return dataList
 

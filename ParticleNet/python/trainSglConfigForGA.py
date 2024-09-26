@@ -38,6 +38,7 @@ parser.add_argument("--initLR", required=True, type=float, help="initial learnin
 parser.add_argument("--weight_decay", required=True, type=float, help="weight decay")
 parser.add_argument("--scheduler", required=True, type=str, help="lr scheduler")
 parser.add_argument("--device", default="cuda", type=str, help="cpu or cuda")
+parser.add_argument("--fold", required=True, type=int, help="fold number for the training, 0...nFolds-1")
 parser.add_argument("--pilot", action="store_true", default=False, help="pilot mode")
 parser.add_argument("--debug", action="store_true", default=False, help="debug mode")
 args = parser.parse_args()
@@ -69,9 +70,14 @@ logging.info("Start loading dataset")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
 if args.pilot:
     baseDir += "pilot__"
-trainset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_train.pt")
-validset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_valid.pt")
-testset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_test.pt")
+
+nFolds = 5
+dataFoldList = [[] for _ in range(nFolds)]
+for i in range(nFolds):
+    dataFoldList[i] = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_fold-{i}.pt")
+trainset = dataFoldList[args.fold]
+validset = dataFoldList[(args.fold+1)%nFolds]
+testset = torch.utils.data.ConcatDataset([dataFoldList[(args.fold+2)%nFolds],dataFoldList[(args.fold+3)%nFolds],dataFoldList[(args.fold+4)%nFolds]])
 
 trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True)
 validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
