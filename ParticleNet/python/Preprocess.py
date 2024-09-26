@@ -69,9 +69,7 @@ def rtfileToDataList(rtfile, isSignal, era, maxSize=-1, nFolds=5):
 
         ## Get a random number and save folds
         randGen = TRandom3()
-        seed = int(METvPt)
-        if seed == 0: # to avoid an automatically computed seed
-            seed = 950804
+        seed = int(METvPt)+1 # add one to avoid an automatically computed seed
         randGen.SetSeed(seed)
         fold = -999
         for _ in range(nJets):
