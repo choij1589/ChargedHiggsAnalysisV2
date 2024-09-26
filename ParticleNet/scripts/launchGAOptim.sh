@@ -5,4 +5,4 @@ CHANNEL=$3
 DEVICE=$4
 export PATH=$PATH:$PWD/python
 
-launchGAOptim.py --signal $SIGNAL --background $BACKGROUND --channel $CHANNEL --device $DEVICE
+launchGAOptim.py --signal $SIGNAL --background $BACKGROUND --channel $CHANNEL --device $DEVICE --pilot
