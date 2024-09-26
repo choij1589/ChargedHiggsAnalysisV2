@@ -13,7 +13,7 @@ parser.add_argument("--background", required=True, type=str, help="background pr
 parser.add_argument("--channel", required=True, type=str, help="channel")
 parser.add_argument("--device", required=True, type=str, help="which device to use, cpu or cuda:0...")
 parser.add_argument("--nPop", type=int, default=16, help="population size")
-parser.add_argument("--maxIter", type=int, default=5, help="max iteration")
+parser.add_argument("--maxIter", type=int, default=4, help="max iteration")
 parser.add_argument("--debug", action="store_true", default=False, help="debug mode")
 args = parser.parse_args()
 
@@ -41,15 +41,12 @@ initLRs = [round(value, 4) for value in loguniform.rvs(1e-4, 1e-2, size=100)]
 weight_decays = [round(value, 5) for value in loguniform.rvs(1e-5, 1e-2, size=1000)]
 #initLRs = [0.0001, 0.0005, 0.001, 0.002, 0.005, 0.01]
 #weight_decays = [0., 0.0005, 0.001, 0.005, 0.01, 0.05]
-thresholds = [0.5, 0.5, 0.5, 0.5, 0.5]
+thresholds = [0.9, 0.9, 0.9, 0.9, 0.9]
 
 ## Communication function for the GeneticModule and single training process
 def evalFitness(population, iteration):
     procs = []
     for idx in range(args.nPop):
-        if population[idx]["fitness"]:
-            # fitness already estimated
-            continue
         nNodes, optimizer, initLR, weight_decay, scheduler = population[idx]["chromosome"]
         command = f"trainSglConfigForGA.py --signal {args.signal} --background {args.background}"
         command += f" --channel {args.channel}"
@@ -85,7 +82,7 @@ logging.info(f"Mean fitness: {gaModule.meanFitness()}")
 csv_path = f"{base_dir}/GA-iter0/CSV/model_info.csv"
 gaModule.savePopulation(csv_path)
 for i in range(1, args.maxIter):
-    gaModule.evolution(thresholds=thresholds, ratio=1) # new pool is 
+    gaModule.evolution(thresholds=thresholds, ratio=0.7)
     evalFitness(gaModule.population, iteration=i)
     gaModule.updatePopulation(args.signal, args.background, args.channel, iteration=i)
     logging.info(f"Generation {i}")

@@ -50,8 +50,19 @@ class GeneticModule:
 
     def rankSelection(self):
         """Selects two unique parents for crossover using rank-based roulette wheel selection. This method involves ranking individuals by fitness and then randomly selecting them with probabilities proportional to their ranks."""
-        sorted_pop = sorted(self.population, key=lambda x: x['fitness'], reverse=True)
-        return random.sample(sorted_pop, 2)
+        sorted_pop = sorted(self.population, key=lambda x: x['fitness'])
+        ranks = list(range(1, len(sorted_pop)+1))
+        total_rank = sum(ranks)
+        selection_probs = [rank / total_rank for rank in reversed(ranks)]
+
+        # Select first parent
+        p1 = random.choices(sorted_pop, weights=selection_probs)[0]
+        # Select second parent
+        p2 = p1
+        while p2 == p1:
+            p2 = random.choices(sorted_pop, weights=selection_probs)[0]
+        
+        return [p1, p2]
 
     def uniformCrossover(self, parent1, parent2):
         """Performs a uniform crossover between two parent chromosomes to produce a child chromosome. Each gene in the child’s chromosome is independently chosen from one of the corresponding genes of the parents with equal probability."""
@@ -81,7 +92,7 @@ class GeneticModule:
             if mutation['chromosome'] not in [c['chromosome'] for c in children]:
                 children.append(mutation)
 
-        self.population = children + parents[n_birth:]
+        self.population = parents[:len(self.population)-n_birth] + children
 
     def bestChromosome(self):
         return min(self.population, key=lambda x: x['fitness'])
