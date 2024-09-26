@@ -24,7 +24,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--channel", type=str, required=True, help="channel")
 parser.add_argument("--signal", type=str, required=True, help="signal")
 parser.add_argument("--background", type=str, required=True, help="background")
-parser.add_argument("--penalty", default=0.3, help="lambda multiplied to the penalty")
 args = parser.parse_args()
 
 WORKDIR = os.environ['WORKDIR']
@@ -39,7 +38,7 @@ nClasses = 2
 max_epochs = 81
 
 def getChromosomes(SIG, BKG, top=10):
-    CSVFILE = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/syne_tune_hpo/CSV/hpo_{SIG}_vs_{BKG}_penalty-{str(args.penalty).replace('.','p')}.csv"
+    CSVFILE = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/syne_tune_hpo/CSV/hpo_{SIG}_vs_{BKG}.csv"
     df = pd.read_csv(CSVFILE)
     df = df.sort_values(by="objective", ascending=True)
     lst = df.to_dict(orient='records')

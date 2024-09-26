@@ -62,8 +62,6 @@ def transform_data(data):
     parity_mask = torch.rand(data.x.size(0), device=args.device) > 0.5
     data.x[parity_mask, 1:4] *= -1
 
-    return data
-
 #### load dataset
 logging.info("Start loading dataset")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"

@@ -39,48 +39,52 @@ maxSizeForEra = {
     "2018": int(maxSize * (3/7))
 }
 logging.debug(maxSizeForEra)
+
+nFolds = 5
+sigDataList = [[] for _ in range(nFolds)]
+bkgDataList = [[] for _ in range(nFolds)]
 if args.channel == "Combined":
-    ## Load signal data
-    sigDataList = []
-    bkgDataList = []
     for era, channel in product(["2016preVFP", "2016postVFP", "2017", "2018"], ["Skim1E2Mu", "Skim3Mu"]):
         rt = ROOT.TFile.Open(f"dataset/{era}/{channel}/DataPreprocess_TTToHcToWAToMuMu_{args.signal}.root")
-        sigDataList += rtfileToDataList(rt, isSignal=True, era=era, maxSize=maxSizeForEra[era])
+        sigDataTmp = rtfileToDataList(rt, isSignal=True, era=era, maxSize=maxSizeForEra[era], nFolds=nFolds)
         rt.Close()
 
         rt = ROOT.TFile.Open(f"dataset/{era}/{channel}/DataPreprocess_{args.background}.root")
-        bkgDataList += rtfileToDataList(rt, isSignal=False, era=era, maxSize=maxSizeForEra[era])
+        bkgDataTmp = rtfileToDataList(rt, isSignal=False, era=era, maxSize=maxSizeForEra[era], nFolds=nFolds)
         rt.Close()
-    sigDataList = shuffle(sigDataList, random_state=42)
-    bkgDataList = shuffle(bkgDataList, random_state=42)
+
+        for i in range(nFolds):
+            sigDataList[i] += sigDataTmp[i]
+            bkgDataList[i] += bkgDataTmp[i]
 else:
-    sigDataList = []
-    bkgDataList = []
     for era in ["2016preVFP", "2016postVFP", "2017", "2018"]:
         rt = ROOT.TFile.Open(f"dataset/{era}/{args.channel}/DataPreprocess_TTToHcToWAToMuMu_{args.signal}.root")
-        sigDataList += rtfileToDataList(rt, isSignal=True, era=era, maxSize=maxSizeForEra[era])
+        sigDataTmp = rtfileToDataList(rt, isSignal=True, era=era, maxSize=maxSizeForEra[era], nFolds=nFolds)
         rt.Close()
 
         rt = ROOT.TFile.Open(f"dataset/{era}/{args.channel}/DataPreprocess_{args.background}.root")
-        bkgDataList += rtfileToDataList(rt, isSignal=False, era=era, maxSize=maxSizeForEra[era])
+        bkgDataTmp = rtfileToDataList(rt, isSignal=False, era=era, maxSize=maxSizeForEra[era], nFolds=nFolds)
         rt.Close()
-    sigDataList = shuffle(sigDataList, random_state=42)
-    bkgDataList = shuffle(bkgDataList, random_state=42)
-logging.info("Finished loading dataset")
-logging.info(f"Signal: {len(sigDataList)} events")
-logging.info(f"Background: {len(bkgDataList)} events")
-dataList = shuffle(sigDataList+bkgDataList, random_state=42)
 
-trainset = GraphDataset(dataList[:int(len(dataList)*0.4)])
-validset = GraphDataset(dataList[int(len(dataList)*0.4):int(len(dataList)*0.5)])
-testset  = GraphDataset(dataList[int(len(dataList)*0.5):])
+        for i in range(nFolds):
+            sigDataList[i] += sigDataTmp[i]
+            bkgDataList[i] += bkgDataTmp[i]
+
+dataList = [[] for _ in range(nFolds)]
+for i in range(nFolds):
+    sigDataList[i] = shuffle(sigDataList[i], random_state=42)
+    bkgDataList[i] = shuffle(bkgDataList[i], random_state=42)
+    dataList[i] = shuffle(sigDataList[i]+bkgDataList[i], random_state=42)
+    logging.info(f"Signal: {len(sigDataList[i])} events in fold {i}")
+    logging.info(f"Background: {len(bkgDataList[i])} events in fold {i}")
+logging.info("Finished loading dataset")
 
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
 if args.pilot:
     baseDir += "pilot__"
 logging.info(f"Saving dataset to {baseDir}")
 os.makedirs(baseDir, exist_ok=True)
-torch.save(trainset, f"{baseDir}/{args.signal}_vs_{args.background}_train.pt")
-torch.save(validset, f"{baseDir}/{args.signal}_vs_{args.background}_valid.pt")
-torch.save(testset, f"{baseDir}/{args.signal}_vs_{args.background}_test.pt")
+for i, data in enumerate(dataList):
+    graphdataset = GraphDataset(data)
+    torch.save(graphdataset, f"{baseDir}/{args.signal}_vs_{args.background}_fold-{i}.pt")
 logging.info("Finished saving dataset")

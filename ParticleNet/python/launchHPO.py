@@ -55,7 +55,7 @@ tuner.run()
 experiment = load_experiment(tuner.name)
 results = experiment.results
 best_config = pd.DataFrame(experiment.best_config(), index=[0])
-outpath = f"results/{args.channel}/syne_tune_hpo/CSV/hpo_{args.signal}_vs_{args.background}_penalty-{str(args.penalty).replace('.','p')}.csv"
+outpath = f"results/{args.channel}/syne_tune_hpo/CSV/hpo_{args.signal}_vs_{args.background}.csv"
 os.makedirs(os.path.dirname(outpath), exist_ok=True)
 results.to_csv(outpath, index=False)
 best_config.to_csv(outpath.replace(".csv", "_best_config.csv"), index=False)
