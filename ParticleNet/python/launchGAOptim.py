@@ -14,7 +14,6 @@ parser.add_argument("--channel", required=True, type=str, help="channel")
 parser.add_argument("--device", required=True, type=str, help="which device to use, cpu or cuda:0...")
 parser.add_argument("--nPop", type=int, default=16, help="population size")
 parser.add_argument("--maxIter", type=int, default=4, help="max iteration")
-parser.add_argument("--fold", required=True, type=str, help="fold number for the training, 0...nFolds-1")
 parser.add_argument("--pilot", action="store_true", default=False, help="pilot mode")
 parser.add_argument("--debug", action="store_true", default=False, help="debug mode")
 args = parser.parse_args()
@@ -23,9 +22,10 @@ WORKDIR = os.getenv("WORKDIR")
 logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
 
 # Set up base working directory
-base_dir = f"{WORKDIR}/dataset/{args.channel}/{args.signal}_vs_{args.background}_fold-{args.fold}"
+base_dir = f"{WORKDIR}/PaticleNet/results/{args.channel}__/{args.signal}_vs_{args.background}"
 if args.pilot:
-    base_dir = f"{WORKDIR}/dataset/{args.channel}__pilot__/{args.signal}_vs_{args.background}_fold-{args.fold}"
+    base_dir = f"{WORKDIR}/PaticleNet/results/{args.channel}__pilot__/{args.signal}_vs_{args.background}"
+
 if os.path.exists(base_dir):
     # raise question to user, are you sure to delete the model?
     print(f"{base_dir} exists, delete it? [y/n]")
@@ -56,7 +56,7 @@ def evalFitness(population, iteration):
         command += f" --channel {args.channel}"
         command += f" --iter {iteration} --idx {idx}"
         command += f" --nNodes {nNodes} --optimizer {optimizer} --initLR {initLR} --scheduler {scheduler}"
-        command += f" --weight_decay {weight_decay} --device {args.device} --fold {args.fold}"
+        command += f" --weight_decay {weight_decay} --device {args.device}"
         if args.pilot:
             command += f" --pilot"
         logging.info(f"Start training {idx}th model with command: {command}")
