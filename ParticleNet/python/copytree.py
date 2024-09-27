@@ -15,7 +15,7 @@ CHANNEL = args.channel
 
 # no. of events to copy
 SIGNALs = ["MHc-160_MA-85", "MHc-130_MA-90", "MHc-100_MA-95"]
-NONPROMPTs = ["TTLL_powheg", "DYJetsToMuMu_MiNNLO"]
+NONPROMPTs = ["TTLL_powheg"]
 DIBOSONs = ["WZTo3LNu_mllmin0p1_powheg", "ZZTo4L_powheg"]
 TTZ = ["ttZToLLNuNu"]
 BACKGROUNDs = NONPROMPTs + DIBOSONs + TTZ
@@ -23,7 +23,6 @@ BACKGROUNDs = NONPROMPTs + DIBOSONs + TTZ
 ERAs = ["2016preVFP", "2016postVFP", "2017", "2018"]
 nEvtsToCopy = {"signal": [15000, 15000, 30000, 45000],
                "TTLL_powheg": [15000, 15000, 30000, 45000],
-               #"DYJetsToMuMu_MiNNLO": [2500, 2500, 5000, 7500],
                "WZTo3LNu_mllmin0p1_powheg": [7500, 7500, 15000, 22500],
                "ZZTo4L_powheg": [7500, 7500, 15000, 22500],
                "ttZToLLNuNu": [15000, 15000, 30000, 45000]}
@@ -74,7 +73,8 @@ for era, bkg in product(ERAs, BACKGROUNDs):
 ## hadd backgrounds
 for era in ERAs:
     # hadd nonprompt
-    os.system(f"hadd -f dataset/{era}/{CHANNEL}/DataPreprocess_nonprompt.root dataset/{era}/{CHANNEL}/DataPreprocess_DYJetsToMuMu_MiNNLO.root dataset/{era}/{CHANNEL}/DataPreprocess_TTLL_powheg.root")
+    shutil.move(f"dataset/{era}/{CHANNEL}/DataPreprocess_TTLL_powheg.root", f"dataset/{era}/{CHANNEL}/DataPreprocess_nonprompt.root")
+    #os.system(f"hadd -f dataset/{era}/{CHANNEL}/DataPreprocess_nonprompt.root dataset/{era}/{CHANNEL}/DataPreprocess_DYJetsToMuMu_MiNNLO.root dataset/{era}/{CHANNEL}/DataPreprocess_TTLL_powheg.root")
 
     # hadd diboson
     os.system(f"hadd -f dataset/{era}/{CHANNEL}/DataPreprocess_diboson.root dataset/{era}/{CHANNEL}/DataPreprocess_WZTo3LNu_mllmin0p1_powheg.root dataset/{era}/{CHANNEL}/DataPreprocess_ZZTo4L_powheg.root")
