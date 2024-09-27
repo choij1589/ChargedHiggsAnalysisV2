@@ -22,8 +22,8 @@ BACKGROUNDs = NONPROMPTs + DIBOSONs + TTZ
 
 ERAs = ["2016preVFP", "2016postVFP", "2017", "2018"]
 nEvtsToCopy = {"signal": [15000, 15000, 30000, 45000],
-               "TTLL_powheg": [12500, 12500, 25000, 37500],
-               "DYJetsToMuMu_MiNNLO": [2500, 2500, 5000, 7500],
+               "TTLL_powheg": [15000, 15000, 30000, 45000],
+               #"DYJetsToMuMu_MiNNLO": [2500, 2500, 5000, 7500],
                "WZTo3LNu_mllmin0p1_powheg": [7500, 7500, 15000, 22500],
                "ZZTo4L_powheg": [7500, 7500, 15000, 22500],
                "ttZToLLNuNu": [15000, 15000, 30000, 45000]}

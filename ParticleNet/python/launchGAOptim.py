@@ -54,8 +54,6 @@ def evalFitness(population, iteration):
         command += f" --iter {iteration} --idx {idx}"
         command += f" --nNodes {nNodes} --optimizer {optimizer} --initLR {initLR} --scheduler {scheduler}"
         command += f" --weight_decay {weight_decay} --device {args.device}"
-        if args.pilot:
-            command += f" --pilot"
         logging.info(f"Start training {idx}th model with command: {command}")
         proc = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         procs.append(proc)
