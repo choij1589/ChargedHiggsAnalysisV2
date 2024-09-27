@@ -177,7 +177,7 @@ class ComparisonCanvas():
         self.config = config
         
         # initialize default settings
-        self.cvs = TCanvas(name, title, 720, 900)
+        self.cvs = TCanvas(name, title, 820, 900)
         self.padUp = TPad("up", "", 0, 0.25, 1, 1)
         self.padUp.SetTopMargin(0.05)
         self.padUp.SetBottomMargin(0.01)
