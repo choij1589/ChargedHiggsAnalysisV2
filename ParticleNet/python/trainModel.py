@@ -36,6 +36,7 @@ parser.add_argument("--initLR", required=True, type=float, help="initial learnin
 parser.add_argument("--weight_decay", required=True, type=float, help="weight decay")
 parser.add_argument("--scheduler", required=True, type=str, help="lr scheduler")
 parser.add_argument("--device", default="cuda", type=str, help="cpu or cuda")
+parser.add_argument("--fold", required=True, type=int, help="i-th fold to test")
 parser.add_argument("--pilot", action="store_true", default=False, help="pilot mode")
 parser.add_argument("--debug", action="store_true", default=False, help="debug mode")
 args = parser.parse_args()
@@ -67,9 +68,14 @@ logging.info("Start loading dataset")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
 if args.pilot:
     baseDir += "pilot__"
-trainset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_train.pt")
-validset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_valid.pt")
-testset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_test.pt")
+
+nFold = 5
+dataFoldList = [[] for _ in range(nFold)]
+for i in range(nFold):
+    dataFoldList[i] = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_fold-{i}.pt", weights_only=False)
+trainset = torch.utils.data.ConcatDataset([dataFoldList[(args.fold+1)%5], dataFoldList[(args.fold+2)%5], dataFoldList[(args.fold+3)%5]])
+validset = dataFoldList[(args.fold+4)%5]
+testset = dataFoldList[args.fold]
 
 trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True)
 validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
@@ -157,9 +163,10 @@ def main():
 
     modelName =  f"{args.model}-nNodes{args.nNodes}-{args.optimizer}-initLR{str(format(args.initLR, '.4f')).replace('.','p')}-decay{str(format(args.weight_decay, '.5f')).replace('.', 'p')}-{args.scheduler}"
     logging.info("Start training...")
-    checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/models/{modelName}.pt"
-    summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/CSV/{modelName}.csv"
-    outtreepath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/trees/{modelName}.root"
+    outputPath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/fold-{args.fold}"
+    checkptpath = f"{outputPath}/models/{modelName}.pt"
+    summarypath = f"{outputPath}/CSV/{modelName}.csv"
+    outtreepath = f"{outputPath}/trees/{modelName}.root"
     earlyStopper = EarlyStopper(patience=7, path=checkptpath)
     summaryWriter = SummaryWriter(name=modelName)
 
