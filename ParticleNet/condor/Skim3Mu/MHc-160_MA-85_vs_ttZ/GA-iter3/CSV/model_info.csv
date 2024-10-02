@@ -1,0 +1,17 @@
+model,chromosome,fitness
+ParticleNet-model0,"(128, 'Adam', 0.0019, 2e-05, 'ReduceLROnPlateau')",0.0005396532881269
+ParticleNet-model1,"(128, 'Adam', 0.0022, 1e-05, 'ReduceLROnPlateau')",0.0005408071791814
+ParticleNet-model2,"(128, 'Adam', 0.0019, 1e-05, 'ReduceLROnPlateau')",0.0005392223040536
+ParticleNet-model3,"(128, 'Adam', 0.0021, 1e-05, 'ReduceLROnPlateau')",0.0005419582287829
+ParticleNet-model4,"(128, 'Adam', 0.0051, 1e-05, 'ReduceLROnPlateau')",0.0005434596042553
+ParticleNet-model5,"(128, 'Adam', 0.0022, 1e-05, 'CyclicLR')",0.0005435549637216
+ParticleNet-model6,"(128, 'Adam', 0.0009, 0.0001, 'CyclicLR')",0.0005448728020143
+ParticleNet-model7,"(128, 'RMSprop', 0.0022, 1e-05, 'ReduceLROnPlateau')",0.0005830987387238
+ParticleNet-model8,"(128, 'Adam', 0.0022, 1e-05, 'ReduceLROnPlateau')",0.0005401342381159
+ParticleNet-model9,"(128, 'Adam', 0.0019, 2e-05, 'ReduceLROnPlateau')",0.0005407601833882
+ParticleNet-model10,"(128, 'Adam', 0.0019, 2e-05, 'CyclicLR')",0.0005436572284548
+ParticleNet-model11,"(128, 'Adam', 0.0019, 1e-05, 'ExponentialLR')",0.0005407800620703
+ParticleNet-model12,"(128, 'Adam', 0.0019, 1e-05, 'CyclicLR')",0.0005407380621794
+ParticleNet-model13,"(128, 'Adam', 0.0004, 1e-05, 'ReduceLROnPlateau')",0.0005464241954828
+ParticleNet-model14,"(128, 'Adam', 0.0022, 0.0001, 'ExponentialLR')",0.0005398619725479
+ParticleNet-model15,"(128, 'Adam', 0.0021, 1e-05, 'ReduceLROnPlateau')",0.0005416203823283
