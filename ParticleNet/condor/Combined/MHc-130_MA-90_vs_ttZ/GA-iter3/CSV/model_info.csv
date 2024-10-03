@@ -1,0 +1,17 @@
+model,chromosome,fitness
+ParticleNet-model0,"(128, 'RMSprop', 0.0003, 1e-05, 'ReduceLROnPlateau')",0.0005326064185793
+ParticleNet-model1,"(96, 'RMSprop', 0.0002, 3e-05, 'ExponentialLR')",0.0005387402258322
+ParticleNet-model2,"(96, 'RMSprop', 0.0003, 1e-05, 'ReduceLROnPlateau')",0.0005382349156894
+ParticleNet-model3,"(96, 'RMSprop', 0.0003, 1e-05, 'ReduceLROnPlateau')",0.0005418178069698
+ParticleNet-model4,"(64, 'RMSprop', 0.0001, 3e-05, 'ExponentialLR')",0.0005406344777028
+ParticleNet-model5,"(96, 'RMSprop', 0.0011, 1e-05, 'ReduceLROnPlateau')",0.0005771852766436
+ParticleNet-model6,"(96, 'RMSprop', 0.0003, 1e-05, 'ReduceLROnPlateau')",0.0005355183113365
+ParticleNet-model7,"(96, 'RMSprop', 0.0002, 0.00941, 'ExponentialLR')",0.0005976252919651
+ParticleNet-model8,"(96, 'RMSprop', 0.0051, 3e-05, 'ReduceLROnPlateau')",0.000615886062279
+ParticleNet-model9,"(64, 'Adam', 0.0001, 3e-05, 'ReduceLROnPlateau')",0.0005677583108728
+ParticleNet-model10,"(64, 'RMSprop', 0.0002, 0.00036, 'ExponentialLR')",0.0005493625667393
+ParticleNet-model11,"(64, 'RMSprop', 0.0003, 3e-05, 'ExponentialLR')",0.0005554035037002
+ParticleNet-model12,"(64, 'RMSprop', 0.0002, 3e-05, 'ExponentialLR')",0.0005404073814149
+ParticleNet-model13,"(128, 'RMSprop', 0.0003, 0.00036, 'ReduceLROnPlateau')",0.0005628231969866
+ParticleNet-model14,"(96, 'RMSprop', 0.0002, 3e-05, 'ExponentialLR')",0.0005375128526362
+ParticleNet-model15,"(64, 'RMSprop', 0.0001, 3e-05, 'ExponentialLR')",0.0005429079624968
