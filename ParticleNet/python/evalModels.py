@@ -17,6 +17,8 @@ from torch_geometric.loader import DataLoader
 from ROOT import TFile, TTree, TH1D, TCanvas
 from Models import ParticleNet, ParticleNetV2
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
+from time import sleep
 
 from pprint import pprint
 
@@ -43,9 +45,9 @@ nClasses = 2
 max_epochs = 81
 
 def getChromosomes(SIG, BKG, top=nModels):
-    CSVFILE = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/GA-iter3/CSV/model_info.csv"
+    CSVFILE = f"{WORKDIR}/ParticleNet/condor/{CHANNEL}/{SIG}_vs_{BKG}/GA-iter3/CSV/model_info.csv"
     df = pd.read_csv(CSVFILE)
-    df = df.sort_values(by='fitness', ascending=False)
+    df = df.sort_values(by='fitness', ascending=True)
     lst = df.to_dict(orient='records')
 
     chromosomes = []
@@ -169,26 +171,29 @@ def plotTrainingStage(idx, path):
     plt.savefig(path)
     plt.close()
 
-def run_trainModel(args):
-    command = [
-        "python", "python/trainModel.py",
-        "--signal", SIG,
-        "--background", BKG,
-        "--channel", CHANNEL,
-        "--max_epochs", str(max_epochs),
-        "--model", args["model"],
-        "--nNodes", str(args["nNodes"]),
-        "--dropout_p", str(0.25),
-        "--optimizer", args["optimizer"],
-        "--initLR", args["initLR"],
-        "--weight_decay", args["weight_decay"],
-        "--scheduler", args["scheduler"],
-        "--device", DEVICE,
-        "--fold", str(FOLD),
-    ]
-    print("Running: ",command)
-    subprocess.run(command)
+def run_trainModel(chromosomes):
+    procs = []
+    for chromosome in chromosomes:
+        nNodes, optimizer, initLR, scheduler, model, weight_decay = (
+        chromosome.get('nNodes'),chromosome.get('optimizer'),chromosome.get('initLR'),chromosome.get('scheduler'),chromosome.get('model'),chromosome.get('weight_decay')
+        )
+        command = f"python/trainModel.py --signal {SIG} --background {BKG} --channel {CHANNEL}"
+        command += f" --max_epochs {max_epochs} --model {model} --nNodes {nNodes}"
+        command += f" --dropout_p 0.25 --optimizer {optimizer} --initLR {initLR}"
+        command += f" --weight_decay {weight_decay} --scheduler {scheduler}"
+        command += f" --device {DEVICE} --fold {FOLD}"
+        logging.info(f"Start training the model with command: {command}")
+        proc = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        procs.append(proc)
+        sleep(0.5)
 
+    for proc in procs:
+        stdout, stderr = proc.communicate()
+        #print("Output:", stdout.decode())
+        #print("Errors:", stderr.decode())
+        assert proc.returncode == 0, f"Process failed with return code {proc.returncode}"
+
+start=datetime.now()
 #### load datasets
 print("@@@@ Start loading dataset...")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
@@ -206,15 +211,7 @@ testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False
 
 #### train models with early stop
 chromosomes = getChromosomes(SIG, BKG, top=nModels)
-
-with ThreadPoolExecutor(max_workers=max(10,len(chromosomes))) as executor:
-    futures = [
-        executor.submit(run_trainModel,args=chromosome)
-        for chromosome in chromosomes
-    ]
-
-    for future in futures:
-        future.result()
+run_trainModel(chromosomes)
 
 #### load models
 models = {}
@@ -368,6 +365,9 @@ print(f"[evalModels] {SIG}_vs_{BKG} summary: {selectionInfo}")
 with open(f"/{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/fold-{FOLD}/summary.txt", "w") as f:
     f.write(f"{selectionInfo}\n")
 
+end = datetime.now()
+print(start)
+print(end)
 #### make plots
 print("@@@@ Visualizing...")
 for idx, model in models.items():
