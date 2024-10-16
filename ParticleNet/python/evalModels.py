@@ -17,6 +17,8 @@ from torch_geometric.loader import DataLoader
 from ROOT import TFile, TTree, TH1D, TCanvas
 from Models import ParticleNet, ParticleNetV2
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
+from time import sleep
 
 from pprint import pprint
 
@@ -24,34 +26,40 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--channel", type=str, required=True, help="channel")
 parser.add_argument("--signal", type=str, required=True, help="signal")
 parser.add_argument("--background", type=str, required=True, help="background")
+parser.add_argument("--device", default="cuda", type=str, help="cpu or cuda")
+parser.add_argument("--fold", required=True, type=int, help="i-th fold to test")
 args = parser.parse_args()
 
 WORKDIR = os.environ['WORKDIR']
 CHANNEL = args.channel
 SIG = args.signal
 BKG = args.background
+DEVICE = args.device
+FOLD = args.fold
 
-nModels = 10
+nFold = 5
+nModels = 8
 nFeatures = 9
 nGraphFeatures = 4
 nClasses = 2
 max_epochs = 81
 
-def getChromosomes(SIG, BKG, top=10):
-    CSVFILE = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/syne_tune_hpo/CSV/hpo_{SIG}_vs_{BKG}.csv"
+def getChromosomes(SIG, BKG, top=nModels):
+    CSVFILE = f"{WORKDIR}/ParticleNet/condor/{CHANNEL}/{SIG}_vs_{BKG}/GA-iter3/CSV/model_info.csv"
     df = pd.read_csv(CSVFILE)
-    df = df.sort_values(by="objective", ascending=True)
+    df = df.sort_values(by='fitness', ascending=True)
     lst = df.to_dict(orient='records')
 
     chromosomes = []
     for elt in lst:
-        chromosome = {'nNodes':elt['config_nNodes'], 'optimizer':elt['config_optimizer'], 'initLR':elt['config_initLR'], 'scheduler':elt['config_scheduler'], 'model':elt['config_model'], 'weight_decay':elt['config_weight_decay'], 'trial_id':elt['trial_id']}
-        if chromosome in chromosomes: continue
-        chromosomes.append(chromosome)
+        c = elt['chromosome']
+        c = c.strip("()").split(", ")
+        nNodes, optimizer, initLR, weight_decay, scheduler = c
+        model = elt['model'].split('-')[0]
+        chromosome = {'nNodes':int(nNodes), 'optimizer':optimizer.strip("'"), 'initLR':f"{float(initLR):.4f}", 'weight_decay':f"{float(weight_decay):.5f}", 'scheduler':scheduler.strip("'"), 'model':model}
+        if chromosome not in chromosomes:
+            chromosomes.append(chromosome)
         if len(chromosomes)==top: break
-
-    for c in chromosomes:
-        print(c)
 
     return chromosomes
 
@@ -136,7 +144,7 @@ def plotTrainingStage(idx, path):
     nNodes, optimizer, initLR, scheduler, model, weight_decay, trial_id = (
         chromosome.get('nNodes'),chromosome.get('optimizer'),chromosome.get('initLR'),chromosome.get('scheduler'),chromosome.get('model'),chromosome.get('weight_decay'),chromosome.get('trial_id')
     )
-    csvpath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/CSV/{model}-nNodes{nNodes}_{optimizer}_initLR-{str(initLR).replace('.','p')}_{scheduler}.csv"
+    csvpath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/fold-{FOLD}/CSV/{model}-nNodes{nNodes}-{optimizer}-initLR{initLR.replace('.','p')}-decay{weight_decay.replace('.', 'p')}-{scheduler}.csv"
     record = pd.read_csv(csvpath, index_col=0).transpose()
 
     trainLoss = list(record.loc['loss/train'])
@@ -163,31 +171,39 @@ def plotTrainingStage(idx, path):
     plt.savefig(path)
     plt.close()
 
-def run_trainModel(args):
-    command = [
-        "python", "python/trainModel.py",
-        "--signal", SIG,
-        "--background", BKG,
-        "--channel", CHANNEL,
-        "--max_epochs", str(max_epochs),
-        "--model", args["model"],
-        "--nNodes", str(args["nNodes"]),
-        "--dropout_p", str(0.25),
-        "--optimizer", args["optimizer"],
-        "--initLR", str(args["initLR"]),
-        "--weight_decay", str(args["weight_decay"]),
-        "--scheduler", args["scheduler"],
-        "--device", "cuda"
-    ]
-    print("Running: ",command)
-    subprocess.run(command)
+def run_trainModel(chromosomes):
+    procs = []
+    for chromosome in chromosomes:
+        nNodes, optimizer, initLR, scheduler, model, weight_decay = (
+        chromosome.get('nNodes'),chromosome.get('optimizer'),chromosome.get('initLR'),chromosome.get('scheduler'),chromosome.get('model'),chromosome.get('weight_decay')
+        )
+        command = f"python/trainModel.py --signal {SIG} --background {BKG} --channel {CHANNEL}"
+        command += f" --max_epochs {max_epochs} --model {model} --nNodes {nNodes}"
+        command += f" --dropout_p 0.25 --optimizer {optimizer} --initLR {initLR}"
+        command += f" --weight_decay {weight_decay} --scheduler {scheduler}"
+        command += f" --device {DEVICE} --fold {FOLD}"
+        logging.info(f"Start training the model with command: {command}")
+        proc = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        procs.append(proc)
+        sleep(0.5)
 
+    for proc in procs:
+        stdout, stderr = proc.communicate()
+        #print("Output:", stdout.decode())
+        #print("Errors:", stderr.decode())
+        assert proc.returncode == 0, f"Process failed with return code {proc.returncode}"
+
+start=datetime.now()
 #### load datasets
 print("@@@@ Start loading dataset...")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
-trainset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_train.pt")
-validset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_valid.pt")
-testset = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_test.pt")
+
+dataFoldList = [[] for _ in range(nFold)]
+for i in range(nFold):
+    dataFoldList[i] = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_fold-{i}.pt", weights_only=False)
+trainset = torch.utils.data.ConcatDataset([dataFoldList[(args.fold+1)%5], dataFoldList[(args.fold+2)%5], dataFoldList[(args.fold+3)%5]])
+validset = dataFoldList[(args.fold+4)%5]
+testset = dataFoldList[args.fold]
 
 trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True)
 validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
@@ -195,15 +211,7 @@ testLoader = DataLoader(testset, batch_size=1024, pin_memory=True, shuffle=False
 
 #### train models with early stop
 chromosomes = getChromosomes(SIG, BKG, top=nModels)
-
-with ThreadPoolExecutor(max_workers=max(10,len(chromosomes))) as executor:
-    futures = [
-        executor.submit(run_trainModel,args=chromosome)
-        for chromosome in chromosomes
-    ]
-
-    for future in futures:
-        future.result()
+run_trainModel(chromosomes)
 
 #### load models
 models = {}
@@ -211,10 +219,7 @@ for idx, chromosome in enumerate(chromosomes):
     nNodes, optimizer, initLR, scheduler, model, weight_decay = (
         chromosome.get('nNodes'),chromosome.get('optimizer'),chromosome.get('initLR'),chromosome.get('scheduler'),chromosome.get('model'),chromosome.get('weight_decay')
     )
-    filePath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/models/{model}-nNodes{nNodes}_{optimizer}_initLR-{str(initLR).replace('.', 'p')}*_{scheduler}.pt"
-    files = glob.glob(filePath)
-    for file in files:
-        modelPath = file
+    modelPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/fold-{FOLD}/models/{model}-nNodes{nNodes}-{optimizer}-initLR{initLR.replace('.','p')}-decay{weight_decay.replace('.', 'p')}-{scheduler}.pt"
     if model=="ParticleNet":
         model = ParticleNet(nFeatures, nGraphFeatures, nClasses, nNodes, dropout_p=0.25)
     elif model=="ParticleNetV2":
@@ -225,7 +230,7 @@ for idx, chromosome in enumerate(chromosomes):
 
 
 #### prepare directories
-outputPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/result/temp.png"
+outputPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/fold-{FOLD}/result/temp.png"
 if not os.path.exists(os.path.dirname(outputPath)): os.makedirs(os.path.dirname(outputPath))
 
 #### save score distributions
@@ -357,9 +362,12 @@ f.Close()
 #### write selection
 selectionInfo = f"{SIG}, {BKG}, {bestModelIdx}, {nNodes}, {optimizer}, {initLR}, {scheduler}, {model}, {trainAUC}, {validAUC}, {testAUC}, {ksProbSig}, {ksProbBkg}"
 print(f"[evalModels] {SIG}_vs_{BKG} summary: {selectionInfo}")
-with open(f"/{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/summary.txt", "w") as f:
+with open(f"/{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/fold-{FOLD}/summary.txt", "w") as f:
     f.write(f"{selectionInfo}\n")
 
+end = datetime.now()
+print(start)
+print(end)
 #### make plots
 print("@@@@ Visualizing...")
 for idx, model in models.items():
