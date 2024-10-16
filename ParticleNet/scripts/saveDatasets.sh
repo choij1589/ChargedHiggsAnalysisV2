@@ -9,7 +9,7 @@ run_saveDataset() {
     local signal="$1"
     local background="$2"
     local channel="$3"
-    saveDataset.py --signal $signal --background $background --channel $channel --pilot
+    saveDataset.py --signal $signal --background $background --channel $channel
 }
 
 export -f run_saveDataset

@@ -559,14 +559,13 @@
   },
   "pair/mass": {
     "xTitle": "M(#mu^{+}#mu^{-})",
-    "yTitle": "Events / 5 GeV",
+    "yTitle": "Events",
     "xRange": [0.0, 300.0],
     "yRange": [0.0, 2.0],
-    "rebin": 5,
     "logy": false
   },
   "stack/pt": {
-    "xTitle": "p_{T}(stack)",
+    "xTitle": "p_{T}(#mu^{+}#mu^{-})",
     "yTitle": "Events / 10 GeV",
     "xRange": [0.0, 300.0],
     "yRange": [0.0, 2.0],
@@ -574,7 +573,7 @@
     "logy": false
   },
   "stack/eta": {
-    "xTitle": "#eta(stack)",
+    "xTitle": "#eta(#mu^{+}#mu^{-})",
     "yTitle": "Events",
     "xRange": [-5.0, 5.0],
     "yRange": [0.0, 2.0],
@@ -582,7 +581,7 @@
     "logy": false
   },
   "stack/phi": {
-    "xTitle": "#phi(stack)",
+    "xTitle": "#phi(#mu^{+}#mu^{-})",
     "yTitle": "Events",
     "xRange": [-3.2, 3.2],
     "yRange": [0.0, 2.0],
@@ -590,11 +589,10 @@
     "logy": false
   },
   "stack/mass": {
-    "xTitle": "M(stack)",
-    "yTitle": "Events / 5 GeV",
+    "xTitle": "M(#mu^{+}#mu^{-})",
+    "yTitle": "Events",
     "xRange": [0.0, 300.0],
     "yRange": [0.0, 2.0],
-    "rebin": 5,
     "logy": false
   },
   "ZCand/mass": {
@@ -666,7 +664,7 @@
     "xRange": [0.0, 1.0],
     "yRange": [0.0, 2.0],
     "rebin": 5,
-    "logy": false
+    "logy": true
   },
   "MHc-100_MA-95/score_diboson": {
     "xTitle": "(100, 95) vs. VV",
@@ -674,7 +672,7 @@
     "xRange": [0.0, 1.0],
     "yRange": [0.0, 2.0],
     "rebin": 5,
-    "logy": false
+    "logy": true
   },
   "MHc-100_MA-95/score_ttZ": {
     "xTitle": "(100, 95) vs. tt+Z",
@@ -682,7 +680,7 @@
     "xRange": [0.0, 1.0],
     "yRange": [0.0, 2.0],
     "rebin": 5,
-    "logy": false
+    "logy": true
   },
   "MHc-130_MA-90/score_nonprompt": {
     "xTitle": "(130, 90) vs. fake",
@@ -690,15 +688,14 @@
     "xRange": [0.0, 1.0],
     "yRange": [0.0, 2.0],
     "rebin": 5,
-    "logy": false
+    "logy": true
   },
   "MHc-130_MA-90/score_diboson": {
     "xTitle": "(130, 90) vs. VV",
     "yTitle": "Events",
     "xRange": [0.0, 1.0],
-    "yRange": [0.0, 2.0],
     "rebin": 5,
-    "logy": false
+    "logy": true
   },
   "MHc-130_MA-90/score_ttZ": {
     "xTitle": "(130, 90) vs. tt+Z",
@@ -706,7 +703,7 @@
     "xRange": [0.0, 1.0],
     "yRange": [0.0, 2.0],
     "rebin": 5,
-    "logy": false
+    "logy": true
   },
   "MHc-160_MA-85/score_nonprompt": {
     "xTitle": "(160, 85) vs. fake",
@@ -714,7 +711,7 @@
     "xRange": [0.0, 1.0],
     "yRange": [0.0, 2.0],
     "rebin": 5,
-    "logy": false
+    "logy": true
   },
   "MHc-160_MA-85/score_diboson": {
     "xTitle": "(160, 85) vs. VV",
@@ -722,7 +719,7 @@
     "xRange": [0.0, 1.0],
     "yRange": [0.0, 2.0],
     "rebin": 5,
-    "logy": false
+    "logy": true
   },
   "MHc-160_MA-85/score_ttZ": {
     "xTitle": "(160, 85) vs. tt+Z",
@@ -730,7 +727,7 @@
     "xRange": [0.0, 1.0],
     "yRange": [0.0, 2.0],
     "rebin": 5,
-    "logy": false
+    "logy": true
   }
 }
 
