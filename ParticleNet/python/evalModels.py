@@ -45,7 +45,7 @@ nClasses = 2
 max_epochs = 81
 
 def getChromosomes(SIG, BKG, top=nModels):
-    CSVFILE = f"{WORKDIR}/ParticleNet/condor/{CHANNEL}/{SIG}_vs_{BKG}/GA-iter3/CSV/model_info.csv"
+    CSVFILE = f"{WORKDIR}/ParticleNet/condor/Optimization/{CHANNEL}/{SIG}_vs_{BKG}/GA-iter3/CSV/model_info.csv"
     df = pd.read_csv(CSVFILE)
     df = df.sort_values(by='fitness', ascending=True)
     lst = df.to_dict(orient='records')
