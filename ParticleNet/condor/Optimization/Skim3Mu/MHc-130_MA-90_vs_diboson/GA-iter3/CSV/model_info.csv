@@ -1,0 +1,17 @@
+model,chromosome,fitness
+ParticleNet-model0,"(128, 'Adam', 0.0009, 0.00016, 'ExponentialLR')",0.0004243934569634
+ParticleNet-model1,"(128, 'Adam', 0.0009, 0.00021, 'ExponentialLR')",0.0004254057541889
+ParticleNet-model2,"(128, 'Adam', 0.0005, 0.00089, 'ExponentialLR')",0.0004272661080462
+ParticleNet-model3,"(64, 'Adam', 0.0009, 0.0002, 'ExponentialLR')",0.0004288657700871
+ParticleNet-model4,"(64, 'RMSprop', 0.0002, 0.00021, 'ExponentialLR')",0.0004295650057605
+ParticleNet-model5,"(64, 'RMSprop', 0.0007, 0.00021, 'ExponentialLR')",0.0004377539564502
+ParticleNet-model6,"(64, 'RMSprop', 0.0002, 0.00021, 'CyclicLR')",0.0004303741850533
+ParticleNet-model7,"(128, 'Adam', 0.0009, 0.00021, 'ExponentialLR')",0.0004249556831325
+ParticleNet-model8,"(64, 'Adam', 0.0009, 0.0002, 'ExponentialLR')",0.0004274361148275
+ParticleNet-model9,"(64, 'RMSprop', 0.0002, 0.00098, 'CyclicLR')",0.0004344596744536
+ParticleNet-model10,"(64, 'RMSprop', 0.0002, 7e-05, 'ExponentialLR')",0.0004292175662039
+ParticleNet-model11,"(64, 'Adam', 0.0005, 0.00141, 'ExponentialLR')",0.0004298834720352
+ParticleNet-model12,"(128, 'Adam', 0.0009, 0.0002, 'ExponentialLR')",0.0004239965488816
+ParticleNet-model13,"(64, 'RMSprop', 0.0009, 0.00089, 'ExponentialLR')",0.0004657978352754
+ParticleNet-model14,"(64, 'Adam', 0.0009, 0.00016, 'ExponentialLR')",0.0004277430017103
+ParticleNet-model15,"(128, 'Adam', 0.0005, 0.00141, 'ExponentialLR')",0.0004259372450416

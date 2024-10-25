@@ -27,6 +27,10 @@ if [[ $CHANNEL == "ZFake1E2Mu" ]]; then
         "METv/pt" "METv/phi"
         "ZCand/pt" "ZCand/eta" "ZCand/phi" "ZCand/mass"
         "nonprompt/pt" "nonprompt/eta"
+        "MHc-100_MA-95/score_nonprompt" "MHc-100_MA-95/score_diboson" "MHc-100_MA-95/score_ttZ"
+        "MHc-130_MA-90/score_nonprompt" "MHc-130_MA-90/score_diboson" "MHc-130_MA-90/score_ttZ"
+        "MHc-160_MA-85/score_nonprompt" "MHc-160_MA-85/score_diboson" "MHc-160_MA-85/score_ttZ"
+ 
     )
     plot.py --era $ERA --channel $CHANNEL --histkey "muons/1/pt"
     export -f draw_plot
@@ -45,6 +49,10 @@ elif [[ $CHANNEL == "ZFake3Mu" ]]; then
         "ZCand/pt" "ZCand/eta" "ZCand/phi" "ZCand/mass"
         "nZCand/pt" "nZCand/eta" "nZCand/phi" "nZCand/mass"
         "nonprompt/pt" "nonprompt/eta"
+        "MHc-100_MA-95/score_nonprompt" "MHc-100_MA-95/score_diboson" "MHc-100_MA-95/score_ttZ"
+        "MHc-130_MA-90/score_nonprompt" "MHc-130_MA-90/score_diboson" "MHc-130_MA-90/score_ttZ"
+        "MHc-160_MA-85/score_nonprompt" "MHc-160_MA-85/score_diboson" "MHc-160_MA-85/score_ttZ"
+
     )
     plot.py --era $ERA --channel $CHANNEL --histkey "muons/1/pt"
     export -f draw_plot

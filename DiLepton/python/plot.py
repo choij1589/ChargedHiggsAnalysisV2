@@ -129,7 +129,7 @@ for sample in MCList:
                 systUp = abs(h_up.GetBinContent(bin) - h.GetBinContent(bin))
                 systDown = abs(h_down.GetBinContent(bin) - h.GetBinContent(bin))
                 envelops.append(max(systUp, systDown))
-            total_uc = sqrt(pow(stat_unc, 2) + pow(max(envelops), 2))
+            total_unc = sqrt(pow(stat_unc, 2) + pow(max(envelops), 2))
             h.SetBinError(bin, total_unc)
     HISTs[sample] = h.Clone(sample)
 

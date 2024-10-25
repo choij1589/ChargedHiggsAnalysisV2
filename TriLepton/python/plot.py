@@ -27,6 +27,9 @@ config['era'] = args.era
 with open(f"{WORKDIR}/CommonData/json/convScaleFactors.json") as f:
     convScaleFactors = json.load(f)[args.era]
 
+SIGNALs = ["MHc-70_MA-15", "MHc-100_MA-60", "MHc-130_MA-90", "MHc-160_MA-155"]
+if "score" in args.histkey:
+    SIGNALs = ["MHc-100_MA-95", "MHc-130_MA-90", "MHc-160_MA-85"]
 CONV = ["DYJets", "DYJets10to50_MG", "ZGToLLG", "WWG", "TTG"]
 DIBOSON = ["WZTo3LNu_amcatnlo", "ZZTo4L_powheg"]
 TTX = ["ttWToLNu", "ttZToLLNuNu", "ttHToNonbb"]
@@ -109,6 +112,19 @@ if args.blind:
         data.SetBinContent(bin, 0)
         data.SetBinError(bin, 0)
 f.Close()
+
+## signals
+if args.blind:
+    SIGs = {}
+    for signal in SIGNALs:
+        file_path = f"{WORKDIR}/SKFlatOutput/Run2UltraLegacy_v3/PromptSelector/{args.era}/{SKIMFLAG}__RunSyst__/PromptSelector_TTToHcToWAToMuMu_{signal}.root"
+        logging.debug(f"file_path: {file_path}")
+        assert os.path.exists(file_path), f"File not found: {file_path}"
+        f = ROOT.TFile.Open(file_path)
+        h = f.Get(f"{args.channel}/Central/{args.histkey}")
+        SIGs[signal] = h.Clone(signal)
+        SIGs[signal].SetDirectory(0)
+        f.Close()
 
 ## nonprompt
 file_path = f"{WORKDIR}/SKFlatOutput/Run2UltraLegacy_v3/MatrixSelector/{args.era}/{SKIMFLAG}__/DATA/MatrixSelector_{DATASTREAM}.root"
@@ -199,7 +215,16 @@ COLORs["conversion"] = ROOT.kViolet
 COLORs["diboson"] = ROOT.kGreen
 COLORs["others"] = ROOT.kAzure
 
+COLORs["MHc-70_MA-15"] = ROOT.kGreen
+COLORs["MHc-100_MA-60"] = ROOT.kBlue
+COLORs["MHc-100_MA-95"] = ROOT.kViolet
+COLORs["MHc-130_MA-90"] = ROOT.kBlack
+COLORs["MHc-160_MA-85"] = ROOT.kOrange
+COLORs["MHc-160_MA-155"] = ROOT.kRed
+
 c = ComparisonCanvas(config=config)
+if args.blind:
+    c.drawSignals(SIGs, COLORs)
 c.drawBackgrounds(BKGs, COLORs)
 c.drawData(data)
 c.drawRatio()

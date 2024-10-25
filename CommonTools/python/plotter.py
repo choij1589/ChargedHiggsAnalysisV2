@@ -177,7 +177,7 @@ class ComparisonCanvas():
         self.config = config
         
         # initialize default settings
-        self.cvs = TCanvas(name, title, 720, 900)
+        self.cvs = TCanvas(name, title, 820, 900)
         self.padUp = TPad("up", "", 0, 0.25, 1, 1)
         self.padUp.SetTopMargin(0.05)
         self.padUp.SetBottomMargin(0.01)
@@ -224,6 +224,14 @@ class ComparisonCanvas():
     
     def drawSignals(self, hists, colors):
         self.signals = hists
+        
+        # Reset legend
+        self.legend = TLegend(0.65, 0.6, 0.9, 0.85)
+        self.legend.SetFillStyle(0)
+        self.legend.SetBorderSize(0)
+        self.sigLegend = TLegend(0.35, 0.6, 0.6, 0.85)
+        self.sigLegend.SetFillStyle(0)
+        self.sigLegend.SetBorderSize(0)
         
         # rebin
         if "rebin" in self.config.keys():
@@ -309,8 +317,14 @@ class ComparisonCanvas():
         self.data.SetMarkerColor(1)
         
         maximum = self.stack.GetHistogram().GetMaximum() 
-        if self.logy: self.data.GetYaxis().SetRangeUser(1e-1, maximum*1000.)
-        else:         self.data.GetYaxis().SetRangeUser(0, maximum*2.)
+        if self.logy:
+            minValue = 1.
+            for i in range(1, self.data.GetNbinsX()+1):
+                if self.data.GetBinContent(i) > 0 and self.data.GetBinContent(i) < minValue:
+                    minValue = self.data.GetBinContent(i)
+            self.data.GetYaxis().SetRangeUser(minValue*0.1, maximum*1000.)
+        else:         
+            self.data.GetYaxis().SetRangeUser(0, maximum*2.)
         
         
     def drawRatio(self):
@@ -351,6 +365,10 @@ class ComparisonCanvas():
             self.legend.AddEntry(hist, hist.GetName(), "f")
         self.legend.AddEntry(self.systematics, "stat+syst", "f")
         
+        if self.signals:
+            for hist in self.signals.values():
+                self.sigLegend.AddEntry(hist, hist.GetName(), "lep")
+        
     def finalize(self, textInfo=None, drawSignal=False):
         # pad up
         if self.logy: self.padUp.SetLogy()
@@ -361,11 +379,13 @@ class ComparisonCanvas():
         self.data.Draw("p&hist&same")
         self.data.Draw("e1&same")
 
-        if drawSignal:
+        if self.signals:
             for hist in self.signals.values():
                 hist.Draw("hist&same")
 
         self.legend.Draw()
+        if self.signals:
+            self.sigLegend.Draw()
         
         if textInfo is None:
             self.lumi.DrawLatexNDC(0.63, 0.955, self.lumiString)
