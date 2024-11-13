@@ -52,7 +52,7 @@ class DatacardManager():
             rtfile_path = f"templates/{era}/{channel}/{masspoint}/Shape/ParticleNet/shapes_input.root"
             os.makedirs(os.path.dirname(rtfile_path), exist_ok=True)
             self.rtfile = ROOT.TFile.Open(rtfile_path)
-        for bkg in ["nonprompt", "conversion", "diboson", "ttX", "others"]:
+        for bkg in ["nonprompt", "conversion", "WZ", "ZZ", "ttW", "ttZ", "ttH", "others"]:
             # check if central event rates are positive
             if not self.get_event_rate(bkg) > 0: continue
             self.backgrounds.append(bkg)
@@ -226,6 +226,7 @@ if __name__ == "__main__":
     manager = DatacardManager(args.era, args.channel, args.masspoint, args.method)
     print("# signal xsec scaled to be 5 fb")
     if args.method == "CnC":
+        print("WARNING!!!! Systematics not properly parsed for CnC")
         print(manager.part1string())
         print(manager.part2string())
         print(manager.part3string())
@@ -263,5 +264,14 @@ if __name__ == "__main__":
         print(manager.syststring(syst="JetRes", skip=["nonprompt", "conversion"]))
         print(manager.syststring(syst="JetEn", skip=["nonprompt", "conversion"]))
         print(manager.syststring(syst="MuonEn", skip=["nonprompt", "conversion"]))
-        print(manager.syststring(syst="Nonprompt", sysType="lnN", value=1.3, skip=["signal", "conversion", "diboson", "ttX", "others"]))
-        print(manager.syststring(syst="Conversion", sysType="lnN", value=1.2, skip=["signal", "nonprompt", "diboson", "ttX", "others"]))
+        print(manager.syststring(syst="PDF", sysType="shape", skip=["nonprompt", "conversion", "WZ", "ZZ", "ttW", "ttZ", "ttH", "others"]))
+        print(manager.syststring(syst="Scale", sysType="shape", skip=["nonprompt", "conversion", "WZ", "ZZ", "ttW", "ttZ", "ttH", "others"]))
+        print(manager.syststring(syst="PS", sysType="shape", skip=["nonprompt", "conversion", "WZ", "ZZ", "ttW", "ttZ", "ttH", "others"]))
+        print(manager.syststring(syst="Nonprompt", sysType="lnN", value=1.3, skip=["signal", "conversion", "WZ", "ZZ", "ttW", "ttZ", "ttH", "others"]))
+        print(manager.syststring(syst="Conversion", sysType="lnN", value=1.2, skip=["signal", "nonprompt", "WZ", "ZZ", "ttW", "ttZ", "ttH", "others"]))
+        print(manager.syststring(syst="norm_WZ", sysType="lnN", value=1.12, skip=["signal", "nonprompt", "conversion", "ZZ", "ttW", "ttZ", "ttH", "others"]))
+        print(manager.syststring(syst="norm_ZZ", sysType="lnN", value=1.064, skip=["signal", "nonprompt", "conversion", "WZ", "ttW", "ttZ", "ttH", "others"]))
+        print(manager.syststring(syst="norm_ttW", sysType="lnN", value=1.119, skip=["signal", "nonprompt", "conversion", "WZ", "ZZ", "ttZ", "ttH", "others"]))
+        print(manager.syststring(syst="norm_ttZ", sysType="lnN", value=1.133, skip=["signal", "nonprompt", "conversion", "WZ", "ZZ", "ttW", "ttH", "others"]))
+        print(manager.syststring(syst="norm_ttH", sysType="lnN", value=1.1, skip=["signal", "nonprompt", "conversion", "WZ", "ZZ", "ttW", "ttZ", "others"]))
+        print(manager.syststring(syst="norm_others", sysType="lnN", value=1.5, skip=["signal", "nonprompt", "conversion", "WZ", "ZZ", "ttW", "ttZ", "ttH"]))
