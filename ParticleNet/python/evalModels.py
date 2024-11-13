@@ -350,8 +350,8 @@ if bestModelIdx == -1:
     sys.exit()
 print(f"best model: model-{bestModelIdx} with test AUC {fitness:.3f}")
 bestChromosome = chromosomes[bestModelIdx]
-nNodes, optimizer, initLR, scheduler, model = (
-    bestChromosome.get('nNodes'),bestChromosome.get('optimizer'),bestChromosome.get('initLR'),bestChromosome.get('scheduler'),bestChromosome.get('model')
+nNodes, optimizer, initLR, scheduler, weight_decay = (
+    bestChromosome.get('nNodes'),bestChromosome.get('optimizer'),bestChromosome.get('initLR'),bestChromosome.get('scheduler'),bestChromosome.get('weight_decay')
 )
 trainAUC = getAUC(tree, bestModelIdx, "train")
 validAUC = getAUC(tree, bestModelIdx, "valid")
@@ -360,7 +360,7 @@ ksProbSig, ksProbBkg = getKSprob(tree, bestModelIdx)
 f.Close()
 
 #### write selection
-selectionInfo = f"{SIG}, {BKG}, {bestModelIdx}, {nNodes}, {optimizer}, {initLR}, {scheduler}, {model}, {trainAUC}, {validAUC}, {testAUC}, {ksProbSig}, {ksProbBkg}"
+selectionInfo = f"{SIG}, {BKG}, {bestModelIdx}, {nNodes}, {optimizer}, {initLR}, {scheduler}, {weight_decay}, {trainAUC}, {validAUC}, {testAUC}, {ksProbSig}, {ksProbBkg}"
 print(f"[evalModels] {SIG}_vs_{BKG} summary: {selectionInfo}")
 with open(f"/{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/fold-{FOLD}/summary.txt", "w") as f:
     f.write(f"{selectionInfo}\n")
