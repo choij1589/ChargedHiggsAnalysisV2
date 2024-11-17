@@ -8,7 +8,6 @@ import ROOT
 from sklearn.utils import shuffle
 from itertools import product
 
-from torch_geometric.loader import DataLoader
 from Preprocess import GraphDataset, rtfileToDataList
 
 parser = argparse.ArgumentParser()

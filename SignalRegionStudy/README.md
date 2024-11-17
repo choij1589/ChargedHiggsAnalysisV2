@@ -24,6 +24,7 @@ scramv1 b clean; scramv1 b -j 12 # always make a clean build
 First, we have to same input shapes for Combine. In SKFlat, I have already skimmed SignalRegion events,
 only need to run scripts/preprocess.sh to make Combine input shapes.
 ```bash
+./scripts/build.sh      # Build necessary C++ classes, see ./src directory
 ./scripts/preprocess.sh $ERA $CHANNEL
 ```
 Here, CHANNEL is Skim1E2Mu or Skim3Mu
@@ -34,3 +35,9 @@ Currently, only supporting for shape analysis without peak fitting.
 ./scripts/prepareCombine.sh $ERA $CHANNEL $MASSPOINT
 ```
 Here, $CHANNEL is SR1E2Mu or SR3Mu
+
+## To do
+Currently treatly theory variations for
+- PDF: Systematics calculated in RMS fashion
+- QCD Scales (mu\_F, mu\_R): in envelop
+- Parton shower scales (ISR / FSR): in envelop
