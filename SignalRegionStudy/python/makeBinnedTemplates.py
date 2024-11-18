@@ -77,7 +77,7 @@ os.makedirs(base_path, exist_ok=True)
 f = ROOT.TFile(f"{base_path}/shapes_input.root", "RECREATE")
 mA = float(args.masspoint.split("_")[1].split("-")[1])
 # fit
-input_path = f"{WORKDIR}/SKFlatOutput/Run2UltraLegacy_v3/PromptSkimmer/{args.era}/{args.channel.replace('SR', 'Skim')}__/PromptSkimmer_TTToHcToWAToMuMu_{args.masspoint}.root"
+input_path = f"{WORKDIR}/SKFlatOutput/Run2UltraLegacy_v3/PromptSkimmer/{args.era}/{args.channel.replace('SR', 'Skim')}__RunTheoryUnc__/PromptSkimmer_TTToHcToWAToMuMu_{args.masspoint}.root"
 output_path = f"{base_path}/fit_result.root"
 mA, width, sigma = getFitResult(input_path, output_path, mA)
 

@@ -47,6 +47,7 @@ private:
 
     double convSF, convSFerr;
     double mass, mass1, mass2, scoreX, scoreY, scoreZ, weight;
+    int fold;
 };
 
 #endif

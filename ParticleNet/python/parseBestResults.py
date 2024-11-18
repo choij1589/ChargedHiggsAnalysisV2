@@ -27,7 +27,7 @@ def retrieve_model_name(fold):
     model_path = f"{RESULTDIR}/fold-{fold}/models/{model_name}"
     files = glob.glob(model_path)
     if len(files) > 1:
-        raise("More than one model found")
+        print("Warning: More than one model found")
     return files[0]
 
 if __name__ == "__main__":

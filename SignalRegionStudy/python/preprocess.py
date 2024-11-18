@@ -19,6 +19,9 @@ WORKDIR = os.getenv("WORKDIR")
 with open(f"{WORKDIR}/CommonData/json/convScaleFactors.json") as f:
     convScaleFactors = json.load(f)[args.era]
 
+mA = int(args.signal.split("_")[1].split("-")[1])
+isTrainedSample = (80 < mA and mA < 100)
+
 ## Number of variation for PDFs, Scale, and Parton Shower
 NPDF = 100
 NSCALE = 9
@@ -104,11 +107,11 @@ processor.setInputFile(input_path)
 processor.setOutputFile(output_path)
 for syst in [syst for systset in promptSysts for syst in systset]:
     processor.setInputTree(syst)
-    processor.fillOutTree(args.signal, args.signal, syst, applyConvSF=False, isTrainedSample=False)
+    processor.fillOutTree(args.signal, args.signal, syst, applyConvSF=False, isTrainedSample=isTrainedSample)
     processor.saveTree()
 for syst in [syst for systset in theorySysts for syst in systset]:
     processor.setInputTree(syst)
-    processor.fillOutTree(args.signal, args.signal, syst, applyConvSF=False, isTrainedSample=False)
+    processor.fillOutTree(args.signal, args.signal, syst, applyConvSF=False, isTrainedSample=isTrainedSample)
     processor.saveTree()
 processor.closeInputFile()
 processor.closeOutputFile()
@@ -122,7 +125,7 @@ hadd(input_path); assert os.path.exists(input_path), f"Input file {input_path} d
 processor.setInputFile(input_path)
 processor.setOutputFile(output_path)
 processor.setInputTree("Central")
-processor.fillOutTree("nonprompt", args.signal, "Central", applyConvSF=False, isTrainedSample=False)
+processor.fillOutTree("nonprompt", args.signal, "Central", applyConvSF=False, isTrainedSample=isTrainedSample)
 processor.saveTree()
 processor.closeInputFile()
 processor.closeOutputFile()
@@ -137,7 +140,7 @@ for sample in bkgConv:
     processor.setInputFile(input_path)
     processor.setOutputFile(output_path)
     processor.setInputTree("Central")
-    processor.fillOutTree("conversion", args.signal, "Central", applyConvSF=True, isTrainedSample=False)
+    processor.fillOutTree("conversion", args.signal, "Central", applyConvSF=True, isTrainedSample=isTrainedSample)
     processor.saveTree()
     processor.closeInputFile()
     processor.closeOutputFile()
@@ -158,7 +161,7 @@ for sample in bkgVV:
     processor.setOutputFile(output_path)
     for syst in [syst for systset in promptSysts for syst in systset]:
         processor.setInputTree(syst)
-        processor.fillOutTree(getSampleAlias(sample), args.signal, syst, applyConvSF=False, isTrainedSample=False)
+        processor.fillOutTree(getSampleAlias(sample), args.signal, syst, applyConvSF=False, isTrainedSample=isTrainedSample)
         processor.saveTree()
     processor.closeInputFile()
     processor.closeOutputFile()
@@ -182,7 +185,7 @@ for sample in bkgTTX:
     processor.setOutputFile(output_path)
     for syst in [syst for systset in promptSysts for syst in systset]:
         processor.setInputTree(syst)
-        processor.fillOutTree(getSampleAlias(sample), args.signal, syst, applyConvSF=False, isTrainedSample=False)
+        processor.fillOutTree(getSampleAlias(sample), args.signal, syst, applyConvSF=False, isTrainedSample=isTrainedSample)
         processor.saveTree()
     processor.closeInputFile()
     processor.closeOutputFile()
@@ -207,7 +210,7 @@ for sample in bkgOthers:
     processor.setOutputFile(output_path)
     for syst in [syst for systset in promptSysts for syst in systset]:
         processor.setInputTree(syst)
-        processor.fillOutTree("others", args.signal, syst, applyConvSF=False, isTrainedSample=False)
+        processor.fillOutTree("others", args.signal, syst, applyConvSF=False, isTrainedSample=isTrainedSample)
         processor.saveTree()
     processor.closeInputFile()
     processor.closeOutputFile()

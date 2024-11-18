@@ -34,7 +34,7 @@ void AmassFitter::fitMass(const double &mA, const double &low, const double &hig
     roo_sigma = new RooRealVar("sigma", "sigma", 0.1, 0., 3.);
     roo_width = new RooRealVar("width", "width", 0.1, 0., 3.);
     roo_model = new RooVoigtian("model", "model", *roo_mass, *roo_mA, *roo_width, *roo_sigma);
-    roo_model->fitTo(*roo_data, SumW2Error(kTRUE));
+    fit_result = roo_model->fitTo(*roo_data, SumW2Error(kTRUE), Save());
 }
 
 void AmassFitter::saveCanvas(const TString &canvas_path) {
@@ -52,5 +52,6 @@ void AmassFitter::Close() {
     output_file->cd();
     roo_data->Write();
     roo_model->Write();
+    fit_result->Write();
     output_file->Close();
 }
