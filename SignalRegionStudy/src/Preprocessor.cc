@@ -20,6 +20,7 @@ void Preprocessor::fillOutTree(const TString &sampleName, const TString &signal,
         outTree->Branch("scoreZ", &scoreZ);
     }
     outTree->Branch("weight", &weight);
+    outTree->Branch("fold", &fold);
     
     // Set branch addresses
     inTree->SetBranchAddress("mass1", &mass1);
@@ -31,6 +32,7 @@ void Preprocessor::fillOutTree(const TString &sampleName, const TString &signal,
     }
 
     inTree->SetBranchAddress("weight", &weight);
+    inTree->SetBranchAddress("fold", &fold);
 
     // Loop over tree entries
     for (unsigned int entry = 0; entry < inTree->GetEntries(); ++entry) {

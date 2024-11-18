@@ -33,6 +33,7 @@ public:
     RooRealVar *getRooSigma() { return roo_sigma; }
     RooRealVar *getRooWidth() { return roo_width; }
     RooVoigtian *getRooModel() { return roo_model; }
+    RooFitResult *getFitResult() { return fit_result; }
 private:
     TFile *input_file;
     TFile *output_file;
@@ -43,6 +44,7 @@ private:
     RooRealVar *roo_sigma;
     RooRealVar *roo_width;
     RooVoigtian *roo_model;
+    RooFitResult *fit_result;
     TCanvas *canvas;
 };
 

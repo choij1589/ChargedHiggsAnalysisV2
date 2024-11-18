@@ -1,7 +1,9 @@
 #!/bin/bash
+echo "The best model has ambiguous naming convention due to missing weight_decay information, should be fixed in the next iteration"
 SIGNALs=("MHc-100_MA-95" "MHc-130_MA-90" "MHc-160_MA-85")
 BACKGROUNDs=("nonprompt" "diboson" "ttZ")
 CHANNELs=("Skim1E2Mu" "Skim3Mu" "Combined")
+export PATH=$PWD/python:$PATH
 
 parse_result() {
     local signal=$1
