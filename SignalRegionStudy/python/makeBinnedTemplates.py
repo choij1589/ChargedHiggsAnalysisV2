@@ -153,7 +153,7 @@ for process in ["WZ", "ZZ"]:
 #    hist = getHist("diboson", mA, width, sigma, f"{syst}Down"); f.cd(); hist.Write()
 
 logging.info("Processing ttX")
-for process in ["ttW", "ttZ", "ttH"]:
+for process in ["ttW", "ttZ", "ttH", "tZq"]:
     hist = getHist(process, mA, width, sigma); data_obs.Add(hist); f.cd(); hist.Write()
     for syst in promptSysts:
         hist = getHist(process, mA, width, sigma, f"{syst}Up"); f.cd(); hist.Write()

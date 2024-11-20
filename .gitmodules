@@ -4,3 +4,6 @@
 [submodule "CommonTools/HiggsAnalysis/CombinedLimit"]
 	path = CommonTools/HiggsAnalysis/CombinedLimit
 	url = https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git
+[submodule "SignalRegionStudy/HiggsAnalysis/CombinedLimit"]
+	path = SignalRegionStudy/HiggsAnalysis/CombinedLimit
+	url = https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git
