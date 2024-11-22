@@ -49,9 +49,9 @@ def getSampleAlias(sample):
         return sample
 
 bkgVV = ["WZTo3LNu_amcatnlo", "ZZTo4L_powheg"]
-bkgTTX = ["ttWToLNu", "ttZToLLNuNu", "ttHToNonbb"]
+bkgTTX = ["ttWToLNu", "ttZToLLNuNu", "ttHToNonbb", "tZq"]
 bkgConv = ["DYJets", "DYJets10to50_MG", "TTG", "WWG"]
-bkgOthers = ["WWW", "WWZ", "WZZ", "ZZZ", "GluGluHToZZTo4L", "VBF_HToZZTo4L", "tZq", "tHq", "TTTT"]
+bkgOthers = ["WWW", "WWZ", "WZZ", "ZZZ", "GluGluHToZZTo4L", "VBF_HToZZTo4L", "tHq", "TTTT"]
 
 promptSysts = [] 
 matrixSysts = [] 
@@ -193,6 +193,7 @@ for sample in bkgTTX:
 shutil.move(f"samples/{args.era}/{args.channel}/{args.signal}/ttWToLNu.root", f"samples/{args.era}/{args.channel}/{args.signal}/ttW.root")
 shutil.move(f"samples/{args.era}/{args.channel}/{args.signal}/ttZToLLNuNu.root", f"samples/{args.era}/{args.channel}/{args.signal}/ttZ.root")
 shutil.move(f"samples/{args.era}/{args.channel}/{args.signal}/ttHToNonbb.root", f"samples/{args.era}/{args.channel}/{args.signal}/ttH.root")
+shutil.move(f"samples/{args.era}/{args.channel}/{args.signal}/tZq.root", f"samples/{args.era}/{args.channel}/{args.signal}/tZq.root")
 
 #hadd_line = f"hadd -f samples/{args.era}/{args.channel}/{args.signal}/ttX.root"
 #for sample in bkgTTX:

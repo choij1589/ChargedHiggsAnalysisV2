@@ -5,7 +5,7 @@ export MASSPOINT=$3
 export PATH=$PWD/python:$PATH
 export LD_LIBRARY_PATH=$WORKDIR/SignalRegionStudy/lib:$LD_LIBRARY_PATH
 
-BASEDIR=$PWD/templates/$ERA/$CHANNEL/MHc-130_MA-90/Shape/Baseline
+BASEDIR=$PWD/templates/$ERA/$CHANNEL/$MASSPOINT/Shape/Baseline
 if [ -d $BASEDIR ]; then
     echo "WARNING: Directory $BASEDIR already exists"
     rm -rf $BASEDIR

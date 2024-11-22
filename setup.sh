@@ -33,4 +33,4 @@ export PYTHONPATH=$WORKDIR/CommonTools/python:$PYTHONPATH
 export PYTHONPATH=$WORKDIR/CommonTools/tdr-style:$PYTHONPATH
 echo "@@@@ WORKDIR=$WORKDIR"
 
-git status
+#git status
