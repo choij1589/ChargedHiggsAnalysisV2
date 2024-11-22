@@ -8,4 +8,4 @@ if [ -d $SKFlatDataPath/Classifiers/ParticleNet/$CHANNEL ]; then
     echo "Removing existing directory"
     rm -rf $SKFlatDataPath/Classifiers/ParticleNet/$CHANNEL
 fi
-cp -r results/$CHANNL $SKFlatDataPath/Classifiers/ParticleNet
+cp -r results/$CHANNEL $SKFlatDataPath/Classifiers/ParticleNet

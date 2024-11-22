@@ -38,7 +38,7 @@ DEVICE = args.device
 FOLD = args.fold
 
 nFold = 5
-nModels = 5
+nModels = 3
 nFeatures = 9
 nGraphFeatures = 4
 nClasses = 2

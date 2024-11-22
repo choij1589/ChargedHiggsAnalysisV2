@@ -20,15 +20,13 @@ RESULTDIR = f"{WORKDIR}/ParticleNet/condor/Evaluation/{args.channel}/{args.signa
 def retrieve_model_name(fold):
     with open(f"{RESULTDIR}/fold-{fold}/summary.txt", "r") as f:
         summary = f.readline().strip().split(", ")
-    signal, background, model_idx, nnode, optimizer, init_lr, scheduler = tuple(summary[:7])
+    signal, background, model_idx, nnode, optimizer, init_lr, scheduler, weight_decay = tuple(summary[:8])
 
     # search model, no decay info in the summary.txt
-    model_name = f"ParticleNet-nNodes{nnode}-{optimizer}-initLR{str(init_lr).replace('.', 'p')}-decay*-{scheduler}.pt"
+    model_name = f"ParticleNet-nNodes{nnode}-{optimizer}-initLR{str(init_lr).replace('.', 'p')}-decay{str(weight_decay).replace('.', 'p')}-{scheduler}.pt"
     model_path = f"{RESULTDIR}/fold-{fold}/models/{model_name}"
-    files = glob.glob(model_path)
-    if len(files) > 1:
-        print("Warning: More than one model found")
-    return files[0]
+    assert os.path.exists(model_path), f"Model {model_path} does not exist"
+    return model_path
 
 if __name__ == "__main__":
     for fold in range(args.nfold):
@@ -37,7 +35,7 @@ if __name__ == "__main__":
 
         with open(f"{RESULTDIR}/fold-{fold}/summary.txt", "r") as f:
             summary = f.readline().strip().split(", ")
-        signal, background, model_idx, nnode, optimizer, init_lr, scheduler = tuple(summary[:7])
+        signal, background, model_idx, nnode, optimizer, init_lr, scheduler, weight_decay = tuple(summary[:8])
   
         model_path = retrieve_model_name(fold)
         training_info = model_path.replace("models", "CSV").replace(".pt", ".csv")
