@@ -28,6 +28,7 @@ parser.add_argument("--signal", type=str, required=True, help="signal")
 parser.add_argument("--background", type=str, required=True, help="background")
 parser.add_argument("--device", default="cuda", type=str, help="cpu or cuda")
 parser.add_argument("--fold", required=True, type=int, help="i-th fold to test")
+parser.add_argument("--requireBtagged", action="store_true", default=False, help="require b-tagged jets")
 args = parser.parse_args()
 
 WORKDIR = os.environ['WORKDIR']
@@ -46,6 +47,8 @@ max_epochs = 81
 
 def getChromosomes(SIG, BKG, top=nModels):
     CSVFILE = f"{WORKDIR}/ParticleNet/condor/Optimization/{CHANNEL}/{SIG}_vs_{BKG}/GA-iter3/CSV/model_info.csv"
+    if args.requireBtagged:
+        CSVFILE = f"{WORKDIR}/ParticleNet/condor/Optimization/{CHANNEL}__OnlyBtagged__/{SIG}_vs_{BKG}/GA-iter3/CSV/model_info.csv"
     df = pd.read_csv(CSVFILE)
     df = df.sort_values(by='fitness', ascending=True)
     lst = df.to_dict(orient='records')
@@ -145,6 +148,8 @@ def plotTrainingStage(idx, path):
         chromosome.get('nNodes'),chromosome.get('optimizer'),chromosome.get('initLR'),chromosome.get('scheduler'),chromosome.get('model'),chromosome.get('weight_decay'),chromosome.get('trial_id')
     )
     csvpath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/fold-{FOLD}/CSV/{model}-nNodes{nNodes}-{optimizer}-initLR{initLR.replace('.','p')}-decay{weight_decay.replace('.', 'p')}-{scheduler}.csv"
+    if args.requireBtagged:
+        csvpath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}__OnlyBtagged__/{SIG}_vs_{BKG}/fold-{FOLD}/CSV/{model}-nNodes{nNodes}-{optimizer}-initLR{initLR.replace('.','p')}-decay{weight_decay.replace('.', 'p')}-{scheduler}.csv"
     record = pd.read_csv(csvpath, index_col=0).transpose()
 
     trainLoss = list(record.loc['loss/train'])
@@ -182,6 +187,7 @@ def run_trainModel(chromosomes):
         command += f" --dropout_p 0.25 --optimizer {optimizer} --initLR {initLR}"
         command += f" --weight_decay {weight_decay} --scheduler {scheduler}"
         command += f" --device {DEVICE} --fold {FOLD}"
+        if args.requireBtagged: command += " --requireBtagged"
         logging.info(f"Start training the model with command: {command}")
         proc = subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         procs.append(proc)
@@ -197,6 +203,8 @@ start=datetime.now()
 #### load datasets
 print("@@@@ Start loading dataset...")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
+if args.requireBtagged:
+    baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__OnlyBtagged__"
 
 dataFoldList = [[] for _ in range(nFold)]
 for i in range(nFold):
@@ -220,6 +228,8 @@ for idx, chromosome in enumerate(chromosomes):
         chromosome.get('nNodes'),chromosome.get('optimizer'),chromosome.get('initLR'),chromosome.get('scheduler'),chromosome.get('model'),chromosome.get('weight_decay')
     )
     modelPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/fold-{FOLD}/models/{model}-nNodes{nNodes}-{optimizer}-initLR{initLR.replace('.','p')}-decay{weight_decay.replace('.', 'p')}-{scheduler}.pt"
+    if args.requireBtagged:
+        modelPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}__OnlyBtagged__/{SIG}_vs_{BKG}/fold-{FOLD}/models/{model}-nNodes{nNodes}-{optimizer}-initLR{initLR.replace('.','p')}-decay{weight_decay.replace('.', 'p')}-{scheduler}.pt"
     if model=="ParticleNet":
         model = ParticleNet(nFeatures, nGraphFeatures, nClasses, nNodes, dropout_p=0.25)
     elif model=="ParticleNetV2":
@@ -231,6 +241,8 @@ for idx, chromosome in enumerate(chromosomes):
 
 #### prepare directories
 outputPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/fold-{FOLD}/result/temp.png"
+if args.requireBtagged:
+    outputPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}__OnlyBtagged__/{SIG}_vs_{BKG}/fold-{FOLD}/result/temp.png"
 if not os.path.exists(os.path.dirname(outputPath)): os.makedirs(os.path.dirname(outputPath))
 
 #### save score distributions
@@ -362,7 +374,8 @@ f.Close()
 #### write selection
 selectionInfo = f"{SIG}, {BKG}, {bestModelIdx}, {nNodes}, {optimizer}, {initLR}, {scheduler}, {weight_decay}, {trainAUC}, {validAUC}, {testAUC}, {ksProbSig}, {ksProbBkg}"
 print(f"[evalModels] {SIG}_vs_{BKG} summary: {selectionInfo}")
-with open(f"/{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/fold-{FOLD}/summary.txt", "w") as f:
+summaryPath = f"{os.path.dirname(outputPath)}/summary.txt"
+with open(summaryPath, "w") as f:
     f.write(f"{selectionInfo}\n")
 
 end = datetime.now()

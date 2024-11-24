@@ -45,6 +45,7 @@ parser.add_argument("--weight_decay", required=True, type=float, help="weight de
 parser.add_argument("--scheduler", required=True, type=str, help="lr scheduler")
 parser.add_argument("--device", default="cuda", type=str, help="cpu or cuda")
 parser.add_argument("--pilot", action="store_true", default=False, help="pilot mode")
+parser.add_argument("--requireBtagged", action="store_true", default="False", help="read dataset from b-tagged samples")
 parser.add_argument("--debug", action="store_true", default=False, help="debug mode")
 args = parser.parse_args()
 
@@ -73,6 +74,8 @@ def transform_data(data):
 #### load dataset
 logging.info("Start loading dataset")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
+if args.requireBtagged:
+    baseDir += "OnlyBtagged__"
 if args.pilot:
     baseDir += "pilot__"
 
@@ -171,7 +174,9 @@ def main():
     logging.info("Start training...")
     checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/GA-iter{args.iter}/models/{modelName}.pt"
     summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/GA-iter{args.iter}/CSV/{modelName}.csv"
-    #outtreepath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/GA-iter{args.iter}/trees/{modelName}.root"
+    if args.requireBtagged:
+        checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}__OnlyBtagged__/{args.signal}_vs_{args.background}/GA-iter{args.iter}/{modelName}.pt"
+        summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}__OnlyBtagged__/{args.signal}_vs_{args.background}/GA-iter{args.iter}/CSV/{modelName}.csv"
     earlyStopper = EarlyStopper(patience=7, path=checkptpath)
     summaryWriter = SummaryWriter(name=modelName)
 
@@ -195,51 +200,6 @@ def main():
 
     summaryWriter.to_csv(summarypath)
 
-    """
-    #### save score distributions as trees
-    os.makedirs(os.path.dirname(outtreepath), exist_ok=True)
-    f = ROOT.TFile(outtreepath, "RECREATE")
-    tree = ROOT.TTree("Events", "")
-
-    # define branches
-    score = array("f", [0.]); tree.Branch("score", score, "score/F")
-    trainMask = array("B", [False]); tree.Branch("trainMask", trainMask, "trainMask/O")
-    validMask = array("B", [False]); tree.Branch("validMask", validMask, "validMask/O")
-    testMask = array("B", [False]); tree.Branch("testMask", testMask, "testMask/O")
-    signalMask = array("B", [False]); tree.Branch("signalMask", signalMask, "signalMask/O")
-
-    logging.info("Start saving score distributions")
-    model.eval()
-    trainMask[0] = True; validMask[0] = False; testMask[0] = False
-    for i, data in enumerate(trainLoader):
-        with torch.no_grad():
-            out = model(data.x.to(args.device), data.edge_index.to(args.device), data.graphInput.to(args.device), data.batch.to(args.device))
-            for isSignal, scoreTensor in zip(data.y, out):
-                signalMask[0] = True if isSignal.numpy() else False
-                score[0] = scoreTensor[1].cpu().numpy()
-                tree.Fill()
-
-    trainMask[0] = False; validMask[0] = True; testMask[0] = False
-    for i, data in enumerate(validLoader):
-        with torch.no_grad():
-            out = model(data.x.to(args.device), data.edge_index.to(args.device), data.graphInput.to(args.device), data.batch.to(args.device))
-            for signalTensor, scoreTensor in zip(data.y, out):
-                signalMask[0] = True if signalTensor.numpy() else False
-                score[0] = scoreTensor[1].cpu().numpy()
-                tree.Fill()
-
-    trainMask[0] = False; validMask[0] = False; testMask[0] = True
-    for i, data in enumerate(testLoader):
-        with torch.no_grad():
-            out = model(data.x.to(args.device), data.edge_index.to(args.device), data.graphInput.to(args.device), data.batch.to(args.device))
-            for signalTensor, scoreTensor in zip(data.y, out):
-                signalMask[0] = True if signalTensor.numpy() else False
-                score[0] = scoreTensor[1].cpu().numpy()
-                tree.Fill()
-    f.cd()
-    tree.Write()
-    f.Close()
-    """
 
 if __name__ == "__main__":
     main()

@@ -37,6 +37,7 @@ parser.add_argument("--weight_decay", required=True, type=float, help="weight de
 parser.add_argument("--scheduler", required=True, type=str, help="lr scheduler")
 parser.add_argument("--device", default="cuda", type=str, help="cpu or cuda")
 parser.add_argument("--fold", required=True, type=int, help="i-th fold to test")
+parser.add_argument("--requireBtagged", action="store_true", default=False, help="require b-tagged jets")
 parser.add_argument("--pilot", action="store_true", default=False, help="pilot mode")
 parser.add_argument("--debug", action="store_true", default=False, help="debug mode")
 args = parser.parse_args()
@@ -66,6 +67,8 @@ def transform_data(data):
 #### load dataset
 logging.info("Start loading dataset")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
+if args.requireBtagged:
+    baseDir += "OnlyBtagged__"
 if args.pilot:
     baseDir += "pilot__"
 
@@ -164,6 +167,8 @@ def main():
     modelName =  f"{args.model}-nNodes{args.nNodes}-{args.optimizer}-initLR{str(format(args.initLR, '.4f')).replace('.','p')}-decay{str(format(args.weight_decay, '.5f')).replace('.', 'p')}-{args.scheduler}"
     logging.info("Start training...")
     outputPath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/fold-{args.fold}"
+    if args.requireBtagged:
+        outputPath = f"{WORKDIR}/ParticleNet/results/{args.channel}/OnlyBtagged/{args.signal}_vs_{args.background}/fold-{args.fold}"
     checkptpath = f"{outputPath}/models/{modelName}.pt"
     summarypath = f"{outputPath}/CSV/{modelName}.csv"
     outtreepath = f"{outputPath}/trees/{modelName}.root"

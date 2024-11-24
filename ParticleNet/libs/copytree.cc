@@ -16,16 +16,6 @@ int main(int argc, char** argv) {
     TTree *oldtree = (TTree*)f->Get("Events");
     const unsigned int  nEntries = oldtree->GetEntries();
 
-    /*
-    const unsigned int whole = nEntries / nfiles;
-    const unsigned int remainder = nEntries % nfiles;
-
-    cout << "@@@@ nEntries: " << nEntries << endl;
-    cout << "@@@@ each file contains " << whole << " events" << endl;
-    cout << "@@@@ the last file contains " << whole+remainder << " events" << endl;
-    */
-
-
     TString outfile_name = inputfile;
     TString s_replace = "_copy.root";
     outfile_name.ReplaceAll(".root", s_replace);

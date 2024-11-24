@@ -13,3 +13,5 @@ BackUps/*
 *.pyc
 **/*.pyc
 **/*.tar.gz
+ParticleNet/dataset/*
+ParticleNet/condor/*

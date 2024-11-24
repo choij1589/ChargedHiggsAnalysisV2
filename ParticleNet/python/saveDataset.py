@@ -14,6 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--signal", required=True, type=str, help="signal")
 parser.add_argument("--background", required=True, type=str, help="background")
 parser.add_argument("--channel", required=True, type=str, help="channel")
+parser.add_argument("--requireBtagged", action="store_true", default=False, help="require btagged")
 parser.add_argument("--pilot", action="store_true", default=False, help="pilot mode")
 parser.add_argument("--debug", action="store_true", default=False, help="debug mode")
 args = parser.parse_args()
@@ -45,6 +46,8 @@ bkgDataList = [[] for _ in range(nFolds)]
 # Temorarily use all samples before splitting into folds and save
 if args.channel == "Combined":
     for era, channel in product(["2016preVFP", "2016postVFP", "2017", "2018"], ["Skim1E2Mu", "Skim3Mu"]):
+        if args.requireBtagged:
+            channel = f"{channel}__OnlyBtagged__"
         rt = ROOT.TFile.Open(f"dataset/{era}/{channel}/DataPreprocess_TTToHcToWAToMuMu_{args.signal}.root")
         sigDataTmp = rtfileToDataList(rt, isSignal=True, era=era, maxSize=maxSizeForEra[era], nFolds=nFolds)
         rt.Close()
@@ -58,11 +61,15 @@ if args.channel == "Combined":
             bkgDataList[i] += bkgDataTmp[i]
 else:
     for era in ["2016preVFP", "2016postVFP", "2017", "2018"]:
-        rt = ROOT.TFile.Open(f"dataset/{era}/{args.channel}/DataPreprocess_TTToHcToWAToMuMu_{args.signal}.root")
+        if args.requireBtagged:
+            channel = f"{args.channel}__OnlyBtagged__"
+        else:
+            channel = f"{args.channel}__"
+        rt = ROOT.TFile.Open(f"dataset/{era}/{channel}/DataPreprocess_TTToHcToWAToMuMu_{args.signal}.root")
         sigDataTmp = rtfileToDataList(rt, isSignal=True, era=era, maxSize=maxSizeForEra[era], nFolds=nFolds)
         rt.Close()
 
-        rt = ROOT.TFile.Open(f"dataset/{era}/{args.channel}/DataPreprocess_{args.background}.root")
+        rt = ROOT.TFile.Open(f"dataset/{era}/{channel}/DataPreprocess_{args.background}.root")
         bkgDataTmp = rtfileToDataList(rt, isSignal=False, era=era, maxSize=maxSizeForEra[era], nFolds=nFolds)
         rt.Close()
 
@@ -83,6 +90,8 @@ for i in range(nFolds):
 logging.info("Finished loading dataset")
 
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
+if args.requireBtagged:
+    baseDir += "OnlyBtagged__"
 if args.pilot:
     baseDir += "pilot__"
 logging.info(f"Saving dataset to {baseDir}")
