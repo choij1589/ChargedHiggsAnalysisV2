@@ -172,8 +172,8 @@ def main():
     modelName = f"{args.model}-model{args.idx}"
     #modelName =  f"{args.model}-nNodes{args.nNodes}-{args.optimizer}-initLR{str(format(args.initLR, '.4f')).replace('.','p')}-decay{str(format(args.weight_decay, '.5f')).replace('.', 'p')}-{args.scheduler}"
     logging.info("Start training...")
-    checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/GA-iter{args.iter}/models/{modelName}.pt"
-    summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/GA-iter{args.iter}/CSV/{modelName}.csv"
+    checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}__/{args.signal}_vs_{args.background}/GA-iter{args.iter}/models/{modelName}.pt"
+    summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}__/{args.signal}_vs_{args.background}/GA-iter{args.iter}/CSV/{modelName}.csv"
     if args.requireBtagged:
         checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}__OnlyBtagged__/{args.signal}_vs_{args.background}/GA-iter{args.iter}/{modelName}.pt"
         summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}__OnlyBtagged__/{args.signal}_vs_{args.background}/GA-iter{args.iter}/CSV/{modelName}.csv"

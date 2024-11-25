@@ -166,9 +166,9 @@ def main():
 
     modelName =  f"{args.model}-nNodes{args.nNodes}-{args.optimizer}-initLR{str(format(args.initLR, '.4f')).replace('.','p')}-decay{str(format(args.weight_decay, '.5f')).replace('.', 'p')}-{args.scheduler}"
     logging.info("Start training...")
-    outputPath = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/fold-{args.fold}"
+    outputPath = f"{WORKDIR}/ParticleNet/results/{args.channel}__/{args.signal}_vs_{args.background}/fold-{args.fold}"
     if args.requireBtagged:
-        outputPath = f"{WORKDIR}/ParticleNet/results/{args.channel}/OnlyBtagged/{args.signal}_vs_{args.background}/fold-{args.fold}"
+        outputPath = f"{WORKDIR}/ParticleNet/results/{args.channel}__OnlyBtagged__/{args.signal}_vs_{args.background}/fold-{args.fold}"
     checkptpath = f"{outputPath}/models/{modelName}.pt"
     summarypath = f"{outputPath}/CSV/{modelName}.csv"
     outtreepath = f"{outputPath}/trees/{modelName}.root"

@@ -30,17 +30,10 @@ class GeneticModule:
         """Samples a specified number (n_population) of individuals randomly from the current population to create a new generation. This method is typically used to initialize the population at the start of the algorithm."""
         self.population = random.choices(self.population, k=n_population)
 
-    def updatePopulation(self, signal, background, channel, metric="loss/valid", read_from=None, iteration=0):
+    def updatePopulation(self, signal, background, channel, metric="loss/valid", read_from=None):
         """Updates the fitness values of each individual in the population based on their performance metrics, which are read from CSV files generated from simulations or experiments. The paths to these files are constructed dynamically using individual chromosome data."""
-        if not read_from:
-            read_from = f"{os.getenv('WORKDIR')}/ParticleNet/results/{channel}/{signal}_vs_{background}/GA-iter{iteration}/CSV"
-        logging.debug(f"Reading CSV files from: {read_from}")
-
         for idx, individual in enumerate(self.population):
             csv_path = f"{read_from}/ParticleNet-model{idx}.csv"
-            #nNodes, optimizer, initLR, weightDecay, scheduler = individual['chromosome']
-            #modelName = f"ParticleNet-nNodes{nNodes}-{optimizer}-initLR{str(format(initLR, '.4f')).replace('.','p')}-decay{str(format(weightDecay, '.5f')).replace('.', 'p')}-{scheduler}.csv"
-            #csv_path = os.path.join(results_path, modelName)
             if os.path.exists(csv_path):
                 df = pd.read_csv(csv_path)
                 individual['model'] = f"ParticleNet-model{idx}"

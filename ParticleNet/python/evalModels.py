@@ -227,7 +227,7 @@ for idx, chromosome in enumerate(chromosomes):
     nNodes, optimizer, initLR, scheduler, model, weight_decay = (
         chromosome.get('nNodes'),chromosome.get('optimizer'),chromosome.get('initLR'),chromosome.get('scheduler'),chromosome.get('model'),chromosome.get('weight_decay')
     )
-    modelPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/fold-{FOLD}/models/{model}-nNodes{nNodes}-{optimizer}-initLR{initLR.replace('.','p')}-decay{weight_decay.replace('.', 'p')}-{scheduler}.pt"
+    modelPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}__/{SIG}_vs_{BKG}/fold-{FOLD}/models/{model}-nNodes{nNodes}-{optimizer}-initLR{initLR.replace('.','p')}-decay{weight_decay.replace('.', 'p')}-{scheduler}.pt"
     if args.requireBtagged:
         modelPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}__OnlyBtagged__/{SIG}_vs_{BKG}/fold-{FOLD}/models/{model}-nNodes{nNodes}-{optimizer}-initLR{initLR.replace('.','p')}-decay{weight_decay.replace('.', 'p')}-{scheduler}.pt"
     if model=="ParticleNet":
@@ -240,7 +240,7 @@ for idx, chromosome in enumerate(chromosomes):
 
 
 #### prepare directories
-outputPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/fold-{FOLD}/result/temp.png"
+outputPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}__/{SIG}_vs_{BKG}/fold-{FOLD}/result/temp.png"
 if args.requireBtagged:
     outputPath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}__OnlyBtagged__/{SIG}_vs_{BKG}/fold-{FOLD}/result/temp.png"
 if not os.path.exists(os.path.dirname(outputPath)): os.makedirs(os.path.dirname(outputPath))
