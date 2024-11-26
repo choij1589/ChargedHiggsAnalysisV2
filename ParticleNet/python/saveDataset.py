@@ -46,8 +46,7 @@ bkgDataList = [[] for _ in range(nFolds)]
 # Temorarily use all samples before splitting into folds and save
 if args.channel == "Combined":
     for era, channel in product(["2016preVFP", "2016postVFP", "2017", "2018"], ["Skim1E2Mu", "Skim3Mu"]):
-        if args.requireBtagged:
-            channel = f"{channel}__OnlyBtagged__"
+        channel = f"{channel}__OnlyBtagged__" if args.requireBtagged else f"{channel}__"
         rt = ROOT.TFile.Open(f"dataset/{era}/{channel}/DataPreprocess_TTToHcToWAToMuMu_{args.signal}.root")
         sigDataTmp = rtfileToDataList(rt, isSignal=True, era=era, maxSize=maxSizeForEra[era], nFolds=nFolds)
         rt.Close()
@@ -61,10 +60,7 @@ if args.channel == "Combined":
             bkgDataList[i] += bkgDataTmp[i]
 else:
     for era in ["2016preVFP", "2016postVFP", "2017", "2018"]:
-        if args.requireBtagged:
-            channel = f"{args.channel}__OnlyBtagged__"
-        else:
-            channel = f"{args.channel}__"
+        channel = f"{args.channel}__OnlyBtagged__" if args.requireBtagged else f"{args.channel}__"
         rt = ROOT.TFile.Open(f"dataset/{era}/{channel}/DataPreprocess_TTToHcToWAToMuMu_{args.signal}.root")
         sigDataTmp = rtfileToDataList(rt, isSignal=True, era=era, maxSize=maxSizeForEra[era], nFolds=nFolds)
         rt.Close()

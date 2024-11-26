@@ -95,7 +95,8 @@ def train(model, optimizer, scheduler, use_plateau_scheduler=False):
 
     total_loss = 0.
     for data in trainLoader:
-        transform_data(data.to(args.device))
+        data.to(args.device)
+        #transform_data(data.to(args.device))
         out = model(data.x, data.edge_index, data.graphInput, data.batch)
         optimizer.zero_grad()
         loss = F.cross_entropy(out, data.y)

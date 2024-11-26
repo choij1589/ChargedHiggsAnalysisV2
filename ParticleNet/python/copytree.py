@@ -20,7 +20,7 @@ if not WORKDIR:
     raise EnvironmentError("WORKDIR environment variable is not set.")
 
 CHANNEL = f"{args.channel}__OnlyBtagged__" if args.requireBtagged else f"{args.channel}__"
-DATAPROCESSDIR = "/gv0/Users/choij/SKFlatOutput/Run2UltraLegacy_v3/DataPreprocess"
+DATAPROCESSDIR = f"{WORKDIR}/SKFlatOutput/Run2UltraLegacy_v3/DataPreprocess"
 ERAs = ["2016preVFP", "2016postVFP", "2017", "2018"]
 SIGNALs = ["MHc-160_MA-85", "MHc-130_MA-90", "MHc-100_MA-95"]
 NONPROMPTs = ["TTLL_powheg", "DYJetsToMuMu_MiNNLO"]
@@ -58,7 +58,7 @@ def copy_trees(input_file, output_file, n_evts):
         f.Close()
 
         os.system(f"{WORKDIR}/ParticleNet/libs/copytree {input_file} {n_evts}")
-        shutil.move(f"{input_file}_copy.root", output_file)
+        shutil.move(input_file.replace('.root', '_copy.root'), output_file)
     except Exception as e:
         logging.error(f"Error processing file {input_file}: {e}")
         
@@ -73,13 +73,13 @@ if __name__ == "__main__":
     create_output_dirs()
     for era, signal in product(ERAs, SIGNALs):
         input_file = f"{DATAPROCESSDIR}/{era}/{CHANNEL}/DataPreprocess_TTToHcToWAToMuMu_{signal}.root"
-        output_file = f"dataset/{era}/{CHANNEL}/DataPreprocess_TTToHcToWAToMuMu_{signal}.root"
+        output_file = f"{WORKDIR}/ParticleNet/dataset/{era}/{CHANNEL}/DataPreprocess_TTToHcToWAToMuMu_{signal}.root"
         n_evts = EvtsToCopy["signal"][ERAs.index(era)]
         copy_trees(input_file, output_file, n_evts)
     
     for era, bkg in product(ERAs, BACKGROUNDs):
         input_file = f"{DATAPROCESSDIR}/{era}/{CHANNEL}/DataPreprocess_{bkg}.root"
-        output_file = f"dataset/{era}/{CHANNEL}/DataPreprocess_{bkg}.root"
+        output_file = f"{WORKDIR}/ParticleNet/dataset/{era}/{CHANNEL}/DataPreprocess_{bkg}.root"
         n_evts = EvtsToCopy[bkg][ERAs.index(era)]
         copy_trees(input_file, output_file, n_evts)
         
@@ -90,4 +90,4 @@ if __name__ == "__main__":
 
         hadd_files(nonprompt_files, f"dataset/{era}/{CHANNEL}/DataPreprocess_nonprompt.root")
         hadd_files(diboson_files, f"dataset/{era}/{CHANNEL}/DataPreprocess_diboson.root")
-        hadd_files(ttZ_file, f"dataset/{era}/{CHANNEL}/DataPreprocess_ttZToLLNuNu.root")        
+        hadd_files(ttZ_file, f"dataset/{era}/{CHANNEL}/DataPreprocess_ttZ.root")        
