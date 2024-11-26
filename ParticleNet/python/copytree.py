@@ -73,13 +73,13 @@ if __name__ == "__main__":
     create_output_dirs()
     for era, signal in product(ERAs, SIGNALs):
         input_file = f"{DATAPROCESSDIR}/{era}/{CHANNEL}/DataPreprocess_TTToHcToWAToMuMu_{signal}.root"
-        output_file = f"dataset/{era}/{CHANNEL}/DataPreprocess_TTToHcToWAToMuMu_{signal}.root"
+        output_file = f"{WORKDIR}/ParticleNet/dataset/{era}/{CHANNEL}/DataPreprocess_TTToHcToWAToMuMu_{signal}.root"
         n_evts = EvtsToCopy["signal"][ERAs.index(era)]
         copy_trees(input_file, output_file, n_evts)
     
     for era, bkg in product(ERAs, BACKGROUNDs):
         input_file = f"{DATAPROCESSDIR}/{era}/{CHANNEL}/DataPreprocess_{bkg}.root"
-        output_file = f"dataset/{era}/{CHANNEL}/DataPreprocess_{bkg}.root"
+        output_file = f"{WORKDIR}/ParticleNet/dataset/{era}/{CHANNEL}/DataPreprocess_{bkg}.root"
         n_evts = EvtsToCopy[bkg][ERAs.index(era)]
         copy_trees(input_file, output_file, n_evts)
         
