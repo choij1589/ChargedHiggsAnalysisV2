@@ -15,3 +15,5 @@ BackUps/*
 **/*.tar.gz
 ParticleNet/dataset/*
 ParticleNet/condor/*
+myenv/*
+root_install/*

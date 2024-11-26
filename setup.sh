@@ -22,8 +22,8 @@ elif [[ $HOST == *"private"* ]]; then
     conda activate pyg
 elif [[ $HOST == *"Mac"* ]]; then
     export WORKDIR="$HOME/workspace/ChargedHiggsAnalysisV2"
-    source ~/.conda-activate
-    conda activate pyg
+    source $WORKDIR/myenv/bin/activate
+    source root_install/bin/thisroot.sh
 else
     echo "Unknown host"
     return 1
@@ -33,4 +33,7 @@ export PYTHONPATH=$WORKDIR/CommonTools/python:$PYTHONPATH
 export PYTHONPATH=$WORKDIR/CommonTools/tdr-style:$PYTHONPATH
 echo "@@@@ WORKDIR=$WORKDIR"
 
-#git status
+# build 
+cd $WORKDIR/ParticleNet/libs
+g++ `root-config --cflags --libs` -o copytree copytree.cc
+cd -
