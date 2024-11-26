@@ -10,15 +10,19 @@ parser.add_argument("--channel", type=str, required=True, help="Skim1E2Mu, Skim3
 parser.add_argument("--signal", type=str, required=True, help="signal mass point")
 parser.add_argument("--background", type=str, required=True, help="background")
 parser.add_argument("--nfold", type=int, default=5, help="Number of folds")
+parser.add_argument("--requireBtagged", action="store_true", default=False, help="Require b-tagged jets")
 args = parser.parse_args()
 
 WORKDIR = os.getenv("WORKDIR")
-RESULTDIR = f"{WORKDIR}/ParticleNet/condor/Evaluation/{args.channel}/{args.signal}_vs_{args.background}"
+CHANNEL = f"{args.channel}__"
+if args.requireBtagged:
+    CHANNEL += "OnlyBtagged__"
+RESULTDIR = f"{WORKDIR}/ParticleNet/condor/Evaluation/{CHANNEL}/{args.signal}_vs_{args.background}"
 
 
 # Read summary.txt
 def retrieve_model_name(fold):
-    with open(f"{RESULTDIR}/fold-{fold}/summary.txt", "r") as f:
+    with open(f"{RESULTDIR}/fold-{fold}/result/summary.txt", "r") as f:
         summary = f.readline().strip().split(", ")
     signal, background, model_idx, nnode, optimizer, init_lr, scheduler, weight_decay = tuple(summary[:8])
 
@@ -30,10 +34,10 @@ def retrieve_model_name(fold):
 
 if __name__ == "__main__":
     for fold in range(args.nfold):
-        result_path = f"{WORKDIR}/ParticleNet/results/{args.channel}/{args.signal}_vs_{args.background}/fold-{fold}"
+        result_path = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{args.signal}_vs_{args.background}/fold-{fold}"
         os.makedirs(result_path, exist_ok=True)
 
-        with open(f"{RESULTDIR}/fold-{fold}/summary.txt", "r") as f:
+        with open(f"{RESULTDIR}/fold-{fold}/result/summary.txt", "r") as f:
             summary = f.readline().strip().split(", ")
         signal, background, model_idx, nnode, optimizer, init_lr, scheduler, weight_decay = tuple(summary[:8])
   
@@ -41,7 +45,7 @@ if __name__ == "__main__":
         training_info = model_path.replace("models", "CSV").replace(".pt", ".csv")
         rtfile_path = model_path.replace("models", "trees").replace(".pt", ".root")
 
-        shutil.copy(f"{RESULTDIR}/fold-{fold}/summary.txt", f"{result_path}/summary.txt")
+        shutil.copy(f"{RESULTDIR}/fold-{fold}/result/summary.txt", f"{result_path}/summary.txt")
         shutil.copy(model_path, f"{result_path}/ParticleNet.pt")
         shutil.copy(training_info, f"{result_path}/training_info.csv")
         shutil.copy(rtfile_path, f"{result_path}/score.root")

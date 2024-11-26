@@ -8,7 +8,7 @@ parse_result() {
     local signal=$1
     local background=$2
     local channel=$3
-    parseBestResults.py --signal $signal --background $background --channel $channel
+    parseBestResults.py --signal $signal --background $background --channel $channel --requireBtagged
 }
 
 export -f parse_result
