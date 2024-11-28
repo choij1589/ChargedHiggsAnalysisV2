@@ -45,7 +45,7 @@ parser.add_argument("--weight_decay", required=True, type=float, help="weight de
 parser.add_argument("--scheduler", required=True, type=str, help="lr scheduler")
 parser.add_argument("--device", default="cuda", type=str, help="cpu or cuda")
 parser.add_argument("--pilot", action="store_true", default=False, help="pilot mode")
-parser.add_argument("--requireBtagged", action="store_true", default="False", help="read dataset from b-tagged samples")
+parser.add_argument("--requireBtagged", action="store_true", default=False, help="read dataset from b-tagged samples")
 parser.add_argument("--debug", action="store_true", default=False, help="debug mode")
 args = parser.parse_args()
 

@@ -127,11 +127,12 @@ class EdgeConv(MessagePassing):
 
 
 class DynamicEdgeConv(EdgeConv):
-    def __init__(self, in_channels, out_channels, dropout_p, k=4):
+    def __init__(self, in_channels, out_channels, dropout_p, training, k=4):
         super().__init__(in_channels, out_channels, dropout_p=dropout_p)
         self.shortcut = Sequential(Linear(in_channels, out_channels), BatchNorm1d(out_channels), Dropout(dropout_p))
-        self.layer_norm = LayerNorm(out_channels)
+        #self.layer_norm = LayerNorm(out_channels)
         self.dropout_p = dropout_p
+        self.training = training
         self.k = k
 
     def forward(self, x, edge_index=None, batch=None):
@@ -140,7 +141,7 @@ class DynamicEdgeConv(EdgeConv):
         edge_index, _ = dropout_edge(edge_index, p=self.dropout_p, training=self.training)
         out = super().forward(x, edge_index, batch=batch)
         out += self.shortcut(x)
-        out = self.layer_norm(out)
+        #out = self.layer_norm(out)
         return out
 
 
@@ -185,9 +186,9 @@ class ParticleNet(torch.nn.Module):
     def __init__(self, num_node_features, num_graph_features, num_classes, num_hidden, dropout_p):
         super(ParticleNet, self).__init__()
         self.gn0 = GraphNorm(num_node_features)
-        self.conv1 = DynamicEdgeConv(num_node_features, num_hidden, dropout_p, k=4)
-        self.conv2 = DynamicEdgeConv(num_hidden, num_hidden, dropout_p, k=4)
-        self.conv3 = DynamicEdgeConv(num_hidden, num_hidden, dropout_p, k=4)
+        self.conv1 = DynamicEdgeConv(num_node_features, num_hidden, dropout_p, training=self.training, k=4)
+        self.conv2 = DynamicEdgeConv(num_hidden, num_hidden, dropout_p, training=self.training, k=4)
+        self.conv3 = DynamicEdgeConv(num_hidden, num_hidden, dropout_p, training=self.training, k=4)
         #self.linear = Linear(3*num_hidden, num_hidden)
         
         self.bn0 = BatchNorm1d(num_hidden*3+num_graph_features)
