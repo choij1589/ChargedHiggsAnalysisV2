@@ -69,16 +69,19 @@ logging.info("Start loading dataset")
 baseDir = f"{WORKDIR}/ParticleNet/dataset/{args.channel}__"
 if args.requireBtagged:
     baseDir += "OnlyBtagged__"
-if args.pilot:
-    baseDir += "pilot__"
 
-nFold = 5
-dataFoldList = [[] for _ in range(nFold)]
-for i in range(nFold):
-    dataFoldList[i] = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_fold-{i}.pt", weights_only=False)
-trainset = torch.utils.data.ConcatDataset([dataFoldList[(args.fold+1)%5], dataFoldList[(args.fold+2)%5], dataFoldList[(args.fold+3)%5]])
-validset = dataFoldList[(args.fold+4)%5]
-testset = dataFoldList[args.fold]
+if args.pilot:
+    dataFold = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_fold-{args.fold}.pt", weights_only=False)
+    split_1, split_2 = int(len(dataFold)*0.6), int(len(dataFold)*0.8)
+    trainset, validset, testset = dataFold[:split_1], dataFold[split_1:split_2], dataFold[split_2:]
+else:
+    nFold = 5
+    dataFoldList = [[] for _ in range(nFold)]
+    for i in range(nFold):
+        dataFoldList[i] = torch.load(f"{baseDir}/{args.signal}_vs_{args.background}_fold-{i}.pt", weights_only=False)
+    trainset = torch.utils.data.ConcatDataset([dataFoldList[(args.fold+1)%5], dataFoldList[(args.fold+2)%5], dataFoldList[(args.fold+3)%5]])
+    validset = dataFoldList[(args.fold+4)%5]
+    testset = dataFoldList[args.fold]
 
 trainLoader = DataLoader(trainset, batch_size=1024, pin_memory=True, shuffle=True)
 validLoader = DataLoader(validset, batch_size=1024, pin_memory=True, shuffle=False)
@@ -95,8 +98,7 @@ def train(model, optimizer, scheduler, use_plateau_scheduler=False):
 
     total_loss = 0.
     for data in trainLoader:
-        data.to(args.device)
-        #transform_data(data.to(args.device))
+        transform_data(data.to(args.device))
         out = model(data.x, data.edge_index, data.graphInput, data.batch)
         optimizer.zero_grad()
         loss = F.cross_entropy(out, data.y)
@@ -170,6 +172,8 @@ def main():
     outputPath = f"{WORKDIR}/ParticleNet/results/{args.channel}__/{args.signal}_vs_{args.background}/fold-{args.fold}"
     if args.requireBtagged:
         outputPath = f"{WORKDIR}/ParticleNet/results/{args.channel}__OnlyBtagged__/{args.signal}_vs_{args.background}/fold-{args.fold}"
+    if args.pilot:
+        outputPath = f"{WORKDIR}/ParticleNet/results/{args.channel}__/{args.signal}_vs_{args.background}/pilot"
     checkptpath = f"{outputPath}/models/{modelName}.pt"
     summarypath = f"{outputPath}/CSV/{modelName}.csv"
     outtreepath = f"{outputPath}/trees/{modelName}.root"
