@@ -46,7 +46,7 @@ nClasses = 2
 max_epochs = 81
 
 def getChromosomes(SIG, BKG, top=nModels):
-    CSVFILE = f"{WORKDIR}/ParticleNet/condor/Optimization/{CHANNEL}/{SIG}_vs_{BKG}/GA-iter3/CSV/model_info.csv"
+    CSVFILE = f"{WORKDIR}/ParticleNet/condor/Optimization/{CHANNEL}__/{SIG}_vs_{BKG}/GA-iter3/CSV/model_info.csv"
     if args.requireBtagged:
         CSVFILE = f"{WORKDIR}/ParticleNet/condor/Optimization/{CHANNEL}__OnlyBtagged__/{SIG}_vs_{BKG}/GA-iter3/CSV/model_info.csv"
     df = pd.read_csv(CSVFILE)
@@ -147,7 +147,7 @@ def plotTrainingStage(idx, path):
     nNodes, optimizer, initLR, scheduler, model, weight_decay, trial_id = (
         chromosome.get('nNodes'),chromosome.get('optimizer'),chromosome.get('initLR'),chromosome.get('scheduler'),chromosome.get('model'),chromosome.get('weight_decay'),chromosome.get('trial_id')
     )
-    csvpath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{SIG}_vs_{BKG}/fold-{FOLD}/CSV/{model}-nNodes{nNodes}-{optimizer}-initLR{initLR.replace('.','p')}-decay{weight_decay.replace('.', 'p')}-{scheduler}.csv"
+    csvpath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}__/{SIG}_vs_{BKG}/fold-{FOLD}/CSV/{model}-nNodes{nNodes}-{optimizer}-initLR{initLR.replace('.','p')}-decay{weight_decay.replace('.', 'p')}-{scheduler}.csv"
     if args.requireBtagged:
         csvpath = f"{WORKDIR}/ParticleNet/results/{CHANNEL}__OnlyBtagged__/{SIG}_vs_{BKG}/fold-{FOLD}/CSV/{model}-nNodes{nNodes}-{optimizer}-initLR{initLR.replace('.','p')}-decay{weight_decay.replace('.', 'p')}-{scheduler}.csv"
     record = pd.read_csv(csvpath, index_col=0).transpose()
