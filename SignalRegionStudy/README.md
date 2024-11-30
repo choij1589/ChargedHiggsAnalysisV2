@@ -17,6 +17,13 @@ cd HiggsAnalysis/CombinedLimit
 cd $CMSSW_BASE/src/HiggsAnalysis/CombinedLimit
 git fetch origin
 git checkout v10.0.2
+
+cd $CMSSW_BASE/src
+git clone https://github.com/cms-analysis/CombineHarvester.git CombineHarvester
+cd CombineHarvester
+git checkout v3.0.0-pre1
+
+cd $CMSSW_BASE/src
 scramv1 b clean; scramv1 b -j 12 # always make a clean build
 ```
 
@@ -34,6 +41,9 @@ Currently, only supporting for shape analysis without peak fitting.
 ```bash
 ./scripts/prepareCombine.sh $ERA $CHANNEL $MASSPOINT
 ```
+
+
+
 Here, $CHANNEL is SR1E2Mu or SR3Mu
 
 ## To do

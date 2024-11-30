@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--era", required=True, type=str, help="era")
 parser.add_argument("--channel", required=True, type=str, help="channel")
 parser.add_argument("--masspoint", required=True, type=str, help="masspoint")
-parser.add_argument("--method", required=True, type=str, help="CnC / shape")
+parser.add_argument("--method", required=True, type=str, help="CnC / shape / ParticleNet")
 args = parser.parse_args()
 
 mA = int(args.masspoint.split("_")[1].split("-")[1])
@@ -48,7 +48,7 @@ class DatacardManager():
             rtfile_path = f"templates/{era}/{channel}/{masspoint}/Shape/Baseline/shapes_input.root"
             os.makedirs(os.path.dirname(rtfile_path), exist_ok=True)
             self.rtfile = ROOT.TFile.Open(rtfile_path)
-        elif method == "GNNOptim":
+        elif method == "ParticleNet":
             rtfile_path = f"templates/{era}/{channel}/{masspoint}/Shape/ParticleNet/shapes_input.root"
             os.makedirs(os.path.dirname(rtfile_path), exist_ok=True)
             self.rtfile = ROOT.TFile.Open(rtfile_path)
