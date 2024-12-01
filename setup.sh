@@ -8,6 +8,12 @@ if [[ $HOST == *"ai-tamsa"* ]]; then
 elif [[ $HOST == *"lxplus"* ]]; then
 	export WORKDIR="/eos/user/c/choij/ChargedHiggsAnalysisV2"
 	source /cvmfs/sft.cern.ch/lcg/views/LCG_106_cuda/x86_64-el9-gcc11-opt/setup.sh
+elif [[ $HOST == *"knu"* ]]; then
+    export WORKDIR="/u/user/choij/scratch/ChargedHiggsAnalysisV2"
+    export SKFlatOutput="/u/user/choij/SE_USERHOME/SKFlatOutput/Run2UltraLegacy_v3"
+    source /u/user/choij/miniconda3/bin/activate
+    conda activate pyg
+    unset LD_PRELOAD
 elif [[ $HOST == *"tamsa"* ]]; then
     export WORKDIR="/data6/Users/choij/ChargedHiggsAnalysisV2"
     source /opt/conda/bin/activate
