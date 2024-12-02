@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import os
 import ROOT
 import argparse
@@ -157,7 +157,13 @@ class DatacardManager():
 
         # set alias
         if alias is None: alias = syst
-        if denoteEra: alias = f"{alias}_{args.era}"
+        if denoteEra:
+            if args.era == "2016preVFP": alias = f"{alias}_16a"
+            elif args.era == "2016postVFP": alias = f"{alias}_16b"
+            elif args.era == "2017": alias = f"{alias}_17"
+            elif args.era == "2018": alias = f"{alias}_18"
+            else:
+                raise ValueError(f"[DatacardManager] What era is {args.era}?")
 
         # check type
         if self.method == "CnC":
@@ -250,7 +256,7 @@ if __name__ == "__main__":
         print(manager.part3string())
         print(manager.autoMCstring(threshold=10))
         print(manager.syststring(syst="lumi_13TeV", sysType="lnN", value=1.025, skip=["nonprompt", "conversion"]))
-        print(manager.syststring(syst="L1Prefire", sysType="lnN", skip=["nonprompt", "conversion"]))
+        print(manager.syststring(syst="L1Prefire", sysType="lnN", skip=["nonprompt", "conversion"], denoteEra=True))
         print(manager.syststring(syst="PileupReweight", sysType="lnN", skip=["nonprompt", "conversion"]))
         if args.channel == "SR1E2Mu":
             print(manager.syststring(syst="ElectronIDSF", sysType="lnN", skip=["nonprompt", "conversion"]))
@@ -261,14 +267,14 @@ if __name__ == "__main__":
         if args.channel == "SR3Mu":
             print(manager.syststring(syst="MuonIDSF", sysType="lnN", skip=["nonprompt", "conversion"]))
             print(manager.syststring(syst="TriggerSF", sysType="lnN", skip=["nonprompt", "conversion"]))
-        print(manager.syststring(syst="JetRes", skip=["nonprompt", "conversion"]))
+        print(manager.syststring(syst="JetRes", skip=["nonprompt", "conversion"], denoteEra=True))
         print(manager.syststring(syst="JetEn", skip=["nonprompt", "conversion"]))
         print(manager.syststring(syst="MuonEn", skip=["nonprompt", "conversion"]))
         print(manager.syststring(syst="PDF", sysType="shape", skip=["nonprompt", "conversion", "WZ", "ZZ", "ttW", "ttZ", "ttH", "tZq", "others"]))
         print(manager.syststring(syst="Scale", sysType="shape", skip=["nonprompt", "conversion", "WZ", "ZZ", "ttW", "ttZ", "ttH", "tZq", "others"]))
         print(manager.syststring(syst="PS", sysType="shape", skip=["nonprompt", "conversion", "WZ", "ZZ", "ttW", "ttZ", "ttH", "tZq", "others"]))
-        print(manager.syststring(syst="Nonprompt", sysType="lnN", value=1.3, skip=["signal", "conversion", "WZ", "ZZ", "ttW", "ttZ", "ttH", "tZq", "others"]))
-        print(manager.syststring(syst="Conversion", sysType="lnN", value=1.2, skip=["signal", "nonprompt", "WZ", "ZZ", "ttW", "ttZ", "ttH", "tZq", "others"]))
+        print(manager.syststring(syst="Nonprompt", sysType="lnN", value=1.3, skip=["signal", "conversion", "WZ", "ZZ", "ttW", "ttZ", "ttH", "tZq", "others"], denoteEra=True))
+        print(manager.syststring(syst="Conversion", sysType="lnN", value=1.2, skip=["signal", "nonprompt", "WZ", "ZZ", "ttW", "ttZ", "ttH", "tZq", "others"], denoteEra=True))
         print(manager.syststring(syst="norm_WZ", sysType="lnN", value=1.12, skip=["signal", "nonprompt", "conversion", "ZZ", "ttW", "ttZ", "ttH", "tZq", "others"]))
         print(manager.syststring(syst="norm_ZZ", sysType="lnN", value=1.064, skip=["signal", "nonprompt", "conversion", "WZ", "ttW", "ttZ", "ttH", "tZq", "others"]))
         print(manager.syststring(syst="norm_ttW", sysType="lnN", value=1.119, skip=["signal", "nonprompt", "conversion", "WZ", "ZZ", "ttZ", "ttH", "tZq", "others"]))

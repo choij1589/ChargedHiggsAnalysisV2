@@ -16,8 +16,7 @@ elif [[ $HOST == *"knu"* ]]; then
     unset LD_PRELOAD
 elif [[ $HOST == *"tamsa"* ]]; then
     export WORKDIR="/data6/Users/choij/ChargedHiggsAnalysisV2"
-    source /opt/conda/bin/activate
-    conda activate pyg
+    source /cvmfs/sft.cern.ch/lcg/views/LCG_105/x86_64-centos7-gcc12-opt/setup.sh
 elif [[ $HOST == *"cms"* ]]; then
     export WORKDIR="/data6/Users/choij/ChargedHiggsAnalysisV2"
     source /opt/conda/bin/activate

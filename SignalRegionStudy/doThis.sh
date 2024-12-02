@@ -1,7 +1,6 @@
 #!/bin/bash
 # Running combine for all mass points, all channels, all eras
-#ERAs=("2016preVFP" "2016postVFP" "2017" "2018")
-ERAs=("2017")
+ERAs=("2016preVFP" "2016postVFP" "2017" "2018")
 CHANNELs=("SR1E2Mu" "SR3Mu")
 MASSPOINTs=(
     "MHc-70_MA-15" "MHc-70_MA-40" "MHc-70_MA-65"
@@ -15,23 +14,24 @@ combine() {
     local channel=$2
     local masspoint=$3
     ./scripts/prepareCombine.sh $era $channel $masspoint
-    ./scripts/dockerCommand.sh $era $channel $masspoint
+#    ./scripts/dockerCommand.sh $era $channel $masspoint
 }
 
-echo "Cleaning up"
-rm -rf samples
-rm -rf templates
+#echo "Cleaning up"
+#rm -rf samples
+#rm -rf templates
 
-./scripts/build.sh
+#./scripts/build.sh
 # Preprocess
-for era in ${ERAs[@]}; do
-    for channel in ${CHANNELs[@]}; do
-        ./scripts/preprocess.sh $era ${channel/SR/Skim}
-    done
-done
+#for era in ${ERAs[@]}; do
+#    for channel in ${CHANNELs[@]}; do
+#        ./scripts/preprocess.sh $era ${channel/SR/Skim}
+#        wait
+#    done
+#done
 
 # Prepare combine
 for masspoint in ${MASSPOINTs[@]}; do
     export -f combine
-    parallel -j 2 combine ::: "${ERAs[@]}" ::: "${CHANNELs[@]}" ::: "$masspoint"
+    parallel -j 4 combine ::: "${ERAs[@]}" ::: "${CHANNELs[@]}" ::: "$masspoint"
 done
