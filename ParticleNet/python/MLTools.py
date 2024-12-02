@@ -13,7 +13,7 @@ class EarlyStopper():
         self.counter = 0
         self.bestScore = None
         self.earlyStop = False
-        self.valLossMin = np.Inf
+        self.valLossMin = np.inf
         self.delta = 0.
         self.path = path
         os.makedirs(os.path.dirname(path), exist_ok=True)
