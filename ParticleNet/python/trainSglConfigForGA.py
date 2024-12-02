@@ -45,7 +45,7 @@ parser.add_argument("--weight_decay", required=True, type=float, help="weight de
 parser.add_argument("--scheduler", required=True, type=str, help="lr scheduler")
 parser.add_argument("--device", default="cuda", type=str, help="cpu or cuda")
 parser.add_argument("--pilot", action="store_true", default=False, help="pilot mode")
-parser.add_argument("--requireBtagged", action="store_true", default="False", help="read dataset from b-tagged samples")
+parser.add_argument("--requireBtagged", action="store_true", default=False, help="read dataset from b-tagged samples")
 parser.add_argument("--debug", action="store_true", default=False, help="debug mode")
 args = parser.parse_args()
 
@@ -100,8 +100,7 @@ def train(model, optimizer, scheduler, use_plateau_scheduler=False):
 
     total_loss = 0.
     for data in trainLoader:
-        data.to(args.device)
-        #transform_data(data.to(args.device))
+        transform_data(data.to(args.device))
         out = model(data.x, data.edge_index, data.graphInput, data.batch)
         optimizer.zero_grad()
         loss = F.cross_entropy(out, data.y)
@@ -176,7 +175,7 @@ def main():
     checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}__/{args.signal}_vs_{args.background}/GA-iter{args.iter}/models/{modelName}.pt"
     summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}__/{args.signal}_vs_{args.background}/GA-iter{args.iter}/CSV/{modelName}.csv"
     if args.requireBtagged:
-        checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}__OnlyBtagged__/{args.signal}_vs_{args.background}/GA-iter{args.iter}/{modelName}.pt"
+        checkptpath = f"{WORKDIR}/ParticleNet/results/{args.channel}__OnlyBtagged__/{args.signal}_vs_{args.background}/GA-iter{args.iter}/models/{modelName}.pt"
         summarypath = f"{WORKDIR}/ParticleNet/results/{args.channel}__OnlyBtagged__/{args.signal}_vs_{args.background}/GA-iter{args.iter}/CSV/{modelName}.csv"
     earlyStopper = EarlyStopper(patience=7, path=checkptpath)
     summaryWriter = SummaryWriter(name=modelName)

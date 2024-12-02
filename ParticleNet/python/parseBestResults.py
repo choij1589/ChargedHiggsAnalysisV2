@@ -35,7 +35,9 @@ def retrieve_model_name(fold):
 if __name__ == "__main__":
     for fold in range(args.nfold):
         result_path = f"{WORKDIR}/ParticleNet/results/{CHANNEL}/{args.signal}_vs_{args.background}/fold-{fold}"
-        os.makedirs(result_path, exist_ok=True)
+        if os.path.exists(result_path):
+            shutil.rmtree(result_path)
+        os.makedirs(result_path)
 
         with open(f"{RESULTDIR}/fold-{fold}/result/summary.txt", "r") as f:
             summary = f.readline().strip().split(", ")

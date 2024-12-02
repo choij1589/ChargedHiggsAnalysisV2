@@ -42,6 +42,7 @@ private:
     TString datastream;
     TFile *inFile;
     TFile *outFile;
+    TTree *centralTree;
     TTree *inTree;
     TTree *outTree;
 

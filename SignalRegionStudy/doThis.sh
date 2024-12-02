@@ -14,13 +14,24 @@ combine() {
     local channel=$2
     local masspoint=$3
     ./scripts/prepareCombine.sh $era $channel $masspoint
-    ./scripts/runCombine.sh $era $channel $masspoint
+#    ./scripts/dockerCommand.sh $era $channel $masspoint
 }
 
-for era in ${ERAs[@]}; do
-  for channel in ${CHANNELs[@]}; do
-    ./scripts/preprocess.sh $era ${channel/SR/Skim}
+#echo "Cleaning up"
+#rm -rf samples
+#rm -rf templates
+
+#./scripts/build.sh
+# Preprocess
+#for era in ${ERAs[@]}; do
+#    for channel in ${CHANNELs[@]}; do
+#        ./scripts/preprocess.sh $era ${channel/SR/Skim}
+#        wait
+#    done
+#done
+
+# Prepare combine
+for masspoint in ${MASSPOINTs[@]}; do
     export -f combine
-    parallel -j 14 combine ::: "$era" ::: "$channel" ::: "${MASSPOINTs[@]}"
-  done
+    parallel -j 4 combine ::: "${ERAs[@]}" ::: "${CHANNELs[@]}" ::: "$masspoint"
 done

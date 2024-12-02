@@ -6,6 +6,7 @@ Preprocessor::Preprocessor(const TString &era,
     : era(era), channel(channel), datastream(datastream) {}
 
 void Preprocessor::setInputTree(const TString &syst) {
+    centralTree = static_cast<TTree*>(inFile->Get("Events_Central"));
     inTree = static_cast<TTree*>(inFile->Get("Events_"+syst));
 }
 
@@ -44,7 +45,6 @@ void Preprocessor::fillOutTree(const TString &sampleName, const TString &signal,
         } else if (applyConvSF) {
             weight *= getConvSF();
         }
-
 
         // Process based on the channel
         if (channel.Contains("1E2Mu")) {
