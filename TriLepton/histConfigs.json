@@ -662,72 +662,72 @@
     "xTitle": "(100, 95) vs. fake",
     "yTitle": "Events",
     "xRange": [0.0, 1.0],
-    "yRange": [0.0, 2.0],
-    "rebin": 5,
-    "logy": true
+    "yRange": [0.0, 2.0]
   },
   "MHc-100_MA-95/score_diboson": {
     "xTitle": "(100, 95) vs. VV",
     "yTitle": "Events",
     "xRange": [0.0, 1.0],
-    "yRange": [0.0, 2.0],
-    "rebin": 5,
-    "logy": true
+    "yRange": [0.0, 2.0]
   },
   "MHc-100_MA-95/score_ttZ": {
     "xTitle": "(100, 95) vs. tt+Z",
     "yTitle": "Events",
     "xRange": [0.0, 1.0],
-    "yRange": [0.0, 2.0],
-    "rebin": 5,
-    "logy": true
+    "yRange": [0.0, 2.0]
+  },
+  "MHc-100_MA-95/score": {
+    "xTitle": "score",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0]
   },
   "MHc-130_MA-90/score_nonprompt": {
     "xTitle": "(130, 90) vs. fake",
     "yTitle": "Events",
     "xRange": [0.0, 1.0],
-    "yRange": [0.0, 2.0],
-    "rebin": 5,
-    "logy": true
+    "yRange": [0.0, 2.0]
   },
   "MHc-130_MA-90/score_diboson": {
     "xTitle": "(130, 90) vs. VV",
     "yTitle": "Events",
     "xRange": [0.0, 1.0],
-    "rebin": 5,
-    "logy": true
+    "yRange": [0.0, 2.0]
   },
   "MHc-130_MA-90/score_ttZ": {
     "xTitle": "(130, 90) vs. tt+Z",
     "yTitle": "Events",
     "xRange": [0.0, 1.0],
-    "yRange": [0.0, 2.0],
-    "rebin": 5,
-    "logy": true
+    "yRange": [0.0, 2.0]
+  },
+  "MHc-130_MA-90/score": {
+    "xTitle": "score",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0]
   },
   "MHc-160_MA-85/score_nonprompt": {
     "xTitle": "(160, 85) vs. fake",
     "yTitle": "Events",
     "xRange": [0.0, 1.0],
-    "yRange": [0.0, 2.0],
-    "rebin": 5,
-    "logy": true
+    "yRange": [0.0, 2.0]
   },
   "MHc-160_MA-85/score_diboson": {
     "xTitle": "(160, 85) vs. VV",
     "yTitle": "Events",
     "xRange": [0.0, 1.0],
-    "yRange": [0.0, 2.0],
-    "rebin": 5,
-    "logy": true
+    "yRange": [0.0, 2.0]
   },
   "MHc-160_MA-85/score_ttZ": {
     "xTitle": "(160, 85) vs. tt+Z",
     "yTitle": "Events",
     "xRange": [0.0, 1.0],
-    "yRange": [0.0, 2.0],
-    "rebin": 5,
-    "logy": true
+    "yRange": [0.0, 2.0]
+  },
+  "MHc-160_MA-85/score": {
+    "xTitle": "score",
+    "yTitle": "Events",
+    "xRange": [0.0, 1.0],
+    "yRange": [0.0, 2.0]
   }
 }
-

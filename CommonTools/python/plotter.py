@@ -245,6 +245,11 @@ class ComparisonCanvas():
             hist.SetLineWidth(2)
             hist.SetMarkerColor(color)
 
+        # only one signal i.e. score
+        if len(self.signals.values()) == 1:
+            hist = list(self.signals.values())[0]
+            hist.SetFillColorAlpha(colors[hist.GetName()], 0.4)
+
         # X axis
         xRange = None
         if "xRange" in self.config.keys():

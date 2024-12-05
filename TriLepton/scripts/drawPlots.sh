@@ -27,9 +27,9 @@ if [[ $CHANNEL == "ZFake1E2Mu" ]]; then
         "METv/pt" "METv/phi"
         "ZCand/pt" "ZCand/eta" "ZCand/phi" "ZCand/mass"
         "nonprompt/pt" "nonprompt/eta"
-        "MHc-100_MA-95/score_nonprompt" "MHc-100_MA-95/score_diboson" "MHc-100_MA-95/score_ttZ"
-        "MHc-130_MA-90/score_nonprompt" "MHc-130_MA-90/score_diboson" "MHc-130_MA-90/score_ttZ"
-        "MHc-160_MA-85/score_nonprompt" "MHc-160_MA-85/score_diboson" "MHc-160_MA-85/score_ttZ"
+        "MHc-100_MA-95/score_nonprompt" "MHc-100_MA-95/score_diboson" "MHc-100_MA-95/score_ttZ" "MHc-100_MA-95/score"
+        "MHc-130_MA-90/score_nonprompt" "MHc-130_MA-90/score_diboson" "MHc-130_MA-90/score_ttZ" "MHc-130_MA-90/score"
+        "MHc-160_MA-85/score_nonprompt" "MHc-160_MA-85/score_diboson" "MHc-160_MA-85/score_ttZ" "MHc-160_MA-85/score"
  
     )
     plot.py --era $ERA --channel $CHANNEL --histkey "muons/1/pt"
@@ -49,9 +49,9 @@ elif [[ $CHANNEL == "ZFake3Mu" ]]; then
         "ZCand/pt" "ZCand/eta" "ZCand/phi" "ZCand/mass"
         "nZCand/pt" "nZCand/eta" "nZCand/phi" "nZCand/mass"
         "nonprompt/pt" "nonprompt/eta"
-        "MHc-100_MA-95/score_nonprompt" "MHc-100_MA-95/score_diboson" "MHc-100_MA-95/score_ttZ"
-        "MHc-130_MA-90/score_nonprompt" "MHc-130_MA-90/score_diboson" "MHc-130_MA-90/score_ttZ"
-        "MHc-160_MA-85/score_nonprompt" "MHc-160_MA-85/score_diboson" "MHc-160_MA-85/score_ttZ"
+        "MHc-100_MA-95/score_nonprompt" "MHc-100_MA-95/score_diboson" "MHc-100_MA-95/score_ttZ" "MHc-100_MA-95/score"
+        "MHc-130_MA-90/score_nonprompt" "MHc-130_MA-90/score_diboson" "MHc-130_MA-90/score_ttZ" "MHc-130_MA-90/score"
+        "MHc-160_MA-85/score_nonprompt" "MHc-160_MA-85/score_diboson" "MHc-160_MA-85/score_ttZ" "MHc-160_MA-85/score"
 
     )
     plot.py --era $ERA --channel $CHANNEL --histkey "muons/1/pt"
@@ -108,9 +108,9 @@ elif [[ $CHANNEL == "SR1E2Mu" ]]; then
         "bjets/3/pt" "bjets/3/eta" "bjets/3/phi" "bjets/3/mass" "bjets/3/charge" "bjets/3/btagScore"
         "METv/pt" "METv/phi"
         "pair/pt" "pair/eta" "pair/phi" "pair/mass"
-        "MHc-100_MA-95/score_nonprompt" "MHc-100_MA-95/score_diboson" "MHc-100_MA-95/score_ttZ"
-        "MHc-130_MA-90/score_nonprompt" "MHc-130_MA-90/score_diboson" "MHc-130_MA-90/score_ttZ"
-        "MHc-160_MA-85/score_nonprompt" "MHc-160_MA-85/score_diboson" "MHc-160_MA-85/score_ttZ"
+        "MHc-100_MA-95/score_nonprompt" "MHc-100_MA-95/score_diboson" "MHc-100_MA-95/score_ttZ" "MHc-100_MA-95/score"
+        "MHc-130_MA-90/score_nonprompt" "MHc-130_MA-90/score_diboson" "MHc-130_MA-90/score_ttZ" "MHc-130_MA-90/score"
+        "MHc-160_MA-85/score_nonprompt" "MHc-160_MA-85/score_diboson" "MHc-160_MA-85/score_ttZ" "MHc-160_MA-85/score"
     )
     plot.py --era $ERA --channel $CHANNEL --histkey "muons/1/pt" --blind
     export -f draw_plot_blind
@@ -130,9 +130,9 @@ elif [[ $CHANNEL == "SR3Mu" ]]; then
         "bjets/3/pt" "bjets/3/eta" "bjets/3/phi" "bjets/3/mass" "bjets/3/charge" "bjets/3/btagScore"
         "METv/pt" "METv/phi"
         "stack/pt" "stack/eta" "stack/phi" "stack/mass"
-        "MHc-100_MA-95/score_nonprompt" "MHc-100_MA-95/score_diboson" "MHc-100_MA-95/score_ttZ"
-        "MHc-130_MA-90/score_nonprompt" "MHc-130_MA-90/score_diboson" "MHc-130_MA-90/score_ttZ"
-        "MHc-160_MA-85/score_nonprompt" "MHc-160_MA-85/score_diboson" "MHc-160_MA-85/score_ttZ"
+        "MHc-100_MA-95/score_nonprompt" "MHc-100_MA-95/score_diboson" "MHc-100_MA-95/score_ttZ" "MHc-100_MA-95/score"
+        "MHc-130_MA-90/score_nonprompt" "MHc-130_MA-90/score_diboson" "MHc-130_MA-90/score_ttZ" "MHc-130_MA-90/score"
+        "MHc-160_MA-85/score_nonprompt" "MHc-160_MA-85/score_diboson" "MHc-160_MA-85/score_ttZ" "MHc-160_MA-85/score"
     )
     plot.py --era $ERA --channel $CHANNEL --histkey "muons/1/pt" --blind
     export -f draw_plot_blind
