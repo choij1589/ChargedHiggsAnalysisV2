@@ -125,7 +125,6 @@ if args.blind:
         h = f.Get(f"{args.channel}/Central/{args.histkey}")
         if "score" in args.histkey: 
             h.Scale(5)
-            h.Rebin(5)
         SIGs[signal] = h.Clone(signal)
         SIGs[signal].SetDirectory(0)
         f.Close()
