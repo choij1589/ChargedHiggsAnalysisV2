@@ -26,7 +26,7 @@ elif [[ $HOST == *"private"* ]]; then
     source ~/.conda-activate
     conda activate pyg
 elif [[ $HOST == *"Mac"* ]]; then
-    export WORKDIR="$HOME/workspace/ChargedHiggsAnalysisV2"
+    export WORKDIR="$PWD"
     source $WORKDIR/myenv/bin/activate
     source root_install/bin/thisroot.sh
 else

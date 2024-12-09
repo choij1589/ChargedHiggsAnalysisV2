@@ -123,7 +123,9 @@ if args.blind:
         assert os.path.exists(file_path), f"File not found: {file_path}"
         f = ROOT.TFile.Open(file_path)
         h = f.Get(f"{args.channel}/Central/{args.histkey}")
-        h.Scale(5)
+        if "score" in args.histkey: 
+            h.Scale(5)
+            h.Rebin(5)
         SIGs[signal] = h.Clone(signal)
         SIGs[signal].SetDirectory(0)
         f.Close()
