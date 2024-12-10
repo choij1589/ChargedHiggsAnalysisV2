@@ -67,13 +67,14 @@ def copyTemplates(process):
     
 
 def mergeToOthers(bkgToMerge):
-    if len(bkgToMerge) == 0:
-        return
-    logging.info(f"Merge {bkgToMerge} to others")
+    logging.info("Copy others")
+    if len(bkgToMerge) > 0:
+        logging.info(f"Merge {bkgToMerge} to others")
     
     f = ROOT.TFile.Open(f"{BASEDIR}/shapes_input.precheck.root")
     f_out = ROOT.TFile.Open(f"{BASEDIR}/shapes_input.root", "UPDATE")
     others_central = f.Get("others"); others_central.SetDirectory(0)
+
     for bkg in bkgToMerge:
         process_central = f.Get(bkg); process_central.SetDirectory(0)
         others_central.Add(process_central)

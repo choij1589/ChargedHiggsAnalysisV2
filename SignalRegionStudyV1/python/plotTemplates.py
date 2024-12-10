@@ -26,7 +26,7 @@ config = {
 # nonprompt, conversion, others are already converged
 diboson = ["WZ", "ZZ"]
 ttX = ["ttW", "ttZ", "ttH", "tZq"]
-promptBkgs = diboson + ttX
+promptBkgs = diboson + ttX + ["others"]
 
 # Systematics
 if args.channel == "SR1E2Mu":
@@ -56,6 +56,8 @@ HISTs = {}
 COLORs = {}
 
 def addHist(name, hist, histDict):
+    if hist is None:
+        return
     if histDict[name] is None:
         histDict[name] = hist.Clone(name)
     else:
@@ -69,23 +71,30 @@ data_obs = rtfile.Get("data_obs"); data_obs.SetDirectory(0)
 
 ## signal
 SIGs = {}
-signal = rtfile.Get(args.masspoint); signal.SetDirectory(0)
+signal = rtfile.Get(args.masspoint)
 SIGs[args.masspoint] = signal.Clone(args.masspoint)
+SIGs[args.masspoint].SetDirectory(0)
 
 ## backgrounds
-nonprompt = rtfile.Get("nonprompt"); nonprompt.SetDirectory(0)
+nonprompt = rtfile.Get("nonprompt")
 for bin in range(nonprompt.GetNcells()):
     nonprompt.SetBinError(bin, nonprompt.GetBinContent(bin)*0.3)
 HISTs["nonprompt"] = nonprompt.Clone("nonprompt")
+HISTs["nonprompt"].SetDirectory(0)
 
-conversion = rtfile.Get("conversion"); conversion.SetDirectory(0)
+conversion = rtfile.Get("conversion")
 for bin in range(conversion.GetNcells()):
     conversion.SetBinError(bin, conversion.GetBinContent(bin)*0.2)
 HISTs["conversion"] = conversion.Clone("conversion")
+HISTs["conversion"].SetDirectory(0)
 
 for sample in promptBkgs:
-    print(sample)
-    h = rtfile.Get(sample); h.SetDirectory(0)
+    try:
+        h = rtfile.Get(sample); h.SetDirectory(0)
+    except:
+        print(f"{sample} not fould for {args.era}/{args.channel}/{args.masspoint}")
+        HISTs[sample] = None
+        continue
     hSysts = []
     for syst_up, syst_down in SYSTs:
         try:
@@ -106,6 +115,8 @@ for sample in promptBkgs:
         total_unc = sqrt(pow(stat_unc, 2) + sum([pow(x, 2) for x in envelops]))
         h.SetBinError(bin, total_unc)
     HISTs[sample] = h.Clone(sample)
+    HISTs[sample].SetDirectory(0)
+rtfile.Close()
     
 temp_dict = {}
 temp_dict["nonprompt"] = None
@@ -120,20 +131,18 @@ for sample in ttX:
     addHist("ttX", HISTs[sample], temp_dict)
 for sample in diboson:
     addHist("diboson", HISTs[sample], temp_dict)
-#addHist("others", HISTs["others"], temp_dict)
-rtfile.Close()
+addHist("others", HISTs["others"], temp_dict)
 
 # filter out none historgrams from temp_dict
 BKGs = {name: hist for name, hist in temp_dict.items() if hist}
 
 COLORs["data"] = ROOT.kBlack
-COLORs[args.masspoint] = ROOT.kBlack
+COLORs[args.masspoint] = ROOT.kRed
 COLORs["nonprompt"] = ROOT.kGray+2
 COLORs["ttX"] = ROOT.kBlue
 COLORs["conversion"] = ROOT.kViolet
 COLORs["diboson"] = ROOT.kGreen
-COLORs["others"] = ROOT.kAzure
-
+COLORs["others"] = ROOT.kOrange
 c = ComparisonCanvas(config=config)
 c.drawSignals(SIGs, COLORs)
 c.drawBackgrounds(BKGs, COLORs)
