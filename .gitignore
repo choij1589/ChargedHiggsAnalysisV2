@@ -1,7 +1,7 @@
 SKFlatOutput
 SKFlatOutput/*
 SignalRegionStudy*/samples/*
-SignalRegionStudy*/templates
+SignalRegionStudy*/BackUps/*
 SignalRegionStudy*/condor/*
 CommonTools/CMSSW_*/*
 BackUps/*
