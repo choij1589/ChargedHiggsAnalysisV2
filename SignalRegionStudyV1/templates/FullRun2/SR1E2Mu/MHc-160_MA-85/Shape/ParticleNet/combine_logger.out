@@ -31,34 +31,71 @@ HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
-HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed 1602075313
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed -169386379
 HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed 1655472597
 HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed 1924131685
-HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed -169386379
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed 1602075313
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
-HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed 1515015977
-HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed -601816380
 HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed -247131252
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed -601816380
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed 1515015977
 HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed -771426112
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
-HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed 682070621
-HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed -197175438
-HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed 1512058435
 HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed 983063468
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed -197175438
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed 682070621
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed 1512058435
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
-HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed -1740391214
-HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed 139062483
-HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed 590788012
-HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed 603291379
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed -958706475
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed 603291379
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed -1740391214
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed 139062483
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
 HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed -686156807
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed 590788012
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed -631790653
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed -813235217
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed 1011496918
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed -1359565662
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed 628041162
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed -296992351
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed -2007103835
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed -1829605490
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed 1196937659
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed 263152481
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed 618228753
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed -1759106931
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed -1205062931
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed 1053769439
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed 1270818138
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed 1462199891
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed 49766905
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed -65589553
