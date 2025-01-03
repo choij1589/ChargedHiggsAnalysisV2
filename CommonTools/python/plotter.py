@@ -211,6 +211,8 @@ class ComparisonCanvas():
         self.legend.SetFillStyle(0)
         self.legend.SetBorderSize(0)
         
+        self.maximum = -1.
+        
         # optional settings
         self.logy = False
         if "logy" in config.keys():
@@ -260,6 +262,7 @@ class ComparisonCanvas():
             hist.GetXaxis().SetTitleOffset(1.0)
             hist.GetXaxis().SetLabelSize(0.04)
             if xRange: hist.GetXaxis().SetRangeUser(xRange[0], xRange[1])
+            self.maximum = max(self.maximum, hist.GetMaximum())
 
     def drawBackgrounds(self, hists, colors):
         self.backgrounds = hists
@@ -294,10 +297,10 @@ class ComparisonCanvas():
             if xRange: hist.GetXaxis().SetRangeUser(xRange[0], xRange[1])
 
         # y axis
-        maximum = self.stack.GetHistogram().GetMaximum()
+        self.maximum = max(self.maximum, self.stack.GetHistogram().GetMaximum())
         for hist in self.backgrounds.values():
-            if self.logy: hist.GetYaxis().SetRangeUser(0.1, maximum*1000.)
-            else:         hist.GetYaxis().SetRangeUser(0, maximum*2.)
+            if self.logy: hist.GetYaxis().SetRangeUser(0.1, self.maximum*1000.)
+            else:         hist.GetYaxis().SetRangeUser(0, self.maximum*2.)
     
     def drawData(self, data):
         self.data = data
@@ -321,15 +324,15 @@ class ComparisonCanvas():
         self.data.SetMarkerSize(1)
         self.data.SetMarkerColor(1)
         
-        maximum = self.stack.GetHistogram().GetMaximum() 
+        #maximum = self.stack.GetHistogram().GetMaximum() 
         if self.logy:
             minValue = 1.
             for i in range(1, self.data.GetNbinsX()+1):
                 if self.data.GetBinContent(i) > 0 and self.data.GetBinContent(i) < minValue:
                     minValue = self.data.GetBinContent(i)
-            self.data.GetYaxis().SetRangeUser(minValue*0.1, maximum*1000.)
+            self.data.GetYaxis().SetRangeUser(minValue*0.1, self.maximum*1000.)
         else:         
-            self.data.GetYaxis().SetRangeUser(0, maximum*2.)
+            self.data.GetYaxis().SetRangeUser(0, self.maximum*2.)
         
         
     def drawRatio(self):
