@@ -29,7 +29,8 @@ with open(f"{WORKDIR}/CommonData/json/convScaleFactors.json") as f:
 
 SIGNALs = ["MHc-70_MA-15", "MHc-100_MA-60", "MHc-130_MA-90", "MHc-160_MA-155"]
 if "score" in args.histkey:
-    SIGNALs = ["MHc-100_MA-95", "MHc-130_MA-90", "MHc-160_MA-85"]
+    SIGNALs = [args.histkey.split("/")[0]]
+    #SIGNALs = ["MHc-100_MA-95", "MHc-130_MA-90", "MHc-160_MA-85"]
 CONV = ["DYJets", "DYJets10to50_MG", "ZGToLLG", "WWG", "TTG"]
 DIBOSON = ["WZTo3LNu_amcatnlo", "ZZTo4L_powheg"]
 TTX = ["ttWToLNu", "ttZToLLNuNu", "ttHToNonbb"]
@@ -122,6 +123,8 @@ if args.blind:
         assert os.path.exists(file_path), f"File not found: {file_path}"
         f = ROOT.TFile.Open(file_path)
         h = f.Get(f"{args.channel}/Central/{args.histkey}")
+        if "score" in args.histkey: 
+            h.Scale(5)
         SIGs[signal] = h.Clone(signal)
         SIGs[signal].SetDirectory(0)
         f.Close()
@@ -219,7 +222,7 @@ COLORs["MHc-70_MA-15"] = ROOT.kGreen
 COLORs["MHc-100_MA-60"] = ROOT.kBlue
 COLORs["MHc-100_MA-95"] = ROOT.kViolet
 COLORs["MHc-130_MA-90"] = ROOT.kBlack
-COLORs["MHc-160_MA-85"] = ROOT.kOrange
+COLORs["MHc-160_MA-85"] = ROOT.kBlue
 COLORs["MHc-160_MA-155"] = ROOT.kRed
 
 c = ComparisonCanvas(config=config)

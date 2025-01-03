@@ -1,0 +1,37 @@
+# signal xsec scaled to be 5 fb
+imax			1 number of bins
+jmax			9 number of bins
+kmax			* number of nuisance parameters
+--------------------------------------------------
+shapes	*	*	shapes_input.root	$PROCESS	$PROCESS_$SYSTEMATIC
+shapes	signal	*	shapes_input.root	MHc-70_MA-15	MHc-70_MA-15_$SYSTEMATIC
+--------------------------------------------------
+bin			signal_region
+observation		19.4162
+--------------------------------------------------
+bin			signal_region	signal_region	signal_region	signal_region	signal_region	signal_region	signal_region	signal_region	signal_region	signal_region	
+process			signal		nonprompt	conversion	WZ		ZZ		ttW		ttZ		ttH		tZq		others		
+process			0		1		2		3		4		5		6		7		8		9		
+rate			-1		-1		-1		-1		-1		-1		-1		-1		-1		-1		
+--------------------------------------------------
+signal_region	autoMCStats	10
+lumi_13TeV	lnN	1.025		-		-		1.025		1.025		1.025		1.025		1.025		1.025		1.025		
+L1Prefire_17	lnN	1.006		-		-		1.003		1.003		1.006		1.008		1.005		1.012		1.006		
+PileupReweight	lnN	1.010		-		-		1.057		1.024		1.048		1.004		1.035		1.014		1.020		
+MuonIDSF	lnN	1.012		-		-		1.013		1.013		1.014		1.013		1.011		1.011		1.013		
+TriggerSF	lnN	1.001		-		-		1.001		1.001		1.001		1.001		1.001		1.001		1.001		
+JetRes_17	shape	1		-		-		1		1		1		1		1		1		1		
+JetEn		shape	1		-		-		1		1		1		1		1		1		1		
+MuonEn		shape	1		-		-		1		1		1		1		1		1		1		
+PDF		shape	1		-		-		-		-		-		-		-		-		-		
+Scale		shape	1		-		-		-		-		-		-		-		-		-		
+PS		shape	1		-		-		-		-		-		-		-		-		-		
+Nonprompt_17	lnN	-		1.300		-		-		-		-		-		-		-		-		
+Conversion_17	lnN	-		-		1.200		-		-		-		-		-		-		-		
+norm_WZ		lnN	-		-		-		1.120		-		-		-		-		-		-		
+norm_ZZ		lnN	-		-		-		-		1.064		-		-		-		-		-		
+norm_ttW	lnN	-		-		-		-		-		1.119		-		-		-		-		
+norm_ttZ	lnN	-		-		-		-		-		-		1.133		-		-		-		
+norm_ttH	lnN	-		-		-		-		-		-		-		1.100		-		-		
+norm_tZq	lnN	-		-		-		-		-		-		-		-		1.052		-		
+norm_others	lnN	-		-		-		-		-		-		-		-		-		1.500		

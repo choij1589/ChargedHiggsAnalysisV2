@@ -16,8 +16,7 @@ elif [[ $HOST == *"knu"* ]]; then
     unset LD_PRELOAD
 elif [[ $HOST == *"tamsa"* ]]; then
     export WORKDIR="/data6/Users/choij/ChargedHiggsAnalysisV2"
-    source /opt/conda/bin/activate
-    conda activate pyg
+    source /cvmfs/sft.cern.ch/lcg/views/LCG_105/x86_64-centos7-gcc12-opt/setup.sh
 elif [[ $HOST == *"cms"* ]]; then
     export WORKDIR="/data6/Users/choij/ChargedHiggsAnalysisV2"
     source /opt/conda/bin/activate
@@ -27,9 +26,9 @@ elif [[ $HOST == *"private"* ]]; then
     source ~/.conda-activate
     conda activate pyg
 elif [[ $HOST == *"Mac"* ]]; then
-    export WORKDIR="$HOME/workspace/ChargedHiggsAnalysisV2"
-    source ~/.conda-activate
-    conda activate pyg
+    export WORKDIR="$PWD"
+    source $WORKDIR/myenv/bin/activate
+    source root_install/bin/thisroot.sh
 else
     echo "Unknown host"
     return 1
@@ -39,4 +38,7 @@ export PYTHONPATH=$WORKDIR/CommonTools/python:$PYTHONPATH
 export PYTHONPATH=$WORKDIR/CommonTools/tdr-style:$PYTHONPATH
 echo "@@@@ WORKDIR=$WORKDIR"
 
-#git status
+# build 
+cd $WORKDIR/ParticleNet/libs
+g++ `root-config --cflags --libs` -o copytree copytree.cc
+cd -

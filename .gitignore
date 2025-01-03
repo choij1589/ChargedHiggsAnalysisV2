@@ -1,8 +1,8 @@
 SKFlatOutput
 SKFlatOutput/*
-SignalRegionStudy/CMSSW_*/*
-SignalRegionStudy/samples/*
-SignalRegionStudy/templates
+SignalRegionStudy*/samples/*
+SignalRegionStudy*/BackUps/*
+SignalRegionStudy*/condor/*
 CommonTools/CMSSW_*/*
 BackUps/*
 **/build/*
@@ -16,3 +16,5 @@ BackUps/*
 **/*.tar.gz
 ParticleNet/dataset/*
 ParticleNet/condor/*
+myenv/*
+root_install/*
