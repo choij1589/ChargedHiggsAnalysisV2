@@ -3,6 +3,7 @@ SKFlatOutput/*
 SignalRegionStudy*/samples/*
 SignalRegionStudy*/BackUps/*
 SignalRegionStudy*/condor/*
+SignalRegionStudy*/**/*.root
 CommonTools/CMSSW_*/*
 BackUps/*
 **/build/*

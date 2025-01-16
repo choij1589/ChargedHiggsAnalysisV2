@@ -25,29 +25,25 @@ class KinematicCanvas():
         self.config = config
         
         # initialize default settings
-        self.cvs = TCanvas("c", "", 1600, 1600)
-        self.cvs.SetLeftMargin(0.115)
+        self.cvs = TCanvas("c", "", 1600, 1500)
+        self.cvs.SetLeftMargin(0.1)
         self.cvs.SetRightMargin(0.08)
+        self.cvs.SetTopMargin(0.06)
+        self.cvs.SetBottomMargin(0.1)
         self.lumi = TLatex()
-        self.lumi.SetTextSize(0.035)
+        self.lumi.SetTextSize(0.032)
         self.lumi.SetTextFont(42)
         self.cms = TLatex()
-        self.cms.SetTextSize(0.04)
+        self.cms.SetTextSize(0.035)
         self.cms.SetTextFont(61)
         self.preliminary = TLatex()
-        self.preliminary.SetTextSize(0.035)
+        self.preliminary.SetTextSize(0.032)
         self.preliminary.SetTextFont(52)
         
         self.signals = None
         self.backgrounds = None
         self.stack = THStack("stack", "")
         self.systematics = None
-        self.sigLegend = TLegend(0.35, 0.6, 0.6, 0.85)
-        self.sigLegend.SetFillStyle(0)
-        self.sigLegend.SetBorderSize(0)
-        self.bkgLegend = TLegend(0.65, 0.6, 0.9, 0.85)
-        self.bkgLegend.SetFillStyle(0)
-        self.bkgLegend.SetBorderSize(0)
         
         # optional settings
         self.logy = False
@@ -86,9 +82,11 @@ class KinematicCanvas():
                 hist.GetXaxis().SetRangeUser(xRange[0], xRange[1])
         
         # Y axis
+        maximum = max([h.GetMaximum() for h in self.signals.values()])
         for hist in self.signals.values():
             hist.GetYaxis().SetTitle(self.config['yTitle'])
-        
+            hist.GetYaxis().SetRangeUser(0, maximum*2.)
+            
     def drawBackgrounds(self, hists, colors):
         self.backgrounds = hists
         
@@ -141,27 +139,51 @@ class KinematicCanvas():
         self.systematics.GetXaxis().SetLabelSize(0)
         
     def drawLegend(self):
-        for hist in list(self.backgrounds.values())[::-1]:
-            self.bkgLegend.AddEntry(hist, hist.GetName(), "f")
-        self.bkgLegend.AddEntry(self.systematics, "stat+syst", "f")
-        for hist in self.signals.values():
-            self.sigLegend.AddEntry(hist, hist.GetName(), "f")
+        self.sigLegend = None
+        self.bkgLegend = None
+        if self.signals:
+            self.sigLegend = TLegend(0.65, 0.6, 0.9, 0.85)
+            #self.sigLegend = TLegend(0.35, 0.6, 0.6, 0.85)
+            self.sigLegend.SetFillStyle(0)
+            self.sigLegend.SetBorderSize(0)
+            for hist in self.signals.values():
+                self.sigLegend.AddEntry(hist, hist.GetName(), "f")
+        
+        if self.backgrounds:
+            self.bkgLegend = TLegend(0.65, 0.6, 0.9, 0.85)
+            self.bkgLegend.SetFillStyle(0)
+            self.bkgLegend.SetBorderSize(0)
+            for hist in list(self.backgrounds.values())[::-1]:
+                self.bkgLegend.AddEntry(hist, hist.GetName(), "f")
+        
+        if self.systematics:
+            self.bkgLegend.AddEntry(self.systematics, "stat+syst", "f")
+
+        # Relocate self.sigLegend to the left
+        if self.sigLegend and self.bkgLegend:
+            self.sigLegend.SetX1(0.35)
+            self.sigLegend.SetX2(0.6)   
         
     def finalize(self):
         if self.logy: self.cvs.SetLogy()
         self.cvs.cd()
-        for hist in self.signals.values():
-            hist.Draw("hist")
-        self.stack.Draw("hist&same")
-        self.systematics.Draw("e2&f&same")
-        for hist in self.signals.values():
-            hist.Draw("hist&same")
-            hist.Draw("f&hist&same")
-        self.sigLegend.Draw()
-        self.bkgLegend.Draw()
-        self.lumi.DrawLatexNDC(0.61, 0.91, self.lumiString)
-        self.cms.DrawLatexNDC(0.12, 0.91, "CMS")
-        self.preliminary.DrawLatexNDC(0.22, 0.91, "Work in progress") 
+
+        if self.backgrounds:
+            self.stack.Draw("hist&same")
+        if self.systematics:
+            self.systematics.Draw("e2&f&same")
+        if self.signals:
+            for hist in self.signals.values():
+                hist.Draw("f&hist&same")
+        
+        if self.sigLegend:
+            self.sigLegend.Draw()
+        if self.bkgLegend:
+            self.bkgLegend.Draw()
+        
+        self.lumi.DrawLatexNDC(0.66, 0.953, self.lumiString)
+        self.cms.DrawLatexNDC(0.105, 0.953, "CMS")
+        self.preliminary.DrawLatexNDC(0.19, 0.953, "Work in progress") 
         self.cvs.RedrawAxis()
         
     def draw(self):
