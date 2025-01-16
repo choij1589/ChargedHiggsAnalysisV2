@@ -18,7 +18,7 @@ WORKDIR = os.environ["WORKDIR"]
 
 config = {
     "era": args.era,
-    "xTitle": "m_{#mu^{+}#mu&{-}} [GeV]",
+    "xTitle": "m_{#mu^{+}#mu^{-}} [GeV]",
     "yTitle": "Events",
     "yRange": [0., 2.]
 }
