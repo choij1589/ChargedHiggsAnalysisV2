@@ -33,8 +33,8 @@ if "score" in args.histkey:
     #SIGNALs = ["MHc-100_MA-95", "MHc-130_MA-90", "MHc-160_MA-85"]
 CONV = ["DYJets", "DYJets10to50_MG", "ZGToLLG", "WWG", "TTG"]
 DIBOSON = ["WZTo3LNu_amcatnlo", "ZZTo4L_powheg"]
-TTX = ["ttWToLNu", "ttZToLLNuNu", "ttHToNonbb"]
-OTHERs = ["WWW", "WWZ", "WZZ", "ZZZ", "tZq", "tHq", "VBF_HToZZTo4L", "GluGluHToZZTo4L"]
+TTX = ["ttWToLNu", "ttZToLLNuNu", "ttHToNonbb", "tZq"]
+OTHERs = ["WWW", "WWZ", "WZZ", "ZZZ", "tHq", "VBF_HToZZTo4L", "GluGluHToZZTo4L"]
 MCList = CONV + DIBOSON + TTX + OTHERs
 
 #### Systematics
@@ -105,7 +105,11 @@ logging.debug(f"file_path: {file_path}")
 hadd(file_path)
 assert os.path.exists(file_path), f"File not found: {file_path}"
 f = ROOT.TFile.Open(file_path)
-data = f.Get(f"{args.channel}/Central/{args.histkey}"); data.SetDirectory(0)
+try:
+    data = f.Get(f"{args.channel}/Central/{args.histkey}"); data.SetDirectory(0)
+except:
+    logging.info(f"No data histogram found for {args.histkey}")
+    exit(1)
 
 # blind data
 if args.blind:
