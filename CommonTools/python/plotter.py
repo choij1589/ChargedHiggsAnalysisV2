@@ -183,7 +183,7 @@ class KinematicCanvas():
         
         self.lumi.DrawLatexNDC(0.66, 0.953, self.lumiString)
         self.cms.DrawLatexNDC(0.105, 0.953, "CMS")
-        self.preliminary.DrawLatexNDC(0.19, 0.953, "Work in progress") 
+        self.preliminary.DrawLatexNDC(0.19, 0.953, "Preliminary") 
         self.cvs.RedrawAxis()
         
     def draw(self):
