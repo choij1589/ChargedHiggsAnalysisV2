@@ -108,7 +108,7 @@ f = ROOT.TFile.Open(file_path)
 try:
     data = f.Get(f"{args.channel}/Central/{args.histkey}"); data.SetDirectory(0)
 except:
-    logging.info(f"No data histogram found for {args.histkey}")
+    logging.info(f"[WARNING] No data histogram found for {args.histkey}")
     exit(1)
 
 # blind data
