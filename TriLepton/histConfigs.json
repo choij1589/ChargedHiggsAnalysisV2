@@ -823,7 +823,6 @@
     "yTitle": "Events",
     "xRange": [0, 10],
     "yRange": [0.0, 2.0],
-    "rebin": 5,
     "logy": false
   },
   "bjets/1/btagScore": {
