@@ -1,0 +1,21 @@
+HybridNew.cc[235] : (in function: validateOptions) - You have specified fork > 1. This can cause serious problems, especially when submitting to batch systems. Recommend reducing the number of iterations instead and submitting more jobs!
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed 545331264
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed -2083431704
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed -437547985
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed -142945808
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed -1263492951
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed -441365779
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed -949919191
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed 1618127706
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1394] : (in function: evalWithFork) - And I'm done
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 0, seed 1444061398
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 1, seed -1594432862
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 2, seed 1938647175
+HybridNew.cc[1387] : (in function: evalWithFork) -   I am child 3, seed 1459718601

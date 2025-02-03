@@ -1,0 +1,40 @@
+# signal xsec scaled to be 5 fb
+imax			1 number of bins
+jmax			9 number of bins
+kmax			* number of nuisance parameters
+--------------------------------------------------
+shapes	*	*	shapes_input.root	$PROCESS	$PROCESS_$SYSTEMATIC
+shapes	signal	*	shapes_input.root	MHc-130_MA-55	MHc-130_MA-55_$SYSTEMATIC
+--------------------------------------------------
+bin			signal_region
+observation		18.0728
+--------------------------------------------------
+bin			signal_region	signal_region	signal_region	signal_region	signal_region	signal_region	signal_region	signal_region	signal_region	signal_region	
+process			signal		nonprompt	conversion	WZ		ZZ		ttW		ttZ		ttH		tZq		others		
+process			0		1		2		3		4		5		6		7		8		9		
+rate			-1		-1		-1		-1		-1		-1		-1		-1		-1		-1		
+--------------------------------------------------
+signal_region	autoMCStats	10
+lumi_13TeV	lnN	1.025		-		-		1.025		1.025		1.025		1.025		1.025		1.025		1.025		
+L1Prefire_16b	lnN	1.009		-		-		1.010		1.007		1.011		1.011		1.009		1.021		1.013		
+PileupReweight	lnN	1.013		-		-		1.011		1.029		1.006		1.036		1.044		1.019		1.005		
+ElectronIDSF	lnN	1.017		-		-		1.026		1.033		1.016		1.016		1.019		1.019		1.017		
+MuonIDSF	lnN	1.010		-		-		1.008		1.011		1.010		1.009		1.010		1.011		1.010		
+TriggerSF	lnN	1.029		-		-		1.032		1.036		1.035		1.034		1.029		1.027		1.029		
+ElectronRes	shape	1		-		-		1		1		1		1		1		1		1		
+ElectronEn	shape	1		-		-		1		1		1		1		1		1		1		
+JetRes_16b	shape	1		-		-		1		1		1		1		1		1		1		
+JetEn		shape	1		-		-		1		1		1		1		1		1		1		
+MuonEn		shape	1		-		-		1		1		1		1		1		1		1		
+PDF		shape	1		-		-		-		-		-		-		-		-		-		
+Scale		shape	1		-		-		-		-		-		-		-		-		-		
+PS		shape	1		-		-		-		-		-		-		-		-		-		
+Nonprompt_16b	lnN	-		1.300		-		-		-		-		-		-		-		-		
+Conversion_16b	lnN	-		-		1.200		-		-		-		-		-		-		-		
+norm_WZ		lnN	-		-		-		1.120		-		-		-		-		-		-		
+norm_ZZ		lnN	-		-		-		-		1.064		-		-		-		-		-		
+norm_ttW	lnN	-		-		-		-		-		1.119		-		-		-		-		
+norm_ttZ	lnN	-		-		-		-		-		-		1.133		-		-		-		
+norm_ttH	lnN	-		-		-		-		-		-		-		1.100		-		-		
+norm_tZq	lnN	-		-		-		-		-		-		-		-		1.052		-		
+norm_others	lnN	-		-		-		-		-		-		-		-		-		1.500		

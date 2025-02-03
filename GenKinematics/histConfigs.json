@@ -1,0 +1,170 @@
+{
+    "muons_fromA/1/pt": {
+        "title": "#mu(1) from A",
+        "xTitle": "p_{T} [GeV]",
+        "yTitle": "Events",
+        "xRange": [0.0, 300.0],
+        "logy": false
+    },
+    "muons_fromA/1/eta": {
+        "title": "#mu(1) from A",
+        "xTitle": "#eta",
+        "yTitle": "Events",
+        "xRange": [-5.0, 5.0],
+        "logy": false
+    },
+    "muons_fromA/1/phi": {
+        "title": "#mu(1) from A",
+        "xTitle": "#phi",
+        "yTitle": "Events",
+        "xRange": [-3.2, 3.2],
+        "logy": false
+    },
+    "muons_fromA/2/pt": {
+        "title": "#mu(2) from A",
+        "xTitle": "p_{T} [GeV]",
+        "yTitle": "Events",
+        "xRange": [0.0, 200.0],
+        "logy": false
+    },
+    "muons_fromA/2/eta": {
+        "title": "#mu(2) from A",
+        "xTitle": "#eta",
+        "yTitle": "Events",
+        "xRange": [-5.0, 5.0],
+        "logy": false
+    },
+    "muons_fromA/2/phi": {
+        "title": "#mu(2) from A",
+        "xTitle": "#phi",
+        "yTitle": "Events",
+        "xRange": [-3.2, 3.2],
+        "logy": false
+    },
+    "muons_fromEW/pt": {
+        "title": "#mu from W/Z",
+        "xTitle": "p_{T} [GeV]",
+        "yTitle": "Events",
+        "xRange": [0.0, 200.0],
+        "logy": false
+    },
+    "muons_fromEW/eta": {
+        "title": "#mu from W/Z",
+        "xTitle": "#eta",
+        "yTitle": "Events",
+        "xRange": [-5.0, 5.0],
+        "logy": false
+    },
+    "muons_fromEW/phi": {
+        "title": "#mu from W/Z",
+        "xTitle": "#phi",
+        "yTitle": "Events",
+        "xRange": [-3.2, 3.2],
+        "logy": false
+    },
+    "muons_fromOffshellW/pt": {
+        "title": "#mu from W^{*}",
+        "xTitle": "p_{T} [GeV]",
+        "yTitle": "Events",
+        "xRange": [0.0, 200.0],
+        "logy": false
+    },
+    "muons_fromOffshellW/eta": {
+        "title": "#mu from W^{*}",
+        "xTitle": "#eta",
+        "yTitle": "Events",
+        "xRange": [-5.0, 5.0],
+        "logy": false
+    },
+    "muons_fromOffshellW/phi": {
+        "title": "#mu from W^{*}",
+        "xTitle": "#phi",
+        "yTitle": "Events",
+        "xRange": [-3.2, 3.2],
+        "logy": false
+    },
+    "electrons_fromEW/pt": {
+        "title": "e from W/Z",
+        "xTitle": "p_{T} [GeV]",
+        "yTitle": "Events",
+        "xRange": [0.0, 200.0],
+        "logy": false
+    },
+    "electrons_fromEW/eta": {
+        "title": "e from W/Z",
+        "xTitle": "#eta",
+        "yTitle": "Events",
+        "xRange": [-5.0, 5.0],
+        "logy": false
+    },
+    "electrons_fromEW/phi": {
+        "title": "e from W/Z",
+        "xTitle": "#phi",
+        "yTitle": "Events",
+        "xRange": [-3.2, 3.2],
+        "logy": false
+    },
+    "electrons_fromOffshellW/pt": {
+        "title": "e from W^{*}",
+        "xTitle": "p_{T} [GeV]",
+        "yTitle": "Events",
+        "xRange": [0.0, 200.0],
+        "logy": false
+    },
+    "electrons_fromOffshellW/eta": {
+        "title": "e from W^{*}",
+        "xTitle": "#eta",
+        "yTitle": "Events",
+        "xRange": [-5.0, 5.0],
+        "logy": false
+    },
+    "electrons_fromOffshellW/phi": {
+        "title": "e from W^{*}",
+        "xTitle": "#phi",
+        "yTitle": "Events",
+        "xRange": [-3.2, 3.2],
+        "logy": false
+    },
+    "b_withHc/pt": {
+        "title": "b from t #rightarrow H^{+}b",
+        "xTitle": "p_{T} [GeV]",
+        "yTitle": "Events",
+        "xRange": [0.0, 200.0],
+        "logy": false
+    },
+    "b_withHc/eta": {
+        "title": "b from t #rightarrow H^{+}b",
+        "xTitle": "#eta",
+        "yTitle": "Events",
+        "xRange": [-5.0, 5.0],
+        "logy": false
+    },
+    "b_withHc/phi": {   
+        "title": "b from t #rightarrow H^{+}b",
+        "xTitle": "#phi",
+        "yTitle": "Events",
+        "xRange": [-3.2, 3.2],
+        "logy": false
+    },
+    "b_withW/pt": {
+        "title": "b from t #rightarrow W^{+}b",
+        "xTitle": "p_{T} [GeV]",
+        "yTitle": "Events",
+        "xRange": [0.0, 200.0],
+        "logy": false
+    },
+    "b_withW/eta": {
+        "title": "b from t #rightarrow W^{+}b",
+        "xTitle": "#eta",
+        "yTitle": "Events",
+        "xRange": [-5.0, 5.0],
+        "logy": false
+    },
+    "b_withW/phi": {
+        "title": "b from t #rightarrow W^{+}b",
+        "xTitle": "#phi",
+        "yTitle": "Events",
+        "xRange": [-3.2, 3.2],
+        "logy": false
+    }
+}
